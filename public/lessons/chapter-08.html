@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 8: Tương quan Pearson</title>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-main: #f1f5f9;
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            width: 0%;
+            z-index: 1001;
+            transition: width 0.2s ease;
+        }
+
+        /* Sticky Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            padding: 15px 20px;
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        nav a:hover {
+            background: var(--bg-main);
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .hero h3 { font-weight: 400; margin-bottom: 20px; opacity: 0.9; }
+        .hero p { max-width: 800px; margin: 0 auto 30px; font-size: 1.1rem; }
+        .hero-btn {
+            background: var(--white);
+            color: var(--primary);
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 5px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .hero-btn:hover { transform: translateY(-2px); }
+
+        /* Container & Cards */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        h2 { color: var(--primary-dark); border-bottom: 2px solid var(--bg-main); padding-bottom: 10px; margin-bottom: 20px; }
+        h3 { color: var(--text-dark); margin: 20px 0 10px; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.95rem; }
+        th, td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
+        th { background: var(--bg-main); color: var(--primary-dark); }
+        
+        /* Boxes */
+        .box { padding: 15px; border-radius: 12px; margin: 15px 0; border-left: 5px solid; }
+        .box.note { background: #e0f2fe; border-color: var(--primary); }
+        .box.warning { background: #fee2e2; border-color: var(--danger); }
+        .box.success { background: #d1fae5; border-color: var(--secondary); }
+
+        /* Flowchart */
+        .flowchart { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin: 20px 0; }
+        .flow-item { background: var(--primary); color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
+        .flow-arrow { font-size: 1.5rem; color: var(--text-light); }
+
+        /* Interactive Elements */
+        .interactive-section { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px dashed #cbd5e1; margin: 20px 0; }
+        select, input, button { padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 5px; font-size: 1rem; }
+        button { background: var(--primary); color: white; cursor: pointer; border: none; }
+        button:hover { background: var(--primary-dark); }
+        .output-display { margin-top: 15px; padding: 15px; background: white; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); min-height: 50px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .tab-btn { background: var(--bg-main); color: var(--text-dark); border: none; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 600; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Quiz */
+        .quiz-container { margin-top: 20px; }
+        .question { margin-bottom: 20px; display: none; }
+        .question.active { display: block; }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .option { padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: 0.2s; background: white;}
+        .option:hover { background: var(--bg-main); }
+        .option.correct { background: #d1fae5; border-color: var(--secondary); }
+        .option.wrong { background: #fee2e2; border-color: var(--danger); }
+        .explanation { margin-top: 10px; padding: 10px; background: #e0f2fe; border-radius: 8px; display: none; }
+        .quiz-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+
+    <nav>
+        <a href="#hero">Trang chủ</a>
+        <a href="#overview">Tổng quan</a>
+        <a href="#module1">Cơ sở thống kê</a>
+        <a href="#module2">Đọc Pearson</a>
+        <a href="#module3">Pearson với SHL</a>
+        <a href="#module4">Đọc Output SPSS</a>
+        <a href="#module5">Đa cộng tuyến</a>
+        <a href="#module6">Viết nhận xét</a>
+        <a href="#practice">Thực hành</a>
+        <a href="#quiz">Quiz 20 Câu</a>
+    </nav>
+
+    <section id="hero" class="hero">
+        <h1>Chương 8. Tương quan Pearson</h1>
+        <h3>Từ biến đại diện sau EFA đến đánh giá mối liên hệ tuyến tính với sự hài lòng chung</h3>
+        <p>Bài học giúp học viên CK1 hiểu và thực hành tương quan Pearson trong SPSS, đọc hệ số r, p-value, chiều và độ mạnh tương quan, đồng thời phân biệt tương quan với quan hệ nhân quả trong nghiên cứu sự hài lòng bệnh nhân.</p>
+        
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">Hiểu hệ số tương quan Pearson r</div>
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">Đọc p-value và chiều tương quan</div>
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">Thực hành Pearson trên SPSS và Excel</div>
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">Viết nhận xét luận văn CK1</div>
+        </div>
+
+        <div>
+            <a href="#overview" class="hero-btn">Bắt đầu học</a>
+            <a href="#quiz" class="hero-btn" style="background: var(--text-dark); color: white;">Làm quiz 20 câu</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <section id="overview" class="card scroll-reveal">
+            <h2>2. Tổng quan (Overview)</h2>
+            <p><strong>Pearson là gì?</strong> Pearson lượng hóa mức độ và chiều hướng liên hệ tuyến tính giữa hai biến định lượng.</p>
+            <p><strong>Nằm ở bước nào?</strong> Trong quy trình nghiên cứu, Pearson thường thực hiện sau khi đã làm sạch dữ liệu, đánh giá độ tin cậy (Cronbach's Alpha) và phân tích nhân tố khám phá (EFA).</p>
+            <p><strong>Vì sao thực hiện trước Hồi quy?</strong> Nó đóng vai trò sơ bộ trước hồi quy tuyến tính bội để đánh giá sự tương quan giữa các biến độc lập và phụ thuộc, cũng như phát hiện nguy cơ đa cộng tuyến giữa các biến độc lập.</p>
+            
+            <div class="flowchart">
+                <div class="flow-item">Likert</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Làm sạch DL</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Cronbach's Alpha</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">EFA</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Biến đại diện</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Pearson</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Hồi quy tuyến tính bội</div>
+            </div>
+            <p style="text-align: center; font-size: 0.85rem; color: var(--text-light);"></p>
+
+            <div class="box note">
+                <strong>Ghi nhớ:</strong> Pearson cho biết hai biến có liên hệ tuyến tính hay không, liên hệ thuận hay nghịch, mạnh hay yếu. Pearson không chứng minh một biến gây ra biến còn lại.
+            </div>
+        </section>
+
+        <section id="module1" class="card scroll-reveal">
+            <h2>3. MODULE 1: Cơ sở thống kê của Pearson</h2>
+            <ul>
+                <li>Pearson lượng hóa mức độ và chiều hướng liên hệ tuyến tính giữa hai biến định lượng.</li>
+                <li>Hệ số $r$ dao động từ -1 đến +1.</li>
+                <li>$r > 0$: tương quan thuận chiều.</li>
+                <li>$r < 0$: tương quan nghịch chiều.</li>
+                <li>$r$ gần 0: tương quan tuyến tính yếu hoặc không có tương quan tuyến tính.</li>
+                <li>p-value cho biết tương quan có khác 0 có ý nghĩa thống kê hay không. Không chỉ đọc p-value; phải đọc cả độ lớn và chiều của r.</li>
+            </ul>
+
+            <table>
+                <tr>
+                    <th>Khái niệm</th>
+                    <th>Ý nghĩa thống kê / Ứng dụng / Lỗi thường gặp</th>
+                </tr>
+                <tr><td>Pearson r</td><td>Lượng hóa mức độ và chiều hướng liên hệ tuyến tính.</td></tr>
+                <tr><td>Dấu của r</td><td>Cho biết thuận hay nghịch chiều.</td></tr>
+                <tr><td>Độ lớn của r</td><td>Phản ánh cường độ mạnh hay yếu.</td></tr>
+                <tr><td>p-value</td><td>Khẳng định tính có ý nghĩa thống kê của mối liên hệ.</td></tr>
+                <tr><td>Tương quan không phải nhân quả</td><td>Không được kết luận biến này GÂY RA biến kia.</td></tr>
+                <tr><td>Đa cộng tuyến sơ bộ</td><td>Quan sát tương quan giữa các biến độc lập.</td></tr>
+            </table>
+
+            <div class="box warning">
+                <strong>CẢNH BÁO:</strong> Tương quan Pearson không chứng minh quan hệ nhân quả. Không được viết "TD làm tăng SHL" chỉ dựa trên Pearson.
+            </div>
+
+            <div class="interactive-section">
+                <h3>Thực hành: Correlation Direction Simulator</h3>
+                <p>Chọn hệ số r để xem chiều tương quan:</p>
+                <select id="sim-direction" onchange="updateDirectionSim()">
+                    <option value="">-- Chọn r --</option>
+                    <option value="0.75">$r = 0,75$ (Dương)</option>
+                    <option value="-0.60">$r = -0,60$ (Âm)</option>
+                    <option value="0.02">$r = 0,02$ (Gần 0)</option>
+                </select>
+                <div id="sim-direction-output" class="output-display">Chờ lựa chọn...</div>
+            </div>
+        </section>
+
+        <section id="module2" class="card scroll-reveal">
+            <h2>4. MODULE 2: Điều kiện và tiêu chí đọc Pearson</h2>
+            <h3>Điều kiện áp dụng</h3>
+            <ul>
+                <li>Hai biến nên là biến định lượng hoặc điểm thang đo tổng hợp.</li>
+                <li>Mối liên hệ giữa hai biến nên gần tuyến tính.</li>
+                <li>Không có ngoại lệ quá mạnh làm méo tương quan.</li>
+                <li>Dữ liệu nên được kiểm tra trước bằng thống kê mô tả và biểu đồ scatterplot.</li>
+            </ul>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Cách đọc hệ số r</h3>
+                    <ul>
+                        <li>$|r| < 0,10$: rất yếu hoặc gần như không đáng kể</li>
+                        <li>$0,10 \le |r| < 0,30$: yếu</li>
+                        <li>$0,30 \le |r| < 0,50$: trung bình</li>
+                        <li>$0,50 \le |r| < 0,70$: khá mạnh</li>
+                        <li>$|r| \ge 0,70$: mạnh</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Cách đọc p-value</h3>
+                    <ul>
+                        <li>$p < 0,05$: tương quan có ý nghĩa thống kê.</li>
+                        <li>$p \ge 0,05$: chưa có bằng chứng đủ mạnh về tương quan tuyến tính.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="box note">
+                <strong>Lưu ý:</strong>
+                <ul>
+                    <li>r lớn nhưng không có ý nghĩa thống kê có thể do cỡ mẫu nhỏ.</li>
+                    <li>p có ý nghĩa nhưng r quá nhỏ thì ý nghĩa thực hành có thể hạn chế.</li>
+                    <li>Tương quan cao giữa các biến độc lập gợi ý nguy cơ đa cộng tuyến; kết luận chính thức cần dựa VIF trong hồi quy.</li>
+                </ul>
+            </div>
+
+            <div class="interactive-section">
+                <h3>Thực hành: Strength Classifier</h3>
+                <p>Nhập hệ số r (từ -1 đến 1):</p>
+                <input type="number" id="sim-strength" step="0.01" min="-1" max="1" placeholder="Ví dụ: 0.45">
+                <button onclick="classifyStrength()">Phân loại</button>
+                <div id="sim-strength-output" class="output-display">Kết quả phân loại sẽ hiện ở đây.</div>
+            </div>
+        </section>
+
+        <section id="module3" class="card scroll-reveal">
+            <h2>5. MODULE 3: Tương quan Pearson với SHL</h2>
+            <p>Bảng kết quả minh họa theo dữ liệu chuẩn hóa:</p>
+            <table>
+                <tr>
+                    <th>Biến</th><th>r Pearson</th><th>Sig.</th><th>Diễn giải</th>
+                </tr>
+                <tr><td>TD</td><td>0,611</td><td>&lt;0,001</td><td>Tương quan thuận chiều mạnh nhất với SHL</td></tr>
+                <tr><td>QL</td><td>0,551</td><td>&lt;0,001</td><td>Tương quan thuận chiều đáng chú ý</td></tr>
+                <tr><td>HQ</td><td>0,439</td><td>&lt;0,001</td><td>Tương quan thuận chiều mức trung bình</td></tr>
+                <tr><td>DV</td><td>0,334</td><td>&lt;0,001</td><td>Tương quan thuận chiều mức trung bình thấp</td></tr>
+                <tr><td>CP</td><td>0,172</td><td>0,011</td><td>Tương quan thuận chiều yếu nhưng có ý nghĩa</td></tr>
+                <tr><td>TT</td><td>-0,015</td><td>0,822</td><td>Chưa có bằng chứng về tương quan tuyến tính với SHL</td></tr>
+            </table>
+
+            <h3>Diễn giải ba tầng</h3>
+            <div class="grid-2">
+                <div class="box success">
+                    <strong>Ví dụ TD:</strong><br>
+                    - <strong>Số liệu:</strong> TD có tương quan thuận chiều với SHL, $r=0,611$, $p<0,001$<br>
+                    - <strong>Kết luận thống kê:</strong> TD có mối liên hệ tuyến tính thuận chiều khá mạnh với SHL.<br>
+                    - <strong>Ý nghĩa quản lý dược:</strong> Bệnh nhân đánh giá thái độ phục vụ càng tốt thì mức hài lòng chung có xu hướng càng cao. Tuy nhiên, đây mới là tương quan, chưa khẳng định quan hệ nhân quả. [cite: 156-158]
+                </div>
+                <div class="box note">
+                    <strong>Ví dụ TT:</strong><br>
+                    - <strong>Số liệu:</strong> TT có $r=-0,015$, $p=0,822$<br>
+                    - <strong>Kết luận thống kê:</strong> Chưa có bằng chứng về mối liên hệ tuyến tính giữa TT và SHL.<br>
+                    - <strong>Ý nghĩa chuyên môn:</strong> Không nên kết luận thông tin thuốc/bệnh không quan trọng. Có thể thang đo TT chưa phù hợp, thông tin chưa được bệnh nhân ghi nhớ, hoặc tác động của TT thể hiện gián tiếp qua yếu tố khác. [cite: 164-166]
+                </div>
+            </div>
+            
+            <div class="interactive-section">
+                <h3>Tương tác: Decision Simulator</h3>
+                <p><strong>Tình huống:</strong> TT có $r = -0,015$, $p = 0,822$ với SHL. Chọn cách diễn giải đúng:</p>
+                <div class="options">
+                    <div class="option" onclick="checkDecision(this, false)">A. TT chắc chắn không quan trọng.</div>
+                    <div class="option" onclick="checkDecision(this, false)">B. TT làm giảm SHL.</div>
+                    <div class="option" onclick="checkDecision(this, true)">C. Chưa có bằng chứng về tương quan tuyến tính giữa TT và SHL trong dữ liệu này.</div>
+                    <div class="option" onclick="checkDecision(this, false)">D. Phải xóa TT khỏi nghiên cứu.</div>
+                </div>
+                <div id="decision-feedback" class="explanation"></div>
+            </div>
+        </section>
+
+        <section id="module4" class="card scroll-reveal">
+            <h2>6. MODULE 4: Đọc output SPSS Correlations</h2>
+            <p>Mỗi ô trong bảng SPSS Correlations gồm: Pearson Correlation, Sig. (2-tailed), và N. [cite: 172-174]</p>
+            
+            <div class="interactive-section">
+                <h3>Thực hành: Output Reader tương tác</h3>
+                <p>Bấm vào từng cặp để xem diễn giải chi tiết:</p>
+                <div class="tabs">
+                    <button class="tab-btn" onclick="readOutput('SHL-TD')">SHL-TD</button>
+                    <button class="tab-btn" onclick="readOutput('SHL-QL')">SHL-QL</button>
+                    <button class="tab-btn" onclick="readOutput('SHL-HQ')">SHL-HQ</button>
+                    <button class="tab-btn" onclick="readOutput('SHL-DV')">SHL-DV</button>
+                    <button class="tab-btn" onclick="readOutput('SHL-CP')">SHL-CP</button>
+                    <button class="tab-btn" onclick="readOutput('SHL-TT')">SHL-TT</button>
+                </div>
+                <div id="output-reader-display" class="output-display">Chọn một cặp biến ở trên.</div>
+            </div>
+        </section>
+
+        <section id="module5" class="card scroll-reveal">
+            <h2>7. MODULE 5: Tương quan giữa các biến độc lập và đa cộng tuyến sơ bộ</h2>
+            <ul>
+                <li>Pearson không chỉ dùng để xem SHL với từng nhân tố. Có thể xem tương quan giữa HQ, TD, QL, TT, DV, CP.</li>
+                <li>Nếu hai biến độc lập tương quan quá cao (ví dụ $r>0,80$), có thể gợi ý nguy cơ đa cộng tuyến.</li>
+                <li>Tuy nhiên, kết luận đa cộng tuyến chính thức cần kiểm tra VIF trong hồi quy.</li>
+            </ul>
+
+            <table>
+                <tr><th>Cặp biến</th><th>r</th><th>Nhận định sơ bộ</th><th>Hướng xử lý</th></tr>
+                <tr><td>HQ-TD</td><td>0,62</td><td>Tương quan vừa khá, theo dõi trong hồi quy</td><td>Kiểm tra VIF</td></tr>
+                <tr><td>TD-QL</td><td>0,76</td><td>Tương quan cao, cần chú ý</td><td>Kiểm tra VIF</td></tr>
+                <tr><td>DV-CP</td><td>0,25</td><td>Tương quan yếu</td><td>Ít lo ngại</td></tr>
+            </table>
+
+            <div class="box warning">
+                <strong>Cảnh báo:</strong> Không loại biến độc lập chỉ vì chúng có tương quan với nhau. Cần kiểm tra VIF và ý nghĩa lý thuyết trong hồi quy.
+            </div>
+            
+            <div class="interactive-section">
+                <h3>Mini game "Tương quan hay nhân quả?"</h3>
+                <p><strong>Câu hỏi:</strong> TD có r = 0,611 với SHL nên TD chắc chắn gây ra SHL.</p>
+                <button onclick="alert('ĐÁP ÁN: Sai. Tương quan Pearson không chứng minh quan hệ nhân quả.')">Xem đáp án</button>
+            </div>
+        </section>
+
+        <section id="module6" class="card scroll-reveal">
+            <h2>8. MODULE 6: Viết nhận xét Pearson trong luận văn CK1</h2>
+            
+            <div class="box success">
+                <strong>Mẫu viết:</strong><br>
+                “Kết quả phân tích tương quan Pearson cho thấy TD, QL, HQ, DV và CP đều có tương quan thuận chiều có ý nghĩa thống kê với SHL. Trong đó, TD có tương quan mạnh nhất với SHL ($r = 0,611; p < 0,001$), tiếp theo là QL ($r = 0,551; p < 0,001$), HQ ($r = 0,439; p < 0,001$), DV ($r = 0,334; p < 0,001$) và CP ($r = 0,172; p = 0,011$). Riêng TT chưa có bằng chứng về tương quan tuyến tính với SHL ($r = -0,015; p = 0,822$). Về ý nghĩa quản lý dược, kết quả gợi ý thái độ phục vụ, năng lực quản lý/quy trình và hiệu quả điều trị là các yếu tố có liên hệ đáng chú ý với sự hài lòng chung của bệnh nhân. Tuy nhiên, phân tích tương quan không chứng minh quan hệ nhân quả; kết luận về tác động cần được xem xét tiếp bằng hồi quy tuyến tính bội.”
+            </div>
+
+            <div class="box warning">
+                <strong>Lỗi thường gặp:</strong>
+                <ul>
+                    <li>Chỉ đọc p-value mà không đọc r.</li>
+                    <li>Nhầm tương quan với nhân quả.</li>
+                    <li>Viết “ảnh hưởng” hoặc “tác động” quá sớm trước hồi quy.</li>
+                    <li>Không phân biệt tương quan thuận/nghịch.</li>
+                    <li>Không xem tương quan giữa các biến độc lập trước hồi quy.</li>
+                    <li>Kết luận TT không quan trọng chỉ vì $p > 0,05$.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="practice" class="card scroll-reveal">
+            <h2>9. Thực hành SPSS & Excel</h2>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('tab-spss-run')">SPSS: Chạy Pearson</button>
+                <button class="tab-btn" onclick="openTab('tab-spss-read')">SPSS: Đọc bảng & Scatterplot</button>
+                <button class="tab-btn" onclick="openTab('tab-excel-correl')">Excel: CORREL</button>
+                <button class="tab-btn" onclick="openTab('tab-excel-heatmap')">Excel: Ma trận & Heatmap</button>
+            </div>
+
+            <div id="tab-spss-run" class="tab-content active">
+                <h3>Chuẩn bị biến & Chạy Pearson [cite: 208-210]</h3>
+                <ul>
+                    <li>Đảm bảo đã có biến đại diện sau EFA: HQ, TD, QL, TT, DV, CP, SHL.</li>
+                    <li>Kiểm tra các biến này là Scale, Min/Max nằm trong khoảng 1–5.</li>
+                    <li>Vào <strong>Analyze → Correlate → Bivariate…</strong></li>
+                    <li>Đưa SHL, HQ, TD, QL, TT, DV, CP vào ô Variables. Đặt SHL ở vị trí đầu.</li>
+                    <li>Chọn Pearson, Two-tailed, Flag significant correlations. Bấm OK.</li>
+                </ul>
+            </div>
+
+            <div id="tab-spss-read" class="tab-content">
+                <h3>Đọc Output & Scatterplot</h3>
+                <ul>
+                    <li>Đọc bảng Correlations. Với từng cặp SHL–nhân tố, đọc: Pearson Correlation, Sig. (2-tailed), N. [cite: 213-215]</li>
+                    <li>Nếu $p < 0,05$, diễn giải r. Nếu $p \ge 0,05$, ghi “chưa có bằng chứng về tương quan tuyến tính”.</li>
+                    <li>Vẽ scatterplot: Vào <strong>Graphs → Chart Builder</strong>. Chọn Scatter/Dot.</li>
+                    <li>Đưa TD vào trục X, SHL vào trục Y. Bấm OK. Quan sát xu hướng tuyến tính, ngoại lệ.</li>
+                </ul>
+            </div>
+
+            <div id="tab-excel-correl" class="tab-content">
+                <h3>Excel: Chuẩn bị dữ liệu & Hàm CORREL</h3>
+                <ul>
+                    <li>Mở DATA.xlsx. Tính trung bình nếu chưa có (VD: <code>HQ = AVERAGE(HQ1:HQ5)</code>). [cite: 226-228]</li>
+                    <li>Tính tương quan bằng hàm CORREL: <code>=CORREL(TD_range, SHL_range)</code></li>
+                    <li>Lặp lại với QL, HQ, DV, CP, TT.</li>
+                </ul>
+            </div>
+
+            <div id="tab-excel-heatmap" class="tab-content">
+                <h3>Excel: Ma trận tương quan & Heatmap</h3>
+                <ul>
+                    <li>Dùng <strong>Data → Data Analysis → Correlation</strong>. Chọn vùng dữ liệu.</li>
+                    <li>Tạo heatmap: Chọn ma trận. <strong>Home → Conditional Formatting → Color Scales</strong>.</li>
+                    <li>Ghi chú: heatmap chỉ hỗ trợ nhìn nhanh, kết luận chính thức nên dựa output SPSS.</li>
+                    <li>Không dùng scatterplot để kết luận nhân quả.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="quiz" class="card scroll-reveal">
+            <h2>10. Quiz Cuối Bài (20 Câu)</h2>
+            <div class="quiz-container">
+                <div id="quiz-status">Câu <span id="current-q">1</span> / 20</div>
+                <div id="quiz-area"></div>
+                <div class="quiz-nav">
+                    <button id="btn-prev" onclick="navQuiz(-1)" disabled>Quay lại</button>
+                    <button id="btn-next" onclick="navQuiz(1)">Tiếp theo</button>
+                    <button id="btn-restart" onclick="restartQuiz()" style="display:none; background: var(--secondary);">Làm lại quiz</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Progress Bar
+        window.onscroll = function() {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+            
+            // Scroll Reveal
+            var reveals = document.querySelectorAll('.scroll-reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("visible");
+                }
+            }
+        };
+
+        // Initialize first scroll reveal
+        window.dispatchEvent(new Event('scroll'));
+
+        // Simulators
+        function updateDirectionSim() {
+            const val = document.getElementById('sim-direction').value;
+            const out = document.getElementById('sim-direction-output');
+            if(val === "0.75") out.innerHTML = "<strong>r > 0: Tương quan thuận chiều.</strong> Đồ thị Scatterplot sẽ có hướng đi lên từ trái sang phải.";
+            else if(val === "-0.60") out.innerHTML = "<strong>r < 0: Tương quan nghịch chiều.</strong> Đồ thị Scatterplot sẽ có hướng đi xuống từ trái sang phải.";
+            else if(val === "0.02") out.innerHTML = "<strong>r gần 0: Tương quan tuyến tính yếu hoặc không có.</strong> Các điểm dữ liệu phân tán ngẫu nhiên.";
+            else out.innerHTML = "Chờ lựa chọn...";
+        }
+
+        function classifyStrength() {
+            const r = parseFloat(document.getElementById('sim-strength').value);
+            const out = document.getElementById('sim-strength-output');
+            if (isNaN(r) || r < -1 || r > 1) {
+                out.innerHTML = "Vui lòng nhập giá trị hợp lệ từ -1 đến 1.";
+                return;
+            }
+            const absR = Math.abs(r);
+            if(absR < 0.10) out.innerHTML = `r = ${r}: Rất yếu hoặc gần như không đáng kể`;
+            else if(absR < 0.30) out.innerHTML = `r = ${r}: Yếu`;
+            else if(absR < 0.50) out.innerHTML = `r = ${r}: Trung bình`;
+            else if(absR < 0.70) out.innerHTML = `r = ${r}: Khá mạnh`;
+            else out.innerHTML = `r = ${r}: Mạnh`;
+        }
+
+        function readOutput(pair) {
+            const out = document.getElementById('output-reader-display');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(pair === 'SHL-TD') out.innerHTML = "SHL và TD có $r=0,611$, $p<0,001$. Đây là tương quan thuận chiều khá mạnh, có ý nghĩa thống kê. Có thể viết: Bệnh nhân đánh giá thái độ phục vụ cao hơn có xu hướng hài lòng chung cao hơn.";
+            else if(pair === 'SHL-TT') out.innerHTML = "SHL và TT có $r=-0,015$, $p=0,822$. Chưa có bằng chứng về tương quan tuyến tính giữa thông tin thuốc/bệnh và sự hài lòng chung trong bộ dữ liệu này.";
+            else out.innerHTML = "Cặp " + pair + " có tương quan có ý nghĩa thống kê (chi tiết xem bảng số liệu). Phân tích tương tự TD. [cite: 145-148]";
+            MathJax.typesetPromise();
+        }
+
+        function checkDecision(el, isCorrect) {
+            const parent = el.parentElement;
+            Array.from(parent.children).forEach(child => {
+                child.classList.remove('correct', 'wrong');
+                child.style.pointerEvents = 'none';
+            });
+            if(isCorrect) {
+                el.classList.add('correct');
+                document.getElementById('decision-feedback').innerHTML = "<strong>Đúng!</strong> Chưa có bằng chứng thống kê, nhưng không được kết luận biến đó hoàn toàn không quan trọng về lâm sàng.";
+                document.getElementById('decision-feedback').style.display = 'block';
+            } else {
+                el.classList.add('wrong');
+                document.getElementById('decision-feedback').innerHTML = "<strong>Sai.</strong> Đáp án đúng là C. Không thể kết luận nhân quả hay loại bỏ ngay nếu chưa xem xét lý thuyết.";
+                document.getElementById('decision-feedback').style.display = 'block';
+            }
+        }
+
+        function openTab(tabId) {
+            const container = event.target.parentElement.parentElement;
+            container.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            container.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Quiz Logic [cite: 250-263]
+        const quizData = [
+            { q: "1. Pearson dùng để đánh giá điều gì?", a: ["A. Mối liên hệ tuyến tính giữa hai biến định lượng", "B. Độ tin cậy nội tại của thang đo", "C. Sự khác biệt trung bình giữa ba nhóm", "D. Cấu trúc nhân tố tiềm ẩn"], c: 0, exp: "Đáp án A đúng. Pearson đánh giá mối liên hệ tuyến tính." },
+            { q: "2. Nếu r = 0,611 và p < 0,001 giữa TD và SHL, diễn giải thế nào?", a: ["A. TD có tương quan thuận chiều khá mạnh với SHL", "B. TD chắc chắn gây ra SHL", "C. TD không liên quan đến SHL", "D. SHL làm giảm TD"], c: 0, exp: "Đáp án A. r dương và p<0,05 chứng tỏ tương quan thuận chiều có ý nghĩa." },
+            { q: "3. Nếu r = -0,015 và p = 0,822 giữa TT và SHL, kết luận gì?", a: ["A. TT chắc chắn không quan trọng", "B. Chưa có bằng chứng về tương quan tuyến tính giữa TT và SHL", "C. TT gây giảm SHL", "D. Phải loại TT khỏi nghiên cứu"], c: 1, exp: "Đáp án B. p>=0.05 chưa đủ bằng chứng kết luận tương quan tuyến tính." },
+            { q: "4. Pearson có chứng minh quan hệ nhân quả không?", a: ["A. Có", "B. Không", "C. Có nếu p < 0,05", "D. Có nếu r > 0,5"], c: 1, exp: "Đáp án B. Tương quan không phải là nhân quả." },
+            { q: "5. Trong SPSS, chạy Pearson bằng đường dẫn nào?", a: ["A. Analyze → Correlate → Bivariate", "B. Analyze → Scale → Reliability Analysis", "C. Analyze → Dimension Reduction → Factor", "D. Analyze → Regression → Linear"], c: 0, exp: "Đáp án A." },
+            { q: "6. Điều kiện áp dụng Pearson là gì?", a: ["A. Hai biến định tính", "B. Hai biến định lượng hoặc điểm thang đo tổng hợp", "C. Một biến định tính, một định lượng", "D. Không cần điều kiện"], c: 1, exp: "Đáp án B. Biến định lượng hoặc thang đo tổng hợp (Scale)." },
+            { q: "7. Hệ số r dao động trong khoảng nào?", a: ["A. Từ 0 đến 1", "B. Từ 0 đến 100", "C. Từ -1 đến +1", "D. Từ -âm vô cực đến dương vô cực"], c: 2, exp: "Đáp án C. r luôn nằm trong [-1, 1]." },
+            { q: "8. Hệ số r > 0 mang ý nghĩa gì?", a: ["A. Tương quan thuận chiều", "B. Tương quan nghịch chiều", "C. Không tương quan", "D. Sai số chuẩn dương"], c: 0, exp: "Đáp án A." },
+            { q: "9. Hệ số r < 0 mang ý nghĩa gì?", a: ["A. Tương quan thuận chiều", "B. Tương quan nghịch chiều", "C. Lỗi tính toán", "D. Quan hệ nhân quả"], c: 1, exp: "Đáp án B." },
+            { q: "10. Hệ số r gần 0 mang ý nghĩa gì?", a: ["A. Tương quan rất mạnh", "B. Dữ liệu bị lỗi", "C. Tương quan tuyến tính yếu hoặc không có tương quan tuyến tính", "D. Đa cộng tuyến nghiêm trọng"], c: 2, exp: "Đáp án C." },
+            { q: "11. p-value < 0,05 cho biết điều gì?", a: ["A. Tương quan có ý nghĩa thống kê", "B. Tương quan mạnh", "C. Không có tương quan", "D. Cỡ mẫu quá nhỏ"], c: 0, exp: "Đáp án A." },
+            { q: "12. p-value ≥ 0,05 cho biết điều gì?", a: ["A. Chắc chắn có tương quan", "B. Chưa có bằng chứng đủ mạnh về tương quan tuyến tính", "C. Phải xóa biến", "D. Hệ số r lớn"], c: 1, exp: "Đáp án B." },
+            { q: "13. Tương quan cao giữa các biến độc lập (vd r > 0,80) cảnh báo điều gì?", a: ["A. Mô hình lý tưởng", "B. Nguy cơ đa cộng tuyến sơ bộ", "C. Sai số ngẫu nhiên", "D. Không có vấn đề gì"], c: 1, exp: "Đáp án B. Cần theo dõi thêm VIF trong hồi quy." },
+            { q: "14. Pearson thường được thực hiện sau bước nào?", a: ["A. Hồi quy tuyến tính", "B. Thống kê mô tả", "C. Cronbach's Alpha và EFA", "D. T-test"], c: 2, exp: "Đáp án C. Tính biến đại diện sau EFA rồi mới chạy Pearson." },
+            { q: "15. Biểu đồ nào dùng để kiểm tra mối liên hệ tuyến tính?", a: ["A. Pie chart", "B. Bar chart", "C. Scatterplot", "D. Histogram"], c: 2, exp: "Đáp án C. Scatterplot (Biểu đồ phân tán)." },
+            { q: "16. Hàm Excel nào dùng để tính hệ số tương quan?", a: ["A. =AVERAGE", "B. =CORREL", "C. =SUM", "D. =VLOOKUP"], c: 1, exp: "Đáp án B." },
+            { q: "17. Two-tailed trong SPSS Pearson có ý nghĩa gì?", a: ["A. Kiểm định một phía", "B. Kiểm định hai phía", "C. Lọc dữ liệu", "D. Biểu đồ 2 trục"], c: 1, exp: "Đáp án B. Kiểm định hai phía." },
+            { q: "18. Kết luận chính thức về đa cộng tuyến cần dựa vào chỉ số nào trong hồi quy?", a: ["A. p-value", "B. Pearson r", "C. VIF", "D. Cronbach Alpha"], c: 2, exp: "Đáp án C." },
+            { q: "19. Độ lớn 0,30 ≤ |r| < 0,50 được phân loại là gì?", a: ["A. Yếu", "B. Trung bình", "C. Khá mạnh", "D. Mạnh"], c: 1, exp: "Đáp án B. Trung bình." },
+            { q: "20. Chức năng nào trong Excel dùng để tạo heatmap tương quan?", a: ["A. Data Validation", "B. Pivot Table", "C. Conditional Formatting → Color Scales", "D. VLOOKUP"], c: 2, exp: "Đáp án C." }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+
+        function renderQuiz() {
+            const area = document.getElementById('quiz-area');
+            area.innerHTML = '';
+            quizData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `question ${index === currentQuiz ? 'active' : ''}`;
+                div.id = `q-${index}`;
+                div.innerHTML = `<h3>${item.q}</h3><div class="options">` +
+                    item.a.map((opt, i) => `<div class="option" onclick="selectAnswer(${index}, ${i}, this)">${opt}</div>`).join('') +
+                    `</div><div class="explanation" id="exp-${index}">${item.exp}</div>`;
+                area.appendChild(div);
+            });
+            document.getElementById('current-q').innerText = currentQuiz + 1;
+            updateNavButtons();
+        }
+
+        function selectAnswer(qIndex, aIndex, el) {
+            const parent = el.parentElement;
+            if(parent.classList.contains('answered')) return; // prevent multiple clicks
+            parent.classList.add('answered');
+            
+            Array.from(parent.children).forEach(child => {
+                child.style.pointerEvents = 'none';
+            });
+
+            const isCorrect = aIndex === quizData[qIndex].c;
+            if(isCorrect) {
+                el.classList.add('correct');
+                score++;
+            } else {
+                el.classList.add('wrong');
+                parent.children[quizData[qIndex].c].classList.add('correct');
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+
+            if(currentQuiz === quizData.length - 1) {
+                document.getElementById('btn-next').style.display = 'none';
+                document.getElementById('btn-restart').style.display = 'inline-block';
+                showBadge();
+            }
+        }
+
+        function navQuiz(dir) {
+            document.getElementById(`q-${currentQuiz}`).classList.remove('active');
+            currentQuiz += dir;
+            document.getElementById(`q-${currentQuiz}`).classList.add('active');
+            document.getElementById('current-q').innerText = currentQuiz + 1;
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            document.getElementById('btn-prev').disabled = currentQuiz === 0;
+            if(currentQuiz === quizData.length - 1) {
+                document.getElementById('btn-next').disabled = true;
+            } else {
+                document.getElementById('btn-next').disabled = false;
+                document.getElementById('btn-next').style.display = 'inline-block';
+                document.getElementById('btn-restart').style.display = 'none';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuiz = 0;
+            score = 0;
+            renderQuiz();
+            const badge = document.getElementById('quiz-badge');
+            if(badge) badge.remove();
+        }
+
+        function showBadge() {
+            const badge = document.createElement('div');
+            badge.id = 'quiz-badge';
+            badge.style.marginTop = "20px";
+            badge.style.padding = "15px";
+            badge.style.background = "#10b981";
+            badge.style.color = "white";
+            badge.style.borderRadius = "12px";
+            badge.style.textAlign = "center";
+            badge.innerHTML = `<h3>🎉 Hoàn thành Quiz!</h3><p>Điểm của bạn: ${score}/${quizData.length}</p>`;
+            document.getElementById('quiz-area').appendChild(badge);
+        }
+
+        // Initialize Quiz
+        renderQuiz();
+    </script>
+</body>
+</html>

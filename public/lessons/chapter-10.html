@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 10: Kiểm định khác biệt trung bình - SPSS CK1 Dược</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    borderRadius: {
+                        'card': '20px',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX for beautiful math equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Hide scrollbars but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Sticky Progress Bar & Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
+        <div class="h-1.5 bg-slate-100 w-full">
+            <div id="readingProgress" class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 transition-all duration-100" style="width: 0%;"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-teal-500 to-emerald-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-stethoscope text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">SPSS CK1 Dược</h1>
+                    <p class="text-xs text-slate-500 font-medium">Bài giảng E-learning tương tác • Chương 10</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200">
+                    <i class="fa-solid fa-graduation-cap mr-1.5"></i> Chuyên khoa 1
+                </span>
+                <a href="#quiz-section" class="bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-circle-question mr-1.5"></i> Thi thử 20 câu
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar Navigation (Desktop only) -->
+        <aside class="hidden lg:block w-72 shrink-0">
+            <div class="sticky top-24 bg-white border border-slate-200 rounded-card p-5 shadow-sm space-y-6">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Mục lục chương học</h3>
+                    <nav class="space-y-1" id="sidebar-nav">
+                        <a href="#overview" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Tổng quan khác biệt trung bình
+                        </a>
+                        <a href="#module1" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 1: Cơ sở thống kê
+                        </a>
+                        <a href="#module2" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 2: Đọc kiểm định Levene
+                        </a>
+                        <a href="#module3" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 3: Independent T-test
+                        </a>
+                        <a href="#module4" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 4: One-way ANOVA
+                        </a>
+                        <a href="#module5" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 5: Welch ANOVA
+                        </a>
+                        <a href="#module6" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 6: Post-hoc Bonferroni
+                        </a>
+                        <a href="#module7" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Module 7: Bảng tổng hợp
+                        </a>
+                        <a href="#practice" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Phòng Lab SPSS & Excel
+                        </a>
+                        <a href="#quiz-section" class="sidebar-item flex items-center px-3 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full border-2 border-slate-300 mr-2.5 shrink-0"></span>
+                            Lượng giá cuối bài (20 câu)
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100">
+                    <div class="bg-teal-50 rounded-2xl p-4 border border-teal-100">
+                        <h4 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-1.5"><i class="fa-solid fa-lightbulb mr-1"></i> Ghi nhớ sống còn</h4>
+                        <p class="text-xs text-teal-700 leading-relaxed">
+                            T-test và ANOVA chỉ so sánh điểm trung bình giữa các nhóm hiện hữu, tuyệt đối <strong>không được dùng để khẳng định mối quan hệ nhân quả</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Column -->
+        <main class="flex-grow space-y-12 lg:max-w-[calc(100%-20rem)]">
+
+            <!-- Hero Section -->
+            <section id="hero" class="bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-800 text-white rounded-card p-6 sm:p-10 shadow-lg relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 space-y-6">
+                    <span class="bg-white/20 text-white border border-white/20 text-xs uppercase font-bold tracking-widest px-3.5 py-1.5 rounded-full inline-block">
+                        Chương trình đào tạo Sau đại học
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight max-w-3xl">
+                        Chương 10. Kiểm định khác biệt trung bình: Independent Samples T-test & One-way ANOVA
+                    </h2>
+                    <p class="text-sm sm:text-base text-teal-100/90 leading-relaxed max-w-2xl">
+                        So sánh điểm hài lòng chung (SHL) của bệnh nhân đối với dịch vụ cung ứng thuốc và chăm sóc y tế tại bệnh viện thông qua các phép kiểm giả thuyết chuẩn mực y văn lâm sàng.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                            <div class="flex items-center space-x-3 mb-1.5">
+                                <span class="bg-emerald-400 text-teal-900 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs">1</span>
+                                <h4 class="font-bold text-sm">Phân biệt Phép kiểm</h4>
+                            </div>
+                            <p class="text-xs text-teal-100/80">Biết rõ khi nào dùng T-test (2 nhóm) và khi nào dùng ANOVA (≥ 3 nhóm) để tránh sai sót cơ bản.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                            <div class="flex items-center space-x-3 mb-1.5">
+                                <span class="bg-emerald-400 text-teal-900 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs">2</span>
+                                <h4 class="font-bold text-sm">Đọc chuẩn SPSS & Welch</h4>
+                            </div>
+                            <p class="text-xs text-teal-100/80">Đọc chính xác Levene's Test để chọn dòng "Equal assumed" hoặc điều chỉnh bằng Welch và Post-hoc.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                            <div class="flex items-center space-x-3 mb-1.5">
+                                <span class="bg-emerald-400 text-teal-900 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs">3</span>
+                                <h4 class="font-bold text-sm">Thực hành SPSS & Excel</h4>
+                            </div>
+                            <p class="text-xs text-teal-100/80">Hướng dẫn chi tiết từng nút bấm trên SPSS và các hàm tương đương trên Excel: T.TEST, ANOVA Single Factor.</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                            <div class="flex items-center space-x-3 mb-1.5">
+                                <span class="bg-emerald-400 text-teal-900 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs">4</span>
+                                <h4 class="font-bold text-sm">Nhận xét chuẩn luận văn</h4>
+                            </div>
+                            <p class="text-xs text-teal-100/80">Viết nhận xét theo cấu trúc 3 tầng chuẩn: Số liệu → Kết luận thống kê → Ý nghĩa lâm sàng & quản lý.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#overview" class="bg-white hover:bg-slate-100 text-teal-900 font-bold px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all text-sm inline-flex items-center">
+                            <i class="fa-solid fa-play mr-2 text-teal-600"></i> Bắt đầu học ngay
+                        </a>
+                        <a href="#quiz-section" class="bg-teal-500/30 hover:bg-teal-500/50 border border-teal-300/40 text-white font-bold px-6 py-3 rounded-2xl hover:shadow-lg transition-all text-sm inline-flex items-center">
+                            <i class="fa-solid fa-check-double mr-2"></i> Trắc nghiệm 20 câu
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Overview Section -->
+            <section id="overview" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-binoculars text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Tổng quan về kiểm định khác biệt trung bình</h3>
+                </div>
+                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-4">
+                    <p>
+                        Trong nghiên cứu Y tế công cộng và Quản lý Dược, chúng ta thường xuyên đối mặt với câu hỏi: <em>"Mức độ hài lòng chung của người bệnh có khác biệt thực sự giữa các nhóm nhân khẩu học hoặc các đặc điểm lâm sàng khác nhau không?"</em>. Để trả lời khoa học cho câu hỏi này, nhà nghiên cứu bắt buộc phải sử dụng các phép kiểm thống kê suy luận để so sánh trị trung bình thay vì chỉ so sánh cơ học bằng cảm quan biểu đồ.
+                    </p>
+                    
+                    <!-- Process Map -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 my-6">
+                        <h4 class="font-bold text-slate-900 mb-4 flex items-center text-sm sm:text-base"><i class="fa-solid fa-diagram-project mr-2 text-teal-600"></i> Quy trình phân tích 6 bước chuẩn y sinh</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">1</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Xác định biến số</h5>
+                                <p class="text-slate-500">Biến định lượng: SHL (Scale).<br>Biến phân nhóm: GioiTinh, PhacDo, KhaNangChiTra...</p>
+                            </div>
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">2</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Kiểm tra số nhóm</h5>
+                                <p class="text-slate-500">Nếu có 2 nhóm: Dùng T-test.<br>Nếu có ≥ 3 nhóm: Dùng ANOVA/Welch.</p>
+                            </div>
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">3</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Kiểm định Levene</h5>
+                                <p class="text-slate-500">Đọc p của Levene's Test để kiểm tra giả định đồng nhất phương sai giữa các nhóm.</p>
+                            </div>
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">4</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Chọn chỉ số đọc chính</h5>
+                                <p class="text-slate-500">T-test: chọn Assumed hoặc Not assumed.<br>ANOVA: chọn ANOVA thường hoặc Welch.</p>
+                            </div>
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">5</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Phân tích Post-hoc</h5>
+                                <p class="text-slate-500">Nếu ANOVA/Welch có ý nghĩa (p < 0,05) và có ≥ 3 nhóm, chạy Post-hoc để tìm cặp nhóm khác biệt.</p>
+                            </div>
+                            <div class="bg-white border border-slate-100 p-4 rounded-xl shadow-sm relative">
+                                <span class="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold">6</span>
+                                <h5 class="font-bold text-slate-900 mb-1">Viết báo cáo luận văn</h5>
+                                <p class="text-slate-500">Trình bày số liệu thống kê chuẩn mực lâm sàng, đề xuất giải pháp quản lý dược thực tiễn.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl my-4 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-800"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Chú ý phương pháp luận sống còn:</p>
+                        <p class="text-amber-700 leading-relaxed mt-1">
+                            Các kiểm định khác biệt trung bình này chỉ nhằm trả lời câu hỏi: <strong>"Có hay chưa có sự khác biệt có ý nghĩa thống kê về điểm số trung bình giữa các nhóm?"</strong>. Với thiết kế nghiên cứu cắt ngang (cross-sectional), chúng ta tuyệt đối <strong>không được dùng các từ khẳng định nhân quả như "gây ra" hoặc "quyết định"</strong> trong kết luận để tránh vi phạm logic khoa học.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 1 -->
+            <section id="module1" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-calculator text-xl"></i></span>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 1: Cơ sở thống kê của kiểm định khác biệt trung bình</h3>
+                    </div>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Để lựa chọn đúng kiểm định và dòng kết quả cần đọc, học viên cần nắm vững các nguyên tắc cơ bản dựa trên loại biến số và số lượng nhóm so sánh:
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2 text-sm">
+                        <li><strong>Biến định lượng (Biến phụ thuộc):</strong> Điểm hài lòng chung <code>SHL</code> (Scale), là điểm trung bình số học sau khi tính toán từ các câu Likert đơn lẻ.</li>
+                        <li><strong>Biến định tính phân nhóm (Biến độc lập):</strong>
+                            <ul class="list-circle pl-5 mt-1 space-y-1">
+                                <li>Nếu chỉ có <strong>đúng 2 nhóm</strong> độc lập (Ví dụ: <code>GioiTinh</code>: Nam / Nữ) -> Sử dụng phép kiểm <strong>Independent Samples T-test</strong>.</li>
+                                <li>Nếu có <strong>từ 3 nhóm trở lên</strong> (Ví dụ: <code>PhacDo</code>, <code>KhaNangChiTra</code>...) -> Sử dụng phép kiểm <strong>One-way ANOVA</strong> hoặc <strong>Welch ANOVA</strong>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <!-- Situation Table -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm mt-4">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Tình huống nghiên cứu thực hành</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Biến định lượng (SHL)</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Biến phân nhóm</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Phép kiểm phù hợp</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL giữa nam và nữ</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-teal-700">GioiTinh (2 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-full font-semibold">Independent Samples T-test</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL giữa các phác đồ điều trị</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">PhacDo (≥ 3 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">One-way ANOVA / Welch</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL theo các nhóm trình độ</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">TrinhDo (≥ 3 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">One-way ANOVA / Welch</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL theo thời gian mắc bệnh</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-amber-700">ThoiGianBenh (≥ 3 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-semibold">Welch (nếu Levene p &lt; 0,05)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL theo nhóm tuổi bệnh nhân</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-amber-700">NhomTuoi (≥ 3 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-semibold">Welch (nếu Levene p &lt; 0,05)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-950">So sánh SHL theo khả năng chi trả điều trị</td>
+                                    <td class="px-4 py-3">SHL (Scale)</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">KhaNangChiTra (≥ 3 nhóm)</td>
+                                    <td class="px-4 py-3"><span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">ANOVA & Post-hoc</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-2xl my-4 text-xs sm:text-sm">
+                        <p class="font-bold text-rose-800"><i class="fa-solid fa-ban mr-1.5"></i> Lỗi thường gặp của học viên sau đại học:</p>
+                        <p class="text-rose-700 leading-relaxed mt-1">
+                            Tuyệt đối không chạy T-test cho biến phân nhóm có từ 3 nhóm trở lên. Ngược lại, không chạy ANOVA nếu mục tiêu nghiên cứu chỉ so sánh đúng 2 nhóm độc lập. Sự sai lệch phép kiểm này sẽ làm sai lệch bậc tự do và tăng sai số loại I.
+                        </p>
+                    </div>
+
+                    <!-- Interaction Module 1: Test Selector -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-6">
+                        <h4 class="font-bold text-slate-900 mb-3 text-sm sm:text-base flex items-center">
+                            <i class="fa-solid fa-gamepad text-teal-600 mr-2"></i> Học cụ tương tác: Tìm kiếm phép kiểm nhanh
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Hãy chọn biến phân nhóm bạn muốn nghiên cứu so sánh đối với điểm hài lòng SHL:</p>
+                        <div class="flex flex-wrap gap-2.5">
+                            <button onclick="selectTest('GioiTinh', 'Independent Samples T-test', 'Biến GioiTinh chỉ có 2 nhóm (Nam/Nữ). Thống kê mô tả cho thấy phương sai đồng nhất. Đọc dòng Equal variances assumed.', 'teal')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                GioiTinh
+                            </button>
+                            <button onclick="selectTest('PhacDo', 'One-way ANOVA thường', 'Biến PhacDo gồm nhiều nhóm phác đồ. Levene p = 0,499 &gt; 0,05 (phương sai đồng nhất). Đọc bảng ANOVA thường.', 'emerald')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                PhacDo
+                            </button>
+                            <button onclick="selectTest('TrinhDo', 'One-way ANOVA thường', 'Biến TrinhDo gồm nhiều nhóm học vấn. Levene p = 0,707 &gt; 0,05 (phương sai đồng nhất). Đọc bảng ANOVA thường.', 'emerald')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                TrinhDo
+                            </button>
+                            <button onclick="selectTest('ThoiGianBenh', 'Welch ANOVA & Post-hoc Tamhane', 'Biến ThoiGianBenh có Levene p = 0,002 &lt; 0,05 (vi phạm giả định phương sai đồng nhất). Bắt buộc phải đọc Welch ANOVA.', 'amber')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                ThoiGianBenh
+                            </button>
+                            <button onclick="selectTest('NhomTuoi', 'Welch ANOVA', 'Biến NhomTuoi có Levene p = 0,025 &lt; 0,05. Đọc bảng Welch ANOVA để đảm bảo độ tin cậy.', 'amber')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                NhomTuoi
+                            </button>
+                            <button onclick="selectTest('KhaNangChiTra', 'One-way ANOVA thường & Post-hoc Bonferroni', 'Biến KhaNangChiTra có Levene p = 0,101 &gt; 0,05. Phép kiểm F có ý nghĩa nên cần đọc Post-hoc Bonferroni để tìm các cặp nhóm khác biệt.', 'emerald')" class="px-4 py-2 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                KhaNangChiTra
+                            </button>
+                        </div>
+                        <div id="test-selector-result" class="hidden mt-4 p-4 rounded-xl border transition-all">
+                            <h5 id="result-test-name" class="font-bold text-sm mb-1"></h5>
+                            <p id="result-test-desc" class="text-xs"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 2 -->
+            <section id="module2" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-code-fork text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 2: Levene's Test và cách chọn dòng/kết quả cần đọc</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        <strong>Levene's Test</strong> (Kiểm định sự đồng nhất của các phương sai) là bước kiểm định giả định tiên quyết và bắt buộc phải thực hiện trước khi phân tích trị trung bình:
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2 text-sm">
+                        <li><strong>Levene \( p \geq 0,05 \):</strong> Giả định đồng nhất phương sai giữa các nhóm được chấp nhận. Ta đọc kết quả thông thường.</li>
+                        <li><strong>Levene \( p < 0,05 \):</strong> Giả định đồng nhất phương sai bị bác bỏ (phương sai giữa các nhóm khác nhau có ý nghĩa thống kê). Ta bắt buộc phải đọc kết quả đã điều chỉnh.</li>
+                    </ul>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div class="bg-teal-50/50 border border-teal-200 p-5 rounded-2xl space-y-3">
+                            <h4 class="font-bold text-teal-900 text-sm sm:text-base flex items-center"><i class="fa-solid fa-scale-balanced mr-2"></i> Với Independent Samples T-test</h4>
+                            <div class="space-y-2 text-xs text-teal-800">
+                                <p class="flex items-center"><span class="w-2 h-2 rounded-full bg-teal-500 mr-2"></span> <strong>Levene \( p \geq 0,05 \):</strong> Đọc dòng <em>"Equal variances assumed"</em> (Phương sai bằng nhau).</p>
+                                <p class="flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span> <strong>Levene \( p < 0,05 \):</strong> Đọc dòng <em>"Equal variances not assumed"</em> (Phương sai không bằng nhau).</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-50/50 border border-emerald-200 p-5 rounded-2xl space-y-3">
+                            <h4 class="font-bold text-emerald-900 text-sm sm:text-base flex items-center"><i class="fa-solid fa-layer-group mr-2"></i> Với One-way ANOVA</h4>
+                            <div class="space-y-2 text-xs text-emerald-800">
+                                <p class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span> <strong>Levene \( p \geq 0,05 \):</strong> Đọc bảng ANOVA thường. Post-hoc chọn <strong>Bonferroni</strong> hoặc Tukey.</p>
+                                <p class="flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span> <strong>Levene \( p < 0,05 \):</strong> Đọc bảng <strong>Welch</strong>. Post-hoc chọn <strong>Tamhane's T2</strong> hoặc Games-Howell.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Decision Tree Simulator -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-6 space-y-4">
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center">
+                            <i class="fa-solid fa-network-wired text-teal-600 mr-2"></i> Mô phỏng cây quyết định Levene thông minh
+                        </h4>
+                        <p class="text-xs text-slate-500">Hãy thiết lập các giá trị đầu vào để hệ thống tự động hướng dẫn dòng kết quả và phép kiểm phù hợp:</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-500 uppercase">1. Số lượng nhóm cần so sánh</label>
+                                <select id="sim-groups" onchange="runDecisionTree()" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+                                    <option value="2">Đúng 2 nhóm độc lập (Ví dụ: Giới tính)</option>
+                                    <option value="3">Từ 3 nhóm trở lên (Ví dụ: Khả năng chi trả)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-500 uppercase">2. Chỉ số Levene p (Sig.)</label>
+                                <select id="sim-levene" onchange="runDecisionTree()" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+                                    <option value="0.750">p ≥ 0,05 (Ví dụ: p = 0,750)</option>
+                                    <option value="0.002">p &lt; 0,05 (Ví dụ: p = 0,002)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-500 uppercase">3. Trạng thái kết quả chính (p-value)</label>
+                                <select id="sim-sig" onchange="runDecisionTree()" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+                                    <option value="0.001">Có khác biệt ý nghĩa (p &lt; 0,05)</option>
+                                    <option value="0.482">Chưa có khác biệt ý nghĩa (p ≥ 0,05)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="tree-result" class="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-inner">
+                            <div class="flex items-center space-x-2 text-teal-700 font-bold text-sm">
+                                <i class="fa-solid fa-route"></i>
+                                <span>Hướng dẫn đọc kết quả chi tiết:</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div class="space-y-2">
+                                    <p class="flex items-center text-slate-700">
+                                        <strong class="w-24 shrink-0">Phép kiểm:</strong>
+                                        <span id="tree-test-name" class="font-bold text-slate-900"></span>
+                                    </p>
+                                    <p class="flex items-center text-slate-700">
+                                        <strong class="w-24 shrink-0">Dòng cần đọc:</strong>
+                                        <span id="tree-row-name" class="font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100"></span>
+                                    </p>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="flex items-center text-slate-700">
+                                        <strong class="w-24 shrink-0">Chạy Post-hoc?</strong>
+                                        <span id="tree-posthoc" class="font-bold text-slate-900"></span>
+                                    </p>
+                                    <p class="flex items-center text-slate-700">
+                                        <strong class="w-24 shrink-0">Nhận xét mẫu:</strong>
+                                        <span id="tree-conclusion" class="font-semibold text-slate-500 leading-relaxed italic"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 3 -->
+            <section id="module3" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-venus-mars text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 3: Independent Samples T-test theo GioiTinh</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Hãy xem xét kết quả thực hành kiểm định so sánh mức độ hài lòng chung <code>SHL</code> theo giới tính bệnh nhân:
+                    </p>
+
+                    <!-- SPSS Output Sample Table -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm mt-4">
+                        <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center text-xs">
+                            <span class="font-bold text-slate-700 uppercase tracking-wider"><i class="fa-solid fa-table mr-1.5 text-teal-600"></i> SPSS Output: Independent Samples Test</span>
+                            <span class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded font-bold">GioiTinh (1=Nam, 2=Nữ)</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200 text-xs">
+                                <thead class="bg-slate-100 text-slate-700">
+                                    <tr>
+                                        <th rowspan="2" class="px-3 py-3 border-r border-slate-200 font-bold text-left">SHL (Sự hài lòng chung)</th>
+                                        <th colspan="2" class="px-3 py-3 border-b border-r border-slate-200 text-center font-bold">Levene's Test</th>
+                                        <th colspan="5" class="px-3 py-3 text-center font-bold">t-test for Equality of Means</th>
+                                    </tr>
+                                    <tr class="bg-slate-50 text-slate-500">
+                                        <th class="px-3 py-2 border-r border-slate-200 text-center">F</th>
+                                        <th class="px-3 py-2 border-r border-slate-200 text-center">Sig. (p)</th>
+                                        <th class="px-3 py-2 text-center">t</th>
+                                        <th class="px-3 py-2 text-center">df</th>
+                                        <th class="px-3 py-2 text-center">Sig. (2-tailed)</th>
+                                        <th class="px-3 py-2 text-center">Mean Diff.</th>
+                                        <th class="px-3 py-2 text-center">Std. Error Diff.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr id="row-equal-assumed" class="hover:bg-teal-50/40 transition-all cursor-pointer">
+                                        <td class="px-3 py-3 font-semibold text-slate-900 border-r border-slate-200">Equal variances assumed</td>
+                                        <td class="px-3 py-3 text-center border-r border-slate-200">0,024</td>
+                                        <td class="px-3 py-3 text-center border-r border-slate-200 font-bold text-teal-600">0,963</td>
+                                        <td class="px-3 py-3 text-center font-semibold text-slate-900">-0,704</td>
+                                        <td class="px-3 py-3 text-center">218</td>
+                                        <td class="px-3 py-3 text-center font-bold text-slate-950">0,482</td>
+                                        <td class="px-3 py-3 text-center">-0,05359</td>
+                                        <td class="px-3 py-3 text-center">0,07612</td>
+                                    </tr>
+                                    <tr id="row-equal-not-assumed" class="hover:bg-slate-50 text-slate-400 transition-all">
+                                        <td class="px-3 py-3 font-semibold border-r border-slate-200">Equal variances not assumed</td>
+                                        <td class="px-3 py-3 text-center border-r border-slate-200"></td>
+                                        <td class="px-3 py-3 text-center border-r border-slate-200"></td>
+                                        <td class="px-3 py-3 text-center">-0,708</td>
+                                        <td class="px-3 py-3 text-center">182,258</td>
+                                        <td class="px-3 py-3 text-center">0,480</td>
+                                        <td class="px-3 py-3 text-center">-0,05359</td>
+                                        <td class="px-3 py-3 text-center">0,07572</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Hotspot Explainer -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-6">
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base mb-3 flex items-center">
+                            <i class="fa-solid fa-magnifying-glass text-teal-600 mr-2"></i> Trình giải nghĩa Output tương tác
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Click vào các thông số cốt lõi bên dưới để xem hướng dẫn đọc và diễn đạt chuẩn luận văn:</p>
+                        <div class="flex flex-wrap gap-2.5">
+                            <button onclick="revealHotspot('levene', 'Levene Sig. = 0,963', 'Giá trị p của kiểm định Levene = 0,963 &gt; 0,05, do đó giả định đồng nhất phương sai được chấp nhận. Bắt buộc phải đọc dòng đầu tiên: \\'Equal variances assumed\\'.', 'Số liệu: Kết quả Independent Samples T-test cho thấy Levene\\'s Test có p = 0,963, do đó giả định đồng nhất phương sai được chấp nhận.')" class="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                Levene Sig. (0,963)
+                            </button>
+                            <button onclick="revealHotspot('tstat', 'Trị số t = -0,704', 'Giá trị t = -0,704 mô tả mức độ chênh lệch tỉ lệ chuẩn hóa giữa hai trung bình mẫu. Dấu âm cho thấy nhóm mã hóa thấp hơn (Nam = 1) có trung bình hài lòng hơi thấp hơn nhóm Nữ (2).', 'Trị kiểm định t đạt giá trị t = -0,704.')" class="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                Trị số t (-0,704)
+                            </button>
+                            <button onclick="revealHotspot('sig', 'Sig. (2-tailed) = 0,482', 'Giá trị p của phép kiểm t = 0,482 &gt; 0,05. Ta KHÔNG bác bỏ giả thuyết H0. Kết luận: Chưa có sự khác biệt có ý nghĩa thống kê về điểm SHL giữa nam và nữ.', 'Kết quả kiểm định t có p = 0,482 (lớn hơn mức ý nghĩa 5%). Kết luận thống kê: Chưa có sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung SHL giữa bệnh nhân nam và bệnh nhân nữ.')" class="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                Sig. 2-tailed (0,482)
+                            </button>
+                            <button onclick="revealHotspot('diff', 'Mean Difference = -0,05359', 'Sự chênh lệch trung bình cơ học giữa nam và nữ chỉ đạt khoảng 0,05 điểm trên thang điểm 5. Mức độ chênh lệch cực kỳ nhỏ và hoàn toàn do ngẫu nhiên trong mẫu.', 'Sự chênh lệch trung bình hài lòng thực tế giữa nam và nữ rất nhỏ (Mean Difference = -0,05).')" class="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                Chênh lệch trung bình (-0,05)
+                            </button>
+                        </div>
+                        <div id="hotspot-result" class="hidden mt-4 p-4 rounded-xl border border-slate-200 bg-white transition-all space-y-2">
+                            <h5 id="hotspot-title" class="font-bold text-sm text-teal-800"></h5>
+                            <p id="hotspot-desc" class="text-xs text-slate-600 leading-relaxed"></p>
+                            <div class="pt-2 border-t border-slate-100 mt-2">
+                                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest block mb-1">Dịch sang mẫu viết luận văn:</span>
+                                <p id="hotspot-academic" class="text-xs font-medium text-slate-800 italic leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3-Tier Commentary Box -->
+                    <div class="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-card p-6 mt-6 space-y-4">
+                        <h4 class="font-bold text-teal-900 text-sm sm:text-base flex items-center"><i class="fa-solid fa-pen-nib mr-2"></i> Mẫu nhận xét 3 tầng chuẩn luận văn Chuyên khoa 1</h4>
+                        <div class="space-y-3.5 text-xs text-teal-900 leading-relaxed">
+                            <div class="flex items-start space-x-3">
+                                <span class="bg-teal-600 text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase shrink-0 mt-0.5">Tầng 1: Số liệu</span>
+                                <p>“Kết quả kiểm định Independent Samples T-test cho thấy trị kiểm định Levene có giá trị \( F = 0,024 \); \( p = 0,963 > 0,05 \), do đó giả định đồng nhất phương sai giữa hai nhóm nam và nữ được chấp nhận. Đọc dòng Equal variances assumed, trị kiểm định t đạt \( t = -0,704 \) với bậc tự do \( df = 218 \), giá trị ý nghĩa hai phía \( p = 0,482 \).”</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="bg-teal-600 text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase shrink-0 mt-0.5">Tầng 2: Kết luận</span>
+                                <p>“Chưa tìm thấy sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung SHL đối với dịch vụ cung ứng thuốc giữa bệnh nhân nam và bệnh nhân nữ (\( p = 0,482 \)).”</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="bg-teal-600 text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase shrink-0 mt-0.5">Tầng 3: Ứng dụng</span>
+                                <p>“<strong>Ý nghĩa quản lý dược:</strong> Sự hài lòng của người bệnh không có sự khác biệt rõ rệt theo yếu tố giới tính trong bộ dữ liệu thực hành này. Do đó, khi lên kế hoạch hoặc đưa ra các giải pháp can thiệp nhằm nâng cao chất lượng dịch vụ cung ứng thuốc tại bệnh viện, không nhất thiết phải ưu tiên phân tầng hay thiết kế các giải pháp truyền thông, can thiệp chuyên biệt riêng lẻ theo giới tính.”</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 4 -->
+            <section id="module4" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-list-check text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 4: One-way ANOVA với PhacDo và TrinhDo</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Khi so sánh sự hài lòng chung <code>SHL</code> theo hai biến có từ 3 nhóm trở lên: <code>PhacDo</code> (phác đồ điều trị mô phỏng) và <code>TrinhDo</code> (trình độ học vấn của bệnh nhân), ta thu được các bảng ANOVA sau:
+                    </p>
+
+                    <!-- Summary Table -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm mt-4">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Biến phân nhóm</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Levene p-value</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Trị số kiểm định (F)</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">ANOVA p-value (Sig.)</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Kết luận thống kê (Alpha = 5%)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr class="hover:bg-emerald-50/30 transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900"><code>PhacDo</code> (Nhiều phác đồ)</td>
+                                    <td class="px-4 py-3 text-center font-semibold text-teal-600">0,499</td>
+                                    <td class="px-4 py-3 text-center font-semibold">1,759</td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-900">0,156</td>
+                                    <td class="px-4 py-3 text-slate-600 italic">p &gt; 0,05: Chưa có sự khác biệt hài lòng theo các phác đồ.</td>
+                                </tr>
+                                <tr class="hover:bg-emerald-50/30 transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900"><code>TrinhDo</code> (Nhiều trình độ)</td>
+                                    <td class="px-4 py-3 text-center font-semibold text-teal-600">0,707</td>
+                                    <td class="px-4 py-3 text-center font-semibold">1,237</td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-900">0,297</td>
+                                    <td class="px-4 py-3 text-slate-600 italic">p &gt; 0,05: Chưa có sự khác biệt hài lòng theo trình độ.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2 mt-4 text-xs sm:text-sm">
+                        <h4 class="font-bold text-slate-900 flex items-center"><i class="fa-solid fa-circle-info text-teal-600 mr-1.5"></i> Diễn giải học thuật chi tiết:</h4>
+                        <p class="leading-relaxed">
+                            Cả hai kiểm định Levene đều có \( p > 0,05 \), do đó giả định đồng nhất phương sai giữa các nhóm được chấp nhận. Ta hoàn toàn yên tâm đọc kết quả ANOVA thường.<br>
+                            Vì cả hai kết quả kiểm định ANOVA đều cho giá trị Sig. (\( p \)) lớn hơn 0,05 (\( p_{PhacDo} = 0,156 \) và \( p_{TrinhDo} = 0,297 \)), chúng ta kết luận: <strong>Chưa có bằng chứng thống kê cho thấy sự khác biệt về sự hài lòng chung của người bệnh giữa các nhóm phác đồ điều trị hay giữa các trình độ học vấn khác nhau.</strong>
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl my-4 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-800"><i class="fa-solid fa-circle-exclamation mr-1.5"></i> Chú ý quy trình ANOVA vàng:</p>
+                        <p class="text-amber-700 leading-relaxed mt-1">
+                            <strong>Tuyệt đối không chạy kiểm định so sánh cặp (Post-hoc)</strong> khi kết quả kiểm định ANOVA tổng thể không có ý nghĩa thống kê (Sig. \( \geq 0,05 \)), trừ khi có lý do phân tích chuyên sâu đặc biệt đã được thiết kế sẵn trong đề cương nghiên cứu.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 5 -->
+            <section id="module5" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-house-medical-shield text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 5: Welch ANOVA với ThoiGianBenh và NhomTuoi</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Trong nghiên cứu lâm sàng thực tế, giả định đồng nhất phương sai của kiểm định ANOVA truyền thống thường xuyên bị vi phạm do kích thước mẫu và độ biến động phân tán không đồng đều giữa các nhóm bệnh nhân. Hãy quan sát kết quả kiểm định <code>SHL</code> theo <code>ThoiGianBenh</code> và <code>NhomTuoi</code>:
+                    </p>
+
+                    <!-- Summary Table Module 5 -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm mt-4">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Biến phân nhóm</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Levene p-value</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Phép kiểm đọc chính</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Trị số kiểm định</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Sig. (p)</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Kết luận khoa học (Alpha = 5%)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr class="hover:bg-amber-50/30 transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900"><code>ThoiGianBenh</code></td>
+                                    <td class="px-4 py-3 text-center font-bold text-rose-600">0,002</td>
+                                    <td class="px-4 py-3 font-bold text-teal-700">Welch ANOVA</td>
+                                    <td class="px-4 py-3 text-center font-semibold">8,516</td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-900">&lt; 0,001</td>
+                                    <td class="px-4 py-3 text-slate-600 font-medium"><strong>Có khác biệt có ý nghĩa.</strong> Cần thực hiện Post-hoc <strong>Tamhane's T2</strong>.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/30 transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900"><code>NhomTuoi</code></td>
+                                    <td class="px-4 py-3 text-center font-bold text-rose-600">0,025</td>
+                                    <td class="px-4 py-3 font-bold text-teal-700">Welch ANOVA</td>
+                                    <td class="px-4 py-3 text-center font-semibold">2,648</td>
+                                    <td class="px-4 py-3 text-center font-bold text-slate-900">0,060</td>
+                                    <td class="px-4 py-3 text-slate-600 italic">p &gt; 0,05: Chưa có khác biệt có ý nghĩa thống kê ở mức ý nghĩa 5%.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-2xl my-4 text-xs sm:text-sm">
+                        <p class="font-bold text-rose-800"><i class="fa-solid fa-radiation mr-1.5"></i> Cảnh báo phương pháp luận sống còn:</p>
+                        <p class="text-rose-700 leading-relaxed mt-1">
+                            Khi Levene \( p < 0,05 \), nếu nhà nghiên cứu vẫn cố tình đọc bảng ANOVA thường mà bỏ qua kiểm định điều chỉnh Welch, kết luận thống kê rất dễ bị sai lệch và làm giảm uy tín khoa học của toàn bộ luận văn. <strong>Học cách từ bỏ ANOVA truyền thống để dùng Welch khi vi phạm đồng nhất phương sai là yêu cầu khắt khe trong y văn lâm sàng quốc tế.</strong>
+                        </p>
+                    </div>
+
+                    <!-- 3-tier commentary for ThoiGianBenh -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center"><i class="fa-solid fa-hospital-user text-teal-600 mr-2"></i> Diễn giải 3 tầng mẫu cho biến ThoiGianBenh:</h4>
+                        <div class="space-y-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <p class="pl-4 border-l-2 border-teal-500"><strong>Tầng 1 (Số liệu):</strong> Kết quả kiểm định tính đồng nhất của phương sai Levene có giá trị \( p = 0,002 < 0,05 \), cho thấy giả định đồng nhất phương sai bị vi phạm. Đọc kết quả hiệu chỉnh Welch ANOVA tại bảng Robust Tests of Equality of Means, trị kiểm định Welch = 8,516 có \( p < 0,001 \).</p>
+                            <p class="pl-4 border-l-2 border-teal-500"><strong>Tầng 2 (Thống kê):</strong> Có sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung SHL giữa các nhóm thời gian mắc bệnh khác nhau (\( p < 0,001 \)).</p>
+                            <p class="pl-4 border-l-2 border-teal-500 text-slate-800"><strong>Tầng 3 (Quản lý dược):</strong> Bệnh nhân có thời gian mắc bệnh lâu năm thường có trải nghiệm và kỳ vọng dịch vụ rất khác biệt so với bệnh nhân mới điều trị. Nhóm mắc bệnh lâu có thể quen thuộc và tự tin hơn với quy trình, trong khi bệnh nhân mới cần được hỗ trợ, hướng dẫn dùng thuốc chi tiết hơn. Cơ sở y tế cần xây dựng quy trình tư vấn riêng biệt cho các bệnh nhân mới chẩn đoán điều trị.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 6 -->
+            <section id="module6" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-coins text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 6: ANOVA và Post-hoc với KhaNangChiTra</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Với biến <code>KhaNangChiTra</code>, Levene \( p = 0,101 > 0,05 \) (phương sai đồng nhất). Kiểm định \( F \) của ANOVA đạt \( F = 9,929 \) và \( p < 0,001 \). Do kiểm định tổng thể có ý nghĩa cực kỳ mạnh, chúng ta tiến hành phân tích so sánh cặp <strong>Post-hoc Bonferroni</strong>:
+                    </p>
+
+                    <!-- Post-hoc Table -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm mt-4">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Nhóm A</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Nhóm B</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Mean Difference (A - B)</th>
+                                    <th class="px-4 py-3 text-center font-bold text-slate-700">Sig. (p-value)</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Diễn giải ý nghĩa so sánh cặp</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-3 font-medium text-slate-900">Rất khó khăn khi chi trả</td>
+                                    <td class="px-4 py-3 text-slate-600">Tương đối đáp ứng được</td>
+                                    <td class="px-4 py-3 text-center font-bold text-rose-600">-0,54874</td>
+                                    <td class="px-4 py-3 text-center font-extrabold text-teal-600">0,000</td>
+                                    <td class="px-4 py-3 text-slate-600 font-medium">Nhóm "Tương đối đáp ứng được" có mức hài lòng SHL cao hơn hẳn nhóm "Rất khó khăn".</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-3 font-medium text-slate-900">Rất khó khăn khi chi trả</td>
+                                    <td class="px-4 py-3 text-slate-600">Không gặp khó khăn đáng kể</td>
+                                    <td class="px-4 py-3 text-center font-bold text-rose-600">-0,40606</td>
+                                    <td class="px-4 py-3 text-center font-extrabold text-teal-600">0,013</td>
+                                    <td class="px-4 py-3 text-slate-600 font-medium">Nhóm "Không gặp khó khăn" có mức hài lòng SHL cao hơn hẳn nhóm "Rất khó khăn".</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-4 py-3 font-medium text-slate-900">Khó khăn một phần</td>
+                                    <td class="px-4 py-3 text-slate-600">Tương đối đáp ứng được</td>
+                                    <td class="px-4 py-3 text-center font-bold text-rose-600">-0,30429</td>
+                                    <td class="px-4 py-3 text-center font-extrabold text-teal-600">0,006</td>
+                                    <td class="px-4 py-3 text-slate-600 font-medium">Nhóm "Tương đối đáp ứng được" có mức hài lòng cao hơn nhóm "Khó khăn một phần".</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Post-hoc Interactive Reader -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-6">
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base mb-3 flex items-center">
+                            <i class="fa-solid fa-glasses text-teal-600 mr-2"></i> Học cụ tương tác: Đọc nhanh so sánh cặp Post-hoc
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Click chọn cặp so sánh để xem nhận xét và khuyến nghị lâm sàng chi tiết:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="revealPair('pair1', 'Rất khó khăn vs. Tương đối đáp ứng', 'Mean Difference: -0,55 (p &lt; 0,001)', 'Điểm hài lòng chung của nhóm rất khó khăn thấp hơn nhóm tương đối đáp ứng đến 0,55 điểm trên thang điểm 5. Đây là mức chênh lệch lớn nhất và cực kỳ có ý nghĩa thống kê.', 'Cần thiết kế các chương trình bảo hiểm y tế đồng chi trả hợp lý, minh bạch giá cả thuốc và chuẩn bị nguồn thuốc thay thế có chi phí rẻ hơn.')" class="px-4 py-3 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold text-left transition-all shadow-sm">
+                                Rất khó khăn vs. Tương đối đáp ứng
+                            </button>
+                            <button onclick="revealPair('pair2', 'Rất khó khăn vs. Không khó khăn', 'Mean Difference: -0,41 (p = 0,013)', 'Nhóm bệnh nhân kinh tế giàu/ổn định có sự hài lòng vượt trội so với nhóm có áp lực chi phí điều trị lớn nhất.', 'Tăng cường các gói hỗ trợ thuốc từ thiện, tạo chính sách thanh toán linh hoạt cho đối tượng gặp trở ngại lớn về tài chính.')" class="px-4 py-3 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold text-left transition-all shadow-sm">
+                                Rất khó khăn vs. Không khó khăn
+                            </button>
+                            <button onclick="revealPair('pair3', 'Khó khăn một phần vs. Tương đối đáp ứng', 'Mean Difference: -0,30 (p = 0,006)', 'Bệnh nhân có gánh nặng tài chính một phần vẫn chịu những tác động tiêu cực làm giảm trải nghiệm hài lòng so với nhóm đáp ứng được điều trị.', 'Cung cấp thông tin thuốc minh bạch, tư vấn trước khi kê đơn về danh mục thuốc bảo hiểm chi trả để bệnh nhân chủ động tài chính.')" class="px-4 py-3 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 rounded-xl text-xs font-bold text-left transition-all shadow-sm">
+                                Khó khăn một phần vs. Tương đối đáp ứng
+                            </button>
+                        </div>
+                        <div id="pair-result" class="hidden mt-4 p-4 rounded-xl border border-slate-200 bg-white transition-all space-y-2">
+                            <h5 id="pair-title" class="font-bold text-sm text-teal-800"></h5>
+                            <p id="pair-stats" class="text-xs font-bold text-slate-700"></p>
+                            <p id="pair-desc" class="text-xs text-slate-600 leading-relaxed"></p>
+                            <div class="pt-2 border-t border-slate-100 mt-2">
+                                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest block mb-1">Khuyến nghị từ Dược sĩ Chuyên khoa:</span>
+                                <p id="pair-action" class="text-xs font-semibold text-slate-800 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Commentary Template Module 6 -->
+                    <div class="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-card p-6 mt-6 space-y-4">
+                        <h4 class="font-bold text-teal-900 text-sm sm:text-base flex items-center"><i class="fa-solid fa-pen-fancy mr-2"></i> Mẫu viết chuẩn luận văn Chuyên khoa 1 cho KhaNangChiTra</h4>
+                        <div class="space-y-3.5 text-xs text-teal-900 leading-relaxed">
+                            <p>
+                                <strong>Số liệu:</strong> Kết quả One-way ANOVA cho thấy sự hài lòng chung SHL có sự khác biệt có ý nghĩa thống kê giữa các nhóm khả năng chi trả điều trị (\( F = 9,929 \); \( p < 0,001 \)). Trị kiểm định Levene có \( p = 0,101 > 0,05 \) nên giả định đồng nhất phương sai được chấp nhận. Kết quả phân tích so sánh cặp Post-hoc Bonferroni cho thấy có sự khác biệt có ý nghĩa thống kê về điểm SHL giữa nhóm Rất khó khăn khi chi trả so với nhóm Tương đối đáp ứng được (chênh lệch \( -0,55 \); \( p < 0,001 \)) và nhóm Không gặp khó khăn đáng kể (chênh lệch \( -0,41 \); \( p = 0,013 \)). Ngoài ra, có sự khác biệt có ý nghĩa giữa nhóm Khó khăn một phần so với nhóm Tương đối đáp ứng được (chênh lệch \( -0,30 \); \( p = 0,006 \)).
+                            </p>
+                            <p>
+                                <strong>Kết luận thống kê:</strong> Có sự khác biệt có ý nghĩa thống kê về mức độ hài lòng chung SHL đối với dịch vụ cung ứng thuốc giữa các nhóm có khả năng tài chính chi trả khác nhau. Sự khác biệt nổi bật nằm ở nhóm bệnh nhân có gánh nặng tài chính lớn nhất so với các nhóm có kinh tế tốt hơn.
+                            </p>
+                            <p>
+                                <strong>Ý nghĩa lâm sàng và quản lý dược:</strong> Áp lực tài chính điều trị trực tiếp làm giảm trải nghiệm dịch vụ và mức độ hài lòng chung của người bệnh. Để cải thiện trải nghiệm cho nhóm người bệnh yếu thế này, cơ sở y tế cần tăng cường truyền thông và tư vấn danh mục thuốc Bảo hiểm y tế chi trả, nâng cao tính minh bạch về chi phí, hỗ trợ lựa chọn các phác đồ thay thế có chi phí rẻ hơn (như sử dụng thuốc Generic chất lượng thay cho biệt dược gốc đắt tiền) và cải thiện giao tiếp giải thích chính sách hỗ trợ tài chính cho người bệnh.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Module 7 -->
+            <section id="module7" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-list-check text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Module 7: Bảng tổng hợp kết quả toàn chương</h3>
+                </div>
+                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                    <p>
+                        Bảng tổng hợp dưới đây tóm tắt tất cả các kết quả phân tích so sánh điểm hài lòng chung <code>SHL</code> theo 6 nhóm biến số độc lập trong chương:
+                    </p>
+
+                    <!-- Summary Table Module 7 -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm mt-4">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Biến phân nhóm</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Phép kiểm đọc chính</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Tóm tắt trị số kiểm định quan trọng</th>
+                                    <th class="px-4 py-3 text-left font-bold text-slate-700">Kết luận thống kê cuối cùng</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr onclick="viewSummary('GioiTinh')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> GioiTinh</td>
+                                    <td class="px-4 py-3 font-semibold text-teal-700">Independent T-test</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,963; t = -0,704; p = 0,482</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Không có khác biệt</strong> điểm hài lòng theo giới tính.</td>
+                                </tr>
+                                <tr onclick="viewSummary('PhacDo')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> PhacDo</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">One-way ANOVA</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,499; F = 1,759; p = 0,156</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Không có khác biệt</strong> hài lòng theo các phác đồ mô phỏng.</td>
+                                </tr>
+                                <tr onclick="viewSummary('TrinhDo')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> TrinhDo</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">One-way ANOVA</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,707; F = 1,237; p = 0,297</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Không có khác biệt</strong> hài lòng theo trình độ học vấn.</td>
+                                </tr>
+                                <tr onclick="viewSummary('ThoiGianBenh')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> ThoiGianBenh</td>
+                                    <td class="px-4 py-3 font-semibold text-amber-700">Welch ANOVA</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,002; Welch = 8,516; p &lt; 0,001</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Có khác biệt</strong> ý nghĩa. Thao tác Post-hoc <strong>Tamhane's T2</strong>.</td>
+                                </tr>
+                                <tr onclick="viewSummary('NhomTuoi')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> NhomTuoi</td>
+                                    <td class="px-4 py-3 font-semibold text-amber-700">Welch ANOVA</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,025; Welch = 2,648; p = 0,060</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Không có khác biệt</strong> ý nghĩa ở mức ý nghĩa 5%.</td>
+                                </tr>
+                                <tr onclick="viewSummary('KhaNangChiTra')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                                    <td class="px-4 py-3 font-semibold text-slate-900 flex items-center"><i class="fa-solid fa-chevron-right mr-1.5 text-[10px] text-teal-600"></i> KhaNangChiTra</td>
+                                    <td class="px-4 py-3 font-semibold text-emerald-700">One-way ANOVA</td>
+                                    <td class="px-4 py-3 text-slate-600">Levene p = 0,101; F = 9,929; p &lt; 0,001</td>
+                                    <td class="px-4 py-3 text-slate-600"><strong>Có khác biệt</strong> hài lòng. Thao tác Post-hoc <strong>Bonferroni</strong>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive Summary Panel -->
+                    <div id="summary-panel" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-4 space-y-2">
+                        <h4 id="sum-title" class="font-bold text-sm text-teal-800"></h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mt-3">
+                            <p class="text-slate-700"><strong>Tại sao chọn phép kiểm này:</strong> <span id="sum-reason" class="text-slate-600 block mt-0.5"></span></p>
+                            <p class="text-slate-700"><strong>Quy trình đọc dòng/bảng:</strong> <span id="sum-howtoread" class="text-slate-600 block mt-0.5"></span></p>
+                            <p class="text-slate-700"><strong>Kết luận thống kê:</strong> <span id="sum-conclusion" class="text-slate-600 block mt-0.5"></span></p>
+                            <p class="text-slate-700"><strong>Ứng dụng quản lý dược:</strong> <span id="sum-mgmt" class="text-slate-600 block mt-0.5"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SPSS & Excel Labs Section (Tabbed) -->
+            <section id="practice" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-teal-100 text-teal-800 p-2 rounded-xl"><i class="fa-solid fa-laptop-code text-xl"></i></span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Phòng thí nghiệm thực hành: SPSS & Excel</h3>
+                </div>
+                <div class="space-y-4">
+                    <!-- Tab Menu -->
+                    <div class="flex border-b border-slate-200 overflow-x-auto no-scrollbar">
+                        <button onclick="switchTab('spss-t')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-bold text-teal-600 border-b-2 border-teal-600 transition-all shrink-0">
+                            SPSS: T-test
+                        </button>
+                        <button onclick="switchTab('spss-anova')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-all shrink-0">
+                            SPSS: ANOVA
+                        </button>
+                        <button onclick="switchTab('spss-welch')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-all shrink-0">
+                            SPSS: Welch
+                        </button>
+                        <button onclick="switchTab('excel-t')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-all shrink-0">
+                            Excel: T.TEST
+                        </button>
+                        <button onclick="switchTab('excel-anova')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-all shrink-0">
+                            Excel: ANOVA
+                        </button>
+                        <button onclick="switchTab('excel-pivot')" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-all shrink-0">
+                            Excel: Pivot & Chart
+                        </button>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div id="tab-contents" class="text-slate-600 text-xs sm:text-sm leading-relaxed space-y-4 pt-2">
+                        
+                        <!-- SPSS T-test -->
+                        <div id="tab-spss-t" class="tab-pane space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Independent Samples T-test trên SPSS (GioiTinh)</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Vào thanh công cụ chính: <strong>Analyze → Compare Means → Independent-Samples T Test...</strong></li>
+                                <li>Đưa biến phụ thuộc <code>SHL</code> vào ô <strong>Test Variable(s)</strong>.</li>
+                                <li>Đưa biến phân nhóm <code>GioiTinh</code> vào ô <strong>Grouping Variable</strong>.</li>
+                                <li>Bấm chọn nút <strong>Define Groups</strong>.</li>
+                                <li>Nhập giá trị mã hóa: <strong>Group 1 = 1</strong> (mã cho Nam), <strong>Group 2 = 2</strong> (mã cho Nữ) -> Bấm <strong>Continue</strong>.</li>
+                                <li>Bấm <strong>OK</strong> để chạy phân tích.</li>
+                            </ol>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-3">
+                                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-1">Cách đọc bảng kết quả:</span>
+                                <p>Đọc bảng <strong>Group Statistics</strong> để lấy số lượng (N), điểm trung bình (Mean), độ lệch chuẩn (Std. Deviation). Tiếp theo đọc bảng <strong>Independent Samples Test</strong>: kiểm tra trị số Sig. của Levene's Test trước tiên. Nếu Sig. ≥ 0,05 đọc dòng "Equal assumed", ngược lại đọc dòng "Equal not assumed".</p>
+                            </div>
+                        </div>
+
+                        <!-- SPSS ANOVA -->
+                        <div id="tab-spss-anova" class="tab-pane hidden space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">One-way ANOVA trên SPSS (PhacDo, TrinhDo, KhaNangChiTra)</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Vào thanh công cụ: <strong>Analyze → Compare Means → One-Way ANOVA...</strong></li>
+                                <li>Đưa biến phụ thuộc <code>SHL</code> vào ô <strong>Dependent List</strong>.</li>
+                                <li>Đưa biến phân nhóm (Ví dụ: <code>KhaNangChiTra</code>) vào ô <strong>Factor</strong>.</li>
+                                <li>Bấm chọn nút <strong>Options...</strong> -> Tích chọn: <strong>Descriptive</strong>, <strong>Homogeneity of variance test</strong> -> Bấm <strong>Continue</strong>.</li>
+                                <li>Bấm chọn nút <strong>Post Hoc...</strong> -> Nếu kết quả Levene dự báo \( p \geq 0,05 \), tích chọn <strong>Bonferroni</strong> -> Bấm <strong>Continue</strong>.</li>
+                                <li>Bấm <strong>OK</strong> để xuất kết quả.</li>
+                            </ol>
+                        </div>
+
+                        <!-- SPSS Welch -->
+                        <div id="tab-spss-welch" class="tab-pane hidden space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Welch ANOVA trên SPSS khi vi phạm đồng nhất phương sai (ThoiGianBenh)</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Vào thanh công cụ: <strong>Analyze → Compare Means → One-Way ANOVA...</strong></li>
+                                <li>Đưa biến phụ thuộc <code>SHL</code> vào ô <strong>Dependent List</strong> và <code>ThoiGianBenh</code> vào ô <strong>Factor</strong>.</li>
+                                <li>Bấm chọn nút <strong>Options...</strong> -> Tích chọn: <strong>Descriptive</strong>, <strong>Homogeneity of variance test</strong> và tích chọn <strong>Welch</strong> -> Bấm <strong>Continue</strong>.</li>
+                                <li>Bấm chọn nút <strong>Post Hoc...</strong> -> Vì Levene chắc chắn \( p < 0,05 \), tích chọn <strong>Tamhane's T2</strong> -> Bấm <strong>Continue</strong>.</li>
+                                <li>Bấm <strong>OK</strong> để chạy phân tích.</li>
+                            </ol>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-3">
+                                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-1">Quy tắc đọc Welch:</span>
+                                <p>Bỏ qua bảng ANOVA thường. Hãy tìm bảng <strong>Robust Tests of Equality of Means</strong>, đọc hàng <strong>Welch</strong> để lấy trị kiểm định Welch và giá trị Sig. Nếu Sig. Welch &lt; 0,05, đọc tiếp bảng Multiple Comparisons, cột Tamhane để tìm các so sánh cặp có ý nghĩa.</p>
+                            </div>
+                        </div>
+
+                        <!-- Excel T.TEST -->
+                        <div id="tab-excel-t" class="tab-pane hidden space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">T-test trên Microsoft Excel bằng hàm T.TEST</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Sử dụng chức năng lọc dữ liệu (Filter) trên Excel để phân tách điểm SHL thành 2 cột dữ liệu độc lập: <strong>SHL_Nam</strong> và <strong>SHL_Nu</strong>.</li>
+                                <li>Tại ô trống cần xuất kết quả p-value, nhập công thức:
+                                    <code class="block bg-slate-100 p-2 rounded-lg text-slate-800 font-mono mt-1">=T.TEST(vung_SHL_Nam, vung_SHL_Nu, 2, 2)</code>
+                                </li>
+                                <li>Trong đó tham số:
+                                    <ul class="list-disc pl-5 mt-1 space-y-1">
+                                        <li>Tham số thứ ba = <code>2</code>: Kiểm định 2 phía (two-tailed test).</li>
+                                        <li>Tham số thứ tư = <code>2</code>: Giả định phương sai bằng nhau (Equal variances assumed).</li>
+                                    </ul>
+                                </li>
+                                <li>Nếu nghi ngờ phương sai khác nhau, hãy đổi tham số thứ tư thành <code>3</code>:
+                                    <code class="block bg-slate-100 p-2 rounded-lg text-slate-800 font-mono mt-1">=T.TEST(vung_SHL_Nam, vung_SHL_Nu, 2, 3)</code>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <!-- Excel ANOVA -->
+                        <div id="tab-excel-anova" class="tab-pane hidden space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">ANOVA Single Factor bằng công cụ Analysis ToolPak</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Bật Add-ins ToolPak nếu chưa có: <strong>File → Options → Add-ins → Go (Excel Add-ins) → tích Analysis ToolPak → OK</strong>.</li>
+                                <li>Phân tách điểm SHL thành các cột dữ liệu theo các nhóm (Ví dụ: cột 1 = Rất khó khăn, cột 2 = Khó khăn một phần, cột 3 = Tương đối đáp ứng...).</li>
+                                <li>Vào thẻ <strong>Data → Data Analysis → ANOVA: Single Factor → OK</strong>.</li>
+                                <li>Tại hộp thoại:
+                                    <ul class="list-disc pl-5 mt-1 space-y-1">
+                                        <li><strong>Input Range:</strong> Chọn toàn bộ vùng dữ liệu các cột đã phân nhóm (bao gồm cả dòng tiêu đề).</li>
+                                        <li><strong>Grouped By:</strong> Chọn Columns.</li>
+                                        <li><strong>Labels in first row:</strong> Tích chọn nếu có quét dòng tiêu đề.</li>
+                                        <li><strong>Alpha:</strong> Đặt 0.05.</li>
+                                    </ul>
+                                </li>
+                                <li>Bấm <strong>OK</strong> để xuất bảng kết quả ANOVA đầy đủ các chỉ số: F, P-value, F crit.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Excel PivotTable -->
+                        <div id="tab-excel-pivot" class="tab-pane hidden space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Mô tả dữ liệu trung bình bằng PivotTable & Biểu đồ cột</h4>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Bôi đen toàn bộ bảng dữ liệu thô -> <strong>Insert → PivotTable → OK</strong>.</li>
+                                <li>Tại bảng PivotTable Fields:
+                                    <ul class="list-disc pl-5 mt-1 space-y-1">
+                                        <li>Kéo biến phân nhóm (Ví dụ: <code>KhaNangChiTra</code>) vào ô <strong>Rows</strong>.</li>
+                                        <li>Kéo biến <code>SHL</code> vào ô <strong>Values</strong>.</li>
+                                    </ul>
+                                </li>
+                                <li>Bấm chuột phải tại cột Values trong PivotTable -> <strong>Value Field Settings... → Chọn Average</strong> (và StdDev nếu muốn xem độ lệch chuẩn).</li>
+                                <li>Bôi đen bảng kết quả trung bình vừa tạo -> <strong>Insert → Clustered Column Chart (Biểu đồ cột)</strong> để trực quan hóa mức độ khác biệt trị trung bình giữa các nhóm.</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section (20 Questions) -->
+            <section id="quiz-section" class="bg-white border border-slate-200 rounded-card p-6 sm:p-8 shadow-sm space-y-8">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 border-b border-slate-100 pb-5">
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-gradient-to-br from-teal-500 to-emerald-600 text-white p-2.5 rounded-xl shadow-md"><i class="fa-solid fa-list-check text-xl"></i></span>
+                        <div>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Bài thi thử trắc nghiệm lượng giá</h3>
+                            <p class="text-xs text-slate-500">Bộ 20 câu hỏi tình huống lâm sàng thực tế chuyên sâu</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 shrink-0">
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                            Điểm số: <span id="quiz-score" class="text-teal-600 font-extrabold">0</span> / 20
+                        </span>
+                        <button onclick="resetQuiz()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Làm lại
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Progress Bar -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+                        <span>Tiến trình làm bài</span>
+                        <span><span id="answered-count">0</span> / 20 câu hỏi</span>
+                    </div>
+                    <div class="h-2 bg-slate-100 rounded-full w-full overflow-hidden">
+                        <div id="quiz-progress" class="h-full bg-teal-500 transition-all duration-300" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Completion Badge (Hidden by default) -->
+                <div id="completion-badge" class="hidden bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white rounded-2xl p-6 text-center space-y-4 shadow-lg animate-bounce">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto shadow-md">
+                        <i class="fa-solid fa-trophy text-4xl text-yellow-200"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="text-lg font-extrabold">Chúc mừng bạn đã hoàn thành xuất sắc khóa học!</h4>
+                        <p class="text-xs text-yellow-100">Xếp loại: Dược sĩ lâm sàng giỏi thống kê sinh học</p>
+                    </div>
+                </div>
+
+                <!-- Quiz Container -->
+                <div id="quiz-container" class="space-y-8">
+                    <!-- Questions will be rendered by JavaScript here -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-navy-900 text-slate-400 py-10 mt-12 border-t border-slate-800 text-xs sm:text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <span class="bg-teal-600/30 text-teal-400 border border-teal-500/20 p-2 rounded-xl"><i class="fa-solid fa-graduation-cap text-lg"></i></span>
+                <div>
+                    <h4 class="text-slate-200 font-bold text-sm">E-learning Thống kê Y sinh CK1 Dược</h4>
+                    <p class="text-xs text-slate-500">Phiên bản chuyên sâu thiết kế theo mô hình y văn chuẩn mực</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6 text-slate-500">
+                <span>© 2026 SPSS CK1 Dược Việt Nam</span>
+                <span class="hidden md:inline">•</span>
+                <a href="#hero" class="hover:text-teal-400 transition-all">Quay lại đầu trang</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Vanilla JavaScript for interactivity and quiz simulation -->
+    <script>
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('readingProgress').style.width = scrolled + '%';
+        });
+
+        // Module 1 Interactive Test Selector
+        function selectTest(variable, name, desc, color) {
+            const container = document.getElementById('test-selector-result');
+            const nameEl = document.getElementById('result-test-name');
+            const descEl = document.getElementById('result-test-desc');
+
+            nameEl.textContent = "Biến " + variable + " → Phép kiểm gợi ý: " + name;
+            descEl.textContent = desc;
+
+            // Handle styling based on colors
+            container.className = "mt-4 p-4 rounded-xl border transition-all " + 
+                (color === 'teal' ? 'bg-teal-50 border-teal-200 text-teal-800' : 
+                 color === 'emerald' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 
+                 'bg-amber-50 border-amber-200 text-amber-800');
+
+            container.classList.remove('hidden');
+        }
+
+        // Module 2 Interactive Decision Tree Simulator
+        function runDecisionTree() {
+            const groups = document.getElementById('sim-groups').value;
+            const levene = document.getElementById('sim-levene').value;
+            const sig = document.getElementById('sim-sig').value;
+
+            const testName = document.getElementById('tree-test-name');
+            const rowName = document.getElementById('tree-row-name');
+            const posthoc = document.getElementById('tree-posthoc');
+            const conclusion = document.getElementById('tree-conclusion');
+
+            if (groups === "2") {
+                testName.textContent = "Independent Samples T-test";
+                if (levene === "0.750") {
+                    rowName.textContent = "Equal variances assumed (Phương sai đồng nhất)";
+                    posthoc.textContent = "Không áp dụng (Chỉ có đúng 2 nhóm)";
+                    if (sig === "0.001") {
+                        conclusion.textContent = "“Có sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung giữa 2 giới tính bệnh nhân (p = 0,001).”";
+                    } else {
+                        conclusion.textContent = "“Chưa tìm thấy sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung giữa bệnh nhân nam và nữ (p = 0,482).”";
+                    }
+                } else {
+                    rowName.textContent = "Equal variances not assumed (Phương sai khác biệt)";
+                    posthoc.textContent = "Không áp dụng (Chỉ có đúng 2 nhóm)";
+                    if (sig === "0.001") {
+                        conclusion.textContent = "“Bất chấp phương sai không đồng nhất, phép kiểm t hiệu chỉnh cho thấy có sự khác biệt ý nghĩa về SHL (p = 0,001).”";
+                    } else {
+                        conclusion.textContent = "“Mặc dù vi phạm đồng nhất phương sai, phép kiểm t hiệu chỉnh xác định chưa có sự khác biệt hài lòng theo giới tính (p = 0,480).”";
+                    }
+                }
+            } else {
+                if (levene === "0.750") {
+                    testName.textContent = "One-way ANOVA thường";
+                    rowName.textContent = "Bảng ANOVA truyền thống";
+                    if (sig === "0.001") {
+                        posthoc.textContent = "Có áp dụng. Sử dụng so sánh cặp Bonferroni";
+                        conclusion.textContent = "“Có sự khác biệt hài lòng giữa các nhóm khả năng tài chính; so sánh cặp Bonferroni định vị cặp nhóm khác biệt (p = 0,001).”";
+                    } else {
+                        posthoc.textContent = "Không áp dụng (ANOVA tổng thể không có ý nghĩa)";
+                        conclusion.textContent = "“Chưa tìm thấy bằng chứng về sự khác biệt hài lòng chung theo trình độ học vấn của người bệnh (p = 0,297).”";
+                    }
+                } else {
+                    testName.textContent = "Welch ANOVA";
+                    rowName.textContent = "Bảng Robust Tests of Equality of Means (Welch)";
+                    if (sig === "0.001") {
+                        posthoc.textContent = "Có áp dụng. Sử dụng so sánh cặp Tamhane's T2";
+                        conclusion.textContent = "“Khi vi phạm giả định đồng nhất phương sai, kiểm định Welch ANOVA khẳng định có khác biệt ý nghĩa về SHL theo thời gian bệnh (p < 0,001).”";
+                    } else {
+                        posthoc.textContent = "Không áp dụng (Welch tổng thể không có ý nghĩa)";
+                        conclusion.textContent = "“Chưa tìm thấy sự khác biệt hài lòng theo nhóm tuổi của người bệnh ngay cả khi điều chỉnh bằng Welch ANOVA (p = 0,060).”";
+                    }
+                }
+            }
+        }
+
+        // Module 3 Interactive Output Reader Hotspot
+        function revealHotspot(id, title, desc, academic) {
+            const container = document.getElementById('hotspot-result');
+            document.getElementById('hotspot-title').textContent = title;
+            document.getElementById('hotspot-desc').textContent = desc;
+            document.getElementById('hotspot-academic').textContent = academic;
+            container.classList.remove('hidden');
+        }
+
+        // Module 6 Interactive Post-hoc Pair Reader
+        function revealPair(id, title, stats, desc, action) {
+            const container = document.getElementById('pair-result');
+            document.getElementById('pair-title').textContent = "So sánh cặp: " + title;
+            document.getElementById('pair-stats').textContent = stats;
+            document.getElementById('pair-desc').textContent = desc;
+            document.getElementById('pair-action').textContent = action;
+            container.classList.remove('hidden');
+        }
+
+        // Module 7 Bảng tổng hợp View Detail
+        const summaryData = {
+            'GioiTinh': {
+                title: 'Chi tiết biến GioiTinh (So sánh nam và nữ)',
+                reason: 'Sử dụng Independent T-test vì chỉ có 2 nhóm độc lập cần so sánh.',
+                howtoread: 'Đọc dòng Equal assumed vì Levene p = 0,963 > 0,05.',
+                conclusion: 'Chưa có sự khác biệt có ý nghĩa thống kê về SHL giữa nam và nữ (p = 0,482).',
+                mgmt: 'Không nhất thiết phải phân tầng giải pháp hoặc can thiệp riêng lẻ theo giới tính.'
+            },
+            'PhacDo': {
+                title: 'Chi tiết biến PhacDo (So sánh các nhóm phác đồ)',
+                reason: 'Sử dụng One-way ANOVA vì có 4 nhóm phác đồ điều trị mô phỏng.',
+                howtoread: 'Đọc bảng ANOVA thường vì Levene p = 0,499 > 0,05.',
+                conclusion: 'Chưa có sự khác biệt hài lòng theo phác đồ (p = 0,156). Không chạy Post-hoc.',
+                mgmt: 'Các phác đồ điều trị chưa tạo ra sự phân hóa rõ ràng về trải nghiệm hài lòng của bệnh nhân.'
+            },
+            'TrinhDo': {
+                title: 'Chi tiết biến TrinhDo (So sánh theo học vấn)',
+                reason: 'Sử dụng One-way ANOVA vì có 4 nhóm học vấn.',
+                howtoread: 'Đọc bảng ANOVA thường vì Levene p = 0,707 > 0,05.',
+                conclusion: 'Chưa có khác biệt có ý nghĩa thống kê (p = 0,297). Không chạy Post-hoc.',
+                mgmt: 'Dù học vấn chưa làm thay đổi hài lòng chung, khi làm truyền thông hướng dẫn dùng thuốc vẫn cần dùng ngôn từ dễ hiểu.'
+            },
+            'ThoiGianBenh': {
+                title: 'Chi tiết biến ThoiGianBenh (So sánh theo số năm mắc bệnh)',
+                reason: 'Sử dụng Welch ANOVA vì Levene p = 0,002 < 0,05 (vi phạm giả định đồng nhất phương sai).',
+                howtoread: 'Đọc bảng Robust Tests of Equality of Means (Welch) và Post-hoc Tamhane.',
+                conclusion: 'Có khác biệt ý nghĩa (p < 0,001). Sự hài lòng phân hóa rõ rệt theo số năm gánh nặng bệnh tật.',
+                mgmt: 'Bệnh nhân mới mắc cần được dược sĩ tư vấn cặn kẽ và hỗ trợ tâm lý nhiều hơn bệnh nhân đã mắc lâu năm.'
+            },
+            'NhomTuoi': {
+                title: 'Chi tiết biến NhomTuoi (So sánh theo lứa tuổi)',
+                reason: 'Sử dụng Welch ANOVA vì Levene p = 0,025 < 0,05 (vi phạm giả định đồng nhất phương sai).',
+                howtoread: 'Đọc bảng Robust Tests of Equality of Means (Welch). Không chạy Post-hoc.',
+                conclusion: 'Không tìm thấy khác biệt có ý nghĩa ở mức ý nghĩa 5% (p = 0,060).',
+                mgmt: 'Chưa có bằng chứng cho thấy sự khác biệt về sự hài lòng theo nhóm tuổi trong dữ liệu nghiên cứu này.'
+            },
+            'KhaNangChiTra': {
+                title: 'Chi tiết biến KhaNangChiTra (So sánh theo điều kiện tài chính)',
+                reason: 'Sử dụng One-way ANOVA vì Levene p = 0,101 > 0,05 và phép kiểm F đạt ý nghĩa tuyệt vời.',
+                howtoread: 'Đọc bảng ANOVA thường và Post-hoc Bonferroni để tìm các so sánh cặp có ý nghĩa.',
+                conclusion: 'Có sự khác biệt rõ rệt (p < 0,001). Nhóm rất khó khăn có mức hài lòng thấp nhất.',
+                mgmt: 'Hỗ trợ bảo hiểm y tế chi trả, tư vấn minh bạch chi phí thuốc và chuẩn bị nguồn thuốc Generic chi phí thấp.'
+            }
+        };
+
+        function viewSummary(variable) {
+            const data = summaryData[variable];
+            const panel = document.getElementById('summary-panel');
+            document.getElementById('sum-title').textContent = data.title;
+            document.getElementById('sum-reason').textContent = data.reason;
+            document.getElementById('sum-howtoread').textContent = data.howtoread;
+            document.getElementById('sum-conclusion').textContent = data.conclusion;
+            document.getElementById('sum-mgmt').textContent = data.mgmt;
+            panel.classList.remove('hidden');
+        }
+
+        // Labs Tab Interface switcher
+        function switchTab(tabId) {
+            // Hide all tab content panes
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => pane.classList.add('hidden'));
+
+            // Deactivate all tab buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-teal-600', 'border-teal-600');
+                btn.classList.add('text-slate-500', 'border-transparent');
+            });
+
+            // Show active pane
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Find current clicked button and activate it
+            const clickedBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabId));
+            if (clickedBtn) {
+                clickedBtn.classList.remove('text-slate-500', 'border-transparent');
+                clickedBtn.classList.add('text-teal-600', 'border-teal-600');
+            }
+        }
+
+        // E-learning 20-question Quiz logic
+        const quizQuestions = [
+            {
+                q: "Khi so sánh điểm hài lòng chung SHL giữa bệnh nhân nam và nữ trong mẫu nghiên cứu, dược sĩ chuyên khoa nên chọn phép kiểm nào?",
+                a: ["Independent Samples T-test", "One-way ANOVA", "Paired-Samples T-test", "Chi-Square Test"],
+                correct: 0,
+                rationale: "GioiTinh chỉ có đúng 2 nhóm độc lập (Nam và Nữ). Phép so sánh trung bình 2 nhóm độc lập chuẩn là Independent Samples T-test."
+            },
+            {
+                q: "Khi so sánh điểm SHL giữa 4 nhóm khả năng chi trả điều trị khác nhau, phép kiểm cơ bản nào được áp dụng?",
+                a: ["Independent Samples T-test", "One-way ANOVA", "Tương quan Pearson", "Hồi quy tuyến tính"],
+                correct: 1,
+                rationale: "Khi so sánh trung bình định lượng của từ 3 nhóm trở lên (KhaNangChiTra có 4 nhóm), ta sử dụng One-way ANOVA."
+            },
+            {
+                q: "Kiểm định sự đồng nhất phương sai của Levene's Test đóng vai trò gì trước khi đọc t-test hoặc ANOVA?",
+                a: ["Kiểm định mức độ tin cậy của thang đo", "Kiểm tra giả định phân phối chuẩn", "Kiểm tra giả định đồng nhất phương sai giữa các nhóm so sánh", "Kiểm tra hiện tượng đa cộng tuyến"],
+                correct: 2,
+                rationale: "Levene's Test dùng để kiểm tra xem phương sai của biến phụ thuộc có bằng nhau (đồng nhất) giữa các nhóm so sánh hay không."
+            },
+            {
+                q: "Nếu kiểm định Levene trong phép kiểm Independent Samples T-test có p = 0,963, ta nên đọc dòng nào trong kết quả SPSS?",
+                a: ["Dòng 'Equal variances assumed'", "Dòng 'Equal variances not assumed'", "Bảng Robust Tests (Welch)", "Không đọc dòng nào vì kết quả bị lỗi"],
+                correct: 0,
+                rationale: "Vì p = 0,963 ≥ 0,05, phương sai đồng nhất được chấp nhận. Ta đọc dòng đầu tiên: Equal variances assumed."
+            },
+            {
+                q: "Trong Independent T-test, nếu Levene có p = 0,020 (nhỏ hơn 0,05), dòng kết quả t-test nào cần được báo cáo?",
+                a: ["Dòng 'Equal variances assumed'", "Dòng 'Equal variances not assumed'", "Đọc bảng ANOVA thay thế", "Phải xóa bớt mẫu nghiên cứu"],
+                correct: 1,
+                rationale: "Khi Levene có p < 0,05, phương sai không đồng nhất. Ta phải đọc dòng thứ hai đã được hiệu chỉnh: Equal variances not assumed."
+            },
+            {
+                q: "Khi chạy One-way ANOVA so sánh SHL theo lứa tuổi (4 nhóm), Levene p = 0,025. Dược sĩ cần ưu tiên đọc chỉ số nào?",
+                a: ["ANOVA thường (hàng Between Groups)", "Welch ANOVA ( Robust Tests of Equality of Means)", "Independent Samples T-test", "Tương quan Pearson"],
+                correct: 1,
+                rationale: "Khi ANOVA bị vi phạm giả định đồng nhất phương sai (p = 0,025 < 0,05), bảng kiểm định điều chỉnh Welch ANOVA có độ tin cậy vượt trội hơn."
+            },
+            {
+                q: "Trong nghiên cứu cắt ngang về sự hài lòng, kiểm định t-test cho thấy khác biệt hài lòng giữa nam và nữ có p = 0,482. Kết luận nào phù hợp?",
+                a: ["Giới tính nữ quyết định mức độ hài lòng cao hơn", "Nam giới hài lòng kém hơn nữ giới có ý nghĩa", "Chưa có bằng chứng về sự khác biệt có ý nghĩa thống kê về SHL giữa nam và nữ", "Giới tính nam là nguyên nhân gây giảm hài lòng"],
+                correct: 2,
+                rationale: "p = 0,482 > 0,05, do đó không có sự khác biệt có ý nghĩa thống kê. Ta dùng từ 'Chưa có bằng chứng'."
+            },
+            {
+                q: "ANOVA so sánh SHL theo 4 mức độ phác đồ có F = 1,759 và p = 0,156. Nhận xét nào chuẩn mực nhất cho báo cáo?",
+                a: ["Phác đồ 2 làm tăng sự hài lòng có ý nghĩa thống kê", "Chưa tìm thấy sự khác biệt có ý nghĩa thống kê về điểm hài lòng chung SHL theo phác đồ điều trị", "Phác đồ điều trị không có tác dụng lâm sàng nào", "Cần chạy Post-hoc ngay lập tức"],
+                correct: 1,
+                rationale: "p = 0,156 > 0,05 cho thấy ANOVA tổng thể không đạt ý nghĩa thống kê ở mức 5%."
+            },
+            {
+                q: "Tại sao không nên kết luận 'Sự thay đổi phác đồ quyết định sự hài lòng' chỉ dựa trên phép kiểm ANOVA có ý nghĩa thống kê (p < 0,05) trong nghiên cứu cắt ngang?",
+                a: ["Vì ANOVA có sai số quá lớn", "Vì nghiên cứu cắt ngang không chứng minh được trình tự thời gian nguyên nhân - kết quả", "Vì SPSS không chạy được phân tích nhân quả", "Vì phác đồ điều trị không có giá trị lâm sàng"],
+                correct: 1,
+                rationale: "Thiết kế cắt ngang thu thập dữ liệu tại cùng một thời điểm, chỉ cho thấy mối liên quan hiện hữu, không đủ logic chứng minh quan hệ nhân quả."
+            },
+            {
+                q: "Khi ANOVA có ý nghĩa tổng thể (F = 9,929; p < 0,001) với biến tài chính gồm 4 nhóm, thao tác thống kê bắt buộc tiếp theo là gì?",
+                a: ["Chạy Cronbach's Alpha lại", "Thực hiện phép so sánh cặp Post-hoc", "Chạy hồi quy tuyến tính", "Làm sạch lại toàn bộ dữ liệu"],
+                correct: 1,
+                rationale: "ANOVA tổng thể có ý nghĩa chỉ khẳng định có ít nhất một cặp nhóm khác nhau. Muốn biết chính xác nhóm nào khác nhóm nào, bắt buộc phải chạy Post-hoc."
+            },
+            {
+                q: "Nếu phương sai giữa các nhóm học vấn đồng nhất (Levene p = 0,707), phép kiểm Post-hoc nào thích hợp nhất để báo cáo?",
+                a: ["Tamhane's T2", "Bonferroni", "Games-Howell", "Dunnett's T3"],
+                correct: 1,
+                rationale: "Khi phương sai đồng nhất, phép kiểm Post-hoc kiểm soát tốt sai số loại I là Bonferroni hoặc Tukey."
+            },
+            {
+                q: "Nếu kiểm định Welch ANOVA có ý nghĩa (p < 0,001) nhưng kiểm định Levene bị vi phạm (p = 0,002), phép kiểm Post-hoc nào được y văn ưu tiên?",
+                a: ["Bonferroni", "Tamhane's T2", "Tukey", "LSD"],
+                correct: 1,
+                rationale: "Khi phương sai không đồng nhất (vi phạm giả định), ta bắt buộc phải sử dụng phép so sánh cặp hiệu chỉnh như Tamhane's T2."
+            },
+            {
+                q: "Một so sánh cặp Post-hoc Bonferroni giữa nhóm 'Rất khó khăn' và 'Tương đối đáp ứng' có Mean Difference = -0,54874 (p < 0,001). Diễn giải nào đúng?",
+                a: ["Nhóm rất khó khăn có hài lòng cao hơn", "Nhóm tương đối đáp ứng được có điểm hài lòng trung bình cao hơn nhóm rất khó khăn 0,55 điểm có ý nghĩa", "Áp lực tài chính không ảnh hưởng đến sự hài lòng", "Tài chính là nguyên nhân trực tiếp kéo giảm sự hài lòng"],
+                correct: 1,
+                rationale: "Dấu chênh lệch âm (A - B < 0) cho thấy nhóm A (Rất khó khăn) thấp hơn nhóm B (Tương đối đáp ứng) có ý nghĩa thống kê tuyệt vời."
+            },
+            {
+                q: "Tuyến lệnh SPSS chuẩn xác để chạy phép kiểm Independent Samples T-test là gì?",
+                a: ["Analyze → Compare Means → One-Way ANOVA", "Analyze → Regression → Linear", "Analyze → Compare Means → Independent-Samples T Test", "Analyze → Correlate → Bivariate"],
+                correct: 2,
+                rationale: "Independent-Samples T Test nằm trong phân nhóm Compare Means."
+            },
+            {
+                q: "Trong hộp thoại Options của One-way ANOVA trên SPSS, hai tùy chọn nào là quan trọng nhất để phục vụ báo cáo luận văn?",
+                a: ["Descriptive & Homogeneity of variance test", "Welch & Means plot", "Exclude cases analysis by analysis", "Tất cả các lựa chọn trên"],
+                correct: 0,
+                rationale: "Descriptive cung cấp số liệu mô tả (N, Mean, SD) và Homogeneity test cung cấp Levene's Test bắt buộc."
+            },
+            {
+                q: "Hàm Excel tương đương để tính trị xác suất p-value của kiểm định T-test hai mẫu độc lập là:",
+                a: ["=T.TEST(vung_1, vung_2, 2, 2)", "=AVERAGE(vung_1)", "=CORREL(vung_1, vung_2)", "=COUNTIF(vung_1, 1)"],
+                correct: 0,
+                rationale: "Công thức hàm T.TEST của Excel yêu cầu vùng dữ liệu nhóm 1, vùng dữ liệu nhóm 2, số phía kiểm định (2 phía) và giả định phương sai (2 = đồng nhất)."
+            },
+            {
+                q: "Công cụ Excel nào cung cấp trực tiếp bảng ANOVA Single Factor chuẩn xác?",
+                a: ["PivotTable", "Analysis ToolPak (Data Analysis)", "Data Validation", "Conditional Formatting"],
+                correct: 1,
+                rationale: "Analysis ToolPak cung cấp đầy đủ các thuật toán thống kê suy luận bao gồm ANOVA Single Factor."
+            },
+            {
+                q: "Biến Sự hài lòng chung 'SHL' là trung bình số học của các câu Likert 1-5. Trong SPSS, thuộc tính 'Measure' của biến này phải khai báo là gì?",
+                a: ["Nominal", "Ordinal", "Scale", "String"],
+                correct: 2,
+                rationale: "Điểm trung bình số học là dữ liệu định lượng liên tục, trong SPSS bắt buộc phải khai báo là Scale."
+            },
+            {
+                q: "Sự khác biệt thực hành (Practical Significance) khác với sự khác biệt thống kê (Statistical Significance) như thế nào trong y học lâm sàng?",
+                a: ["Khác biệt thống kê chỉ dựa vào p < 0,05; còn khác biệt thực hành đánh giá mức độ chênh lệch có thực sự tạo ra cải thiện lâm sàng/quản lý đáng kể không.", "Hai khái niệm này hoàn toàn giống nhau.", "Khác biệt thực hành có độ tin cậy thống kê cao hơn.", "Khác biệt thống kê luôn luôn quan trọng hơn."],
+                correct: 0,
+                rationale: "p < 0,05 chỉ cho thấy sự khác biệt không phải do ngẫu nhiên. Trị số chênh lệch thực tế (Mean Difference) mới quyết định giá trị can thiệp lâm sàng."
+            },
+            {
+                q: "Dược sĩ chuyên khoa báo cáo kết quả: 'SHL khác biệt có ý nghĩa thống kê theo thời gian bệnh (Welch = 8,516; p < 0,001)'. Nhận định ứng dụng quản lý nào sau đây là phù hợp?",
+                a: ["Cần xóa bỏ nhóm bệnh nhân lâu năm", "Cần xây dựng quy trình hướng dẫn tư vấn sử dụng thuốc và chăm sóc hỗ trợ chuyên biệt cho nhóm bệnh nhân mới", "Phải chuyển toàn bộ bệnh nhân sang phác đồ điều trị khác", "Thời gian mắc bệnh kéo dài chắc chắn quyết định sự không hài lòng"],
+                correct: 1,
+                rationale: "Biến thời gian mắc bệnh giúp phân tầng đối tượng. Nhóm mới mắc chưa quen quy trình và có gánh nặng tâm lý lớn cần được ưu tiên chăm sóc hỗ trợ."
+            }
+        ];
+
+        let userAnswers = Array(20).fill(null);
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((item, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = "p-5 sm:p-6 border border-slate-200 hover:border-teal-200 rounded-2xl transition-all space-y-4 bg-white";
+                questionDiv.id = `q-card-${index}`;
+
+                // Question Title
+                const titleHtml = `
+                    <div class="flex items-start space-x-3">
+                        <span class="bg-slate-900 text-white font-bold text-xs px-2.5 py-1 rounded-lg shrink-0 mt-0.5">Câu ${index + 1}</span>
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base leading-relaxed">${item.q}</h4>
+                    </div>
+                `;
+
+                // Options
+                let optionsHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">';
+                item.a.forEach((opt, optIdx) => {
+                    optionsHtml += `
+                        <button onclick="submitAnswer(${index}, ${optIdx})" id="opt-${index}-${optIdx}" class="text-left text-xs sm:text-sm font-semibold p-4 rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-teal-300 transition-all shadow-sm">
+                            <span class="inline-block w-5 h-5 rounded-full border border-slate-300 text-center text-[10px] leading-5 font-bold mr-2 text-slate-400 uppercase bg-slate-50">
+                                ${String.fromCharCode(65 + optIdx)}
+                            </span>
+                            ${opt}
+                        </button>
+                    `;
+                });
+                optionsHtml += '</div>';
+
+                // Explanation Block (Hidden by default)
+                const expHtml = `
+                    <div id="explanation-${index}" class="hidden p-4 rounded-xl border transition-all text-xs leading-relaxed space-y-1.5">
+                        <p class="font-bold uppercase tracking-wider" id="exp-status-${index}"></p>
+                        <p class="text-slate-600">${item.rationale}</p>
+                    </div>
+                `;
+
+                questionDiv.innerHTML = titleHtml + optionsHtml + expHtml;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function submitAnswer(qIdx, optIdx) {
+            // Guard: If already answered, do nothing
+            if (userAnswers[qIdx] !== null) return;
+
+            userAnswers[qIdx] = optIdx;
+
+            const item = quizQuestions[qIdx];
+            const isCorrect = (optIdx === item.correct);
+
+            // Style the chosen option and correct option
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`opt-${qIdx}-${i}`);
+                if (btn) {
+                    btn.classList.add('cursor-not-allowed', 'opacity-60');
+                    if (i === item.correct) {
+                        btn.className = "text-left text-xs sm:text-sm font-bold p-4 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm cursor-not-allowed";
+                        btn.querySelector('span').className = "inline-block w-5 h-5 rounded-full border border-emerald-500 text-center text-[10px] leading-5 font-bold mr-2 text-white bg-emerald-500";
+                    } else if (i === optIdx) {
+                        btn.className = "text-left text-xs sm:text-sm font-bold p-4 rounded-xl border border-rose-500 bg-rose-50 text-rose-800 shadow-sm cursor-not-allowed";
+                        btn.querySelector('span').className = "inline-block w-5 h-5 rounded-full border border-rose-500 text-center text-[10px] leading-5 font-bold mr-2 text-white bg-rose-500";
+                    }
+                }
+            }
+
+            // Show explanation block
+            const expDiv = document.getElementById(`explanation-${qIdx}`);
+            const statusText = document.getElementById(`exp-status-${qIdx}`);
+
+            if (isCorrect) {
+                statusText.className = "font-bold text-emerald-700 text-xs sm:text-sm flex items-center";
+                statusText.innerHTML = "<i class='fa-solid fa-circle-check mr-1.5'></i> TRẢ LỜI CHÍNH XÁC!";
+                expDiv.className = "p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 text-xs leading-relaxed space-y-1.5";
+            } else {
+                statusText.className = "font-bold text-rose-700 text-xs sm:text-sm flex items-center";
+                statusText.innerHTML = "<i class='fa-solid fa-circle-xmark mr-1.5'></i> TRẢ LỜI CHƯA CHÍNH XÁC";
+                expDiv.className = "p-4 rounded-xl border border-rose-200 bg-rose-50/50 text-xs leading-relaxed space-y-1.5";
+            }
+            expDiv.classList.remove('hidden');
+
+            // Update Progress bar and score
+            updateScores();
+        }
+
+        function updateScores() {
+            let score = 0;
+            let answered = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans !== null) {
+                    answered++;
+                    if (ans === quizQuestions[idx].correct) {
+                        score++;
+                    }
+                }
+            });
+
+            document.getElementById('quiz-score').textContent = score;
+            document.getElementById('answered-count').textContent = answered;
+
+            const progressPercentage = (answered / 20) * 100;
+            document.getElementById('quiz-progress').style.width = progressPercentage + '%';
+
+            // Show completion badge if all answered
+            if (answered === 20) {
+                const badge = document.getElementById('completion-badge');
+                badge.classList.remove('hidden');
+                if (score === 20) {
+                    badge.querySelector('h4').textContent = "Tuyệt đỉnh vô song! Bạn đã đạt điểm tối đa 20/20!";
+                } else {
+                    badge.querySelector('h4').textContent = `Chúc mừng bạn đã hoàn thành bài thi với kết quả ${score}/20!`;
+                }
+            }
+        }
+
+        function resetQuiz() {
+            userAnswers = Array(20).fill(null);
+            document.getElementById('completion-badge').classList.add('hidden');
+            updateScores();
+            renderQuiz();
+        }
+
+        // Run E-learning initialization on window load
+        window.onload = function() {
+            renderQuiz();
+            runDecisionTree();
+            
+            // Khởi tạo render công thức toán học KaTeX an toàn sau khi DOM đã sẵn sàng hoàn toàn
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    </script>
+</body>
+</html>

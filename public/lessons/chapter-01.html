@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiết kế Nghiên cứu, Biến số & Kỹ thuật Chọn mẫu Y Dược | E-learning CK1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for beautiful math equations rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .ai-output-content p {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        .ai-output-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f766e;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #0f766e;
+            padding-left: 0.5rem;
+        }
+        .ai-output-content ul, .ai-output-content ol {
+            margin-left: 1.25rem;
+            margin-bottom: 0.75rem;
+            list-style-type: decimal;
+        }
+        .ai-output-content li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 h-1.5 bg-slate-200 z-50">
+        <div id="readingProgress" class="h-full bg-teal-600 w-0 transition-all duration-300"></div>
+    </div>
+
+    <!-- Mobile Header -->
+    <header class="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 z-40">
+        <div class="flex items-center space-x-2">
+            <div class="p-1.5 bg-teal-50 rounded-lg">
+                <i class="fa-solid fa-microscope text-teal-600 text-lg"></i>
+            </div>
+            <span class="font-extrabold text-teal-900 tracking-tight text-sm">THỐNG KÊ Y DƯỢC CK1</span>
+        </div>
+        <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-teal-600 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </header>
+
+    <div class="flex flex-1 pt-16 lg:pt-0">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-slate-900 text-slate-300 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col border-r border-slate-800">
+            <!-- Sidebar Header -->
+            <div class="p-6 border-b border-slate-800 flex items-center space-x-3">
+                <div class="p-2.5 bg-teal-500/10 rounded-xl border border-teal-500/20">
+                    <i class="fa-solid fa-book-bookmark text-teal-400 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-sm tracking-tight leading-tight">THỐNG KÊ Y DƯỢC</h1>
+                    <p class="text-[11px] text-slate-400">Masterclass Thiết kế & Chọn mẫu</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1.5 custom-scrollbar" id="navLinks">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 mb-2">Bài học lâm sàng</p>
+                
+                <a href="#intro-design" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-teal-400 bg-slate-800/50">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>1. Thiết kế Nghiên cứu</span>
+                </a>
+                
+                <a href="#variables-framework" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <span>2. Xác định Biến số</span>
+                </a>
+
+                <a href="#variable-classifier" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400 border border-teal-500/10 bg-teal-950/10">
+                    <i class="fa-solid fa-tags text-teal-400"></i>
+                    <span class="text-teal-300">Lab: Phân loại Thang đo</span>
+                </a>
+
+                <a href="#sampling-methods" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <span>3. Kỹ thuật Chọn mẫu</span>
+                </a>
+
+                <a href="#sampling-simulator" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400 border border-amber-500/10 bg-amber-950/10">
+                    <i class="fa-solid fa-dice text-amber-400"></i>
+                    <span class="text-amber-300">Lab: Chọn mẫu Ngẫu nhiên</span>
+                </a>
+
+                <a href="#sample-size" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>4. Xác định Cỡ mẫu</span>
+                </a>
+
+                <a href="#spss-excel-guide" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>5. Thao tác SPSS & Excel</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 mb-2">CÔNG CỤ AI ĐỘC QUYỀN</p>
+                <a href="#ai-assistant-section" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400 border border-teal-500/30 bg-teal-950/40">
+                    <i class="fa-solid fa-wand-magic-sparkles text-teal-400"></i>
+                    <span class="text-teal-300 font-semibold">Trợ lý Đề cương AI</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 mb-2">Đánh giá năng lực</p>
+
+                <a href="#knowledge-check" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Trắc nghiệm (20 Câu)</span>
+                </a>
+
+                <a href="#takeaways" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>Checklist & Takeaways</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></div>
+                    <span class="text-xs text-slate-400 font-medium">Lớp DSCKI - Đào tạo liên tục</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Overlay for Mobile -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-slate-950/40 z-30 hidden lg:hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-80 min-h-screen flex flex-col bg-slate-50">
+            <!-- Top Navigation bar -->
+            <div class="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-slate-200 shadow-sm">
+                <div class="flex items-center space-x-2 text-sm text-slate-500">
+                    <span>Đào tạo Sau đại học Dược lâm sàng / Y khoa</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span class="text-teal-600 font-semibold">Thiết kế, Biến số & Chọn mẫu</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i>Thời lượng tự học: 60 phút</span>
+                    <span class="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-md">BÀI GIẢNG ĐIỆN TỬ CHUẨN</span>
+                </div>
+            </div>
+
+            <!-- Main Scroll Container -->
+            <div class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 space-y-12 pb-24">
+
+                <!-- INTRO HERO SECTION -->
+                <section id="intro-hero" class="relative bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-6 md:p-10 text-white overflow-hidden shadow-xl">
+                    <div class="absolute -right-16 -bottom-16 opacity-10 text-9xl">
+                        <i class="fa-solid fa-microscope"></i>
+                    </div>
+                    <div class="relative z-10 space-y-4">
+                        <span class="px-3 py-1 bg-teal-500/20 text-teal-300 text-xs font-semibold rounded-full border border-teal-500/30 uppercase tracking-widest">Phương pháp luận nghiên cứu & Thống kê Y sinh</span>
+                        <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
+                            Thiết Kế Nghiên Cứu, Khung Biến Số & Kỹ Thuật Chọn Mẫu
+                        </h2>
+                        <p class="text-sm md:text-base text-slate-300 max-w-3xl leading-relaxed">
+                            Chào mừng các anh/chị học viên Chuyên khoa 1 (CK1) ngành Dược và Y khoa. Để xây dựng một đề tài khoa học vững vàng, việc lựa chọn đúng thiết kế nghiên cứu, xác định chính xác thuộc tính biến số và thực hiện kỹ thuật chọn mẫu khách quan là nền móng quan trọng nhất. SPSS hay Excel chỉ là công cụ hỗ trợ thao tác, tư duy phương pháp nghiên cứu mới quyết định giá trị khoa học của luận văn.
+                        </p>
+                        <div class="border-t border-white/10 pt-4 mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="flex items-center space-x-2 text-xs text-slate-300">
+                                <i class="fa-solid fa-circle-check text-teal-400"></i>
+                                <span>Làm chủ 4 loại thiết kế y học</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-slate-300">
+                                <i class="fa-solid fa-circle-check text-teal-400"></i>
+                                <span>Mã hóa chuẩn biến số SPSS</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-slate-300">
+                                <i class="fa-solid fa-circle-check text-teal-400"></i>
+                                <span>Thực hành chọn mẫu tránh sai số</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 1: THIẾT KẾ NGHIÊN CỨU LÂM SÀNG -->
+                <section id="intro-design" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                            <i class="fa-solid fa-laptop-medical text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">1. Thiết kế Nghiên cứu Phổ biến trong Y Dược</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Lựa chọn thiết kế nghiên cứu là bước đi đầu tiên nhằm giải quyết mục tiêu và trả lời câu hỏi nghiên cứu. Trong thực tế lâm sàng và quản lý dược tại Việt Nam, có 4 mô hình thiết kế phổ biến nhất:
+                    </p>
+
+                    <!-- Design Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-500/30 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-lg uppercase">Mô tả / Quan sát</span>
+                                <i class="fa-solid fa-chart-pie text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Nghiên cứu Cắt ngang (Cross-sectional Study)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Thu thập thông tin về phơi nhiễm và bệnh trạng tại cùng một thời điểm. 
+                            </p>
+                            <div class="text-[11px] bg-slate-50 p-2 rounded-lg text-slate-500 border border-slate-100">
+                                <strong class="text-teal-800">Ví dụ:</strong> Khảo sát tỷ lệ tuân thủ điều trị kháng sinh ngoại trú của bệnh nhân nhi hoặc đo lường sự hài lòng chung của người bệnh về dịch vụ Dược lâm sàng tại bệnh viện.
+                            </div>
+                            <div class="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg font-medium">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i><strong>Giới hạn:</strong> Không thể khẳng định mối quan hệ nhân quả (không chứng minh được phơi nhiễm xảy ra trước bệnh). Chỉ dùng từ "có liên quan", không dùng từ "gây ra" hay "quyết định".
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-500/30 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg uppercase">Hồi cứu (Retrospective)</span>
+                                <i class="fa-solid fa-clock-rotate-left text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Nghiên cứu Bệnh chứng (Case-control Study)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Đi từ bệnh trạng (hiện tại) quay ngược lại quá khứ để tìm yếu tố phơi nhiễm/nguy cơ.
+                            </p>
+                            <div class="text-[11px] bg-slate-50 p-2 rounded-lg text-slate-500 border border-slate-100">
+                                <strong class="text-teal-800">Ví dụ:</strong> Chọn 1 nhóm bệnh nhân suy thận cấp (Bệnh) và 1 nhóm không suy thận (Chứng) rồi tìm hiểu về thói quen tự ý mua sử dụng thuốc giảm đau NSAIDs trong quá khứ.
+                            </div>
+                            <div class="text-[11px] text-teal-800 bg-teal-50 p-2 rounded-lg font-medium">
+                                <i class="fa-solid fa-chart-line mr-1"></i><strong>Chỉ số thống kê chính:</strong> Tỷ số số chênh (Odds Ratio - OR), đo lường bằng kiểm định Chi-bình phương hoặc mô hình hồi quy Logistic nhị phân.
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-500/30 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg uppercase">Tiến cứu (Prospective)</span>
+                                <i class="fa-solid fa-arrow-trend-up text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Nghiên cứu Thuần tập (Cohort Study)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Theo dõi hai nhóm đối tượng (phơi nhiễm và không phơi nhiễm) theo thời gian tương lai để đánh giá sự xuất hiện kết cục bệnh trạng.
+                            </p>
+                            <div class="text-[11px] bg-slate-50 p-2 rounded-lg text-slate-500 border border-slate-100">
+                                <strong class="text-teal-800">Ví dụ:</strong> Theo dõi nhóm bệnh nhân có sử dụng thuốc nhóm Statin kéo dài và nhóm không sử dụng xem có sự xuất hiện biến chứng cơ hay suy gan sau 5 năm theo dõi hay không.
+                            </div>
+                            <div class="text-[11px] text-indigo-800 bg-indigo-50 p-2 rounded-lg font-medium">
+                                <i class="fa-solid fa-vials mr-1"></i><strong>Chỉ số chính:</strong> Nguy cơ tương đối (Relative Risk - RR). Đòi hỏi thời gian nghiên cứu dài và kinh phí lớn.
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-500/30 transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-lg uppercase">Thực nghiệm (Experimental)</span>
+                                <i class="fa-solid fa-flask text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base">Thử nghiệm Lâm sàng Ngẫu nhiên (RCT)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Tiêu chuẩn vàng để chứng minh hiệu quả lâm sàng của thuốc hay phác đồ can thiệp mới. Người tham gia được phân ngẫu nhiên vào nhóm can thiệp hoặc nhóm chứng.
+                            </p>
+                            <div class="text-[11px] bg-slate-50 p-2 rounded-lg text-slate-500 border border-slate-100">
+                                <strong class="text-teal-800">Ví dụ:</strong> Đánh giá hiệu quả hạ huyết áp của biệt dược gốc A mới so với thuốc Generic B hiện hành trên nhóm bệnh nhân cao huyết áp vô căn.
+                            </div>
+                            <div class="text-[11px] text-rose-800 bg-rose-50 p-2 rounded-lg font-medium">
+                                <i class="fa-solid fa-shield-halved mr-1"></i><strong>Quy tắc lâm sàng:</strong> Phải tuân thủ đạo đức y sinh nghiêm ngặt, có thông báo đồng ý tham gia (Informed Consent) và được Hội đồng Đạo đức phê duyệt.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 2: XÁC ĐỊNH BIẾN SỐ VÀ KHUNG BIẾN SỐ -->
+                <section id="variables-framework" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                            <i class="fa-solid fa-circle-nodes text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">2. Xác định Biến số & Thang đo</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Để xử lý số liệu bằng SPSS hay Excel, mọi dữ liệu thô từ bệnh án hay phiếu khảo sát bắt buộc phải được chuyển thành các <strong>Biến số (Variables)</strong> được số hóa rõ ràng.
+                    </p>
+
+                    <!-- Variable Roles and Types Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Role -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <h4 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-sliders text-teal-600"></i>
+                                <span>Phân loại theo Vai trò</span>
+                            </h4>
+                            <ul class="text-xs text-slate-600 space-y-2.5">
+                                <li>
+                                    <strong class="text-slate-800">Biến Độc lập (Independent):</strong> Yếu tố tác động, dự báo (Ví dụ: phác đồ điều trị, tuổi, liều dùng).
+                                </li>
+                                <li>
+                                    <strong class="text-slate-800">Biến Phụ thuộc (Dependent):</strong> Kết cục nghiên cứu chịu tác động (Ví dụ: sự cải thiện chỉ số huyết áp HbA1c, hài lòng bệnh nhân).
+                                </li>
+                                <li>
+                                    <strong class="text-slate-800">Biến kiểm soát/nền (Control):</strong> Đặc điểm bệnh nhân nhằm chuẩn hóa so sánh (Giới tính, nhóm tuổi, bệnh mắc kèm).
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Scale Level -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <h4 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-gauge-high text-teal-600"></i>
+                                <span>Phân loại theo Thang đo SPSS</span>
+                            </h4>
+                            <ul class="text-xs text-slate-600 space-y-2.5">
+                                <li>
+                                    <strong class="text-slate-800">Nominal (Định danh):</strong> Không có thứ tự cao thấp (Ví dụ: Giới tính Nam/Nữ, Mã Phác đồ A/B/C).
+                                </li>
+                                <li>
+                                    <strong class="text-slate-800">Ordinal (Thứ bậc):</strong> Các biểu trị có thứ bậc hơn kém rõ rệt (Ví dụ: Trình độ học vấn, Mức độ suy thận Giai đoạn I, II, III).
+                                </li>
+                                <li>
+                                    <strong class="text-slate-800">Scale (Định lượng/Liên tục):</strong> Các số đo thực tế có đơn vị đo lường (Ví dụ: Tuổi, cân nặng, nồng độ Glucose huyết, điểm Likert trung bình).
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Warning Box -->
+                        <div class="bg-amber-950/5 border border-amber-500/15 p-5 rounded-2xl space-y-3 text-amber-900">
+                            <h4 class="font-bold text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                                <span>Lưu ý Sống còn</span>
+                            </h4>
+                            <p class="text-xs leading-relaxed">
+                                Tuyệt đối <strong>không được dùng phép tính trung bình cộng (Mean)</strong> đối với các biến Nominal hoặc Ordinal. 
+                            </p>
+                            <p class="text-[11px] italic text-amber-800 leading-relaxed">
+                                Ví dụ: Tính trung bình cộng của biến "Phác đồ điều trị" (1=Phác đồ A, 2=Phác đồ B) ra kết quả 1.5 là hoàn toàn vô nghĩa và sai lệch kiến thức thống kê cơ bản. Đối với biến Nominal/Ordinal, chỉ dùng tần số và tỷ lệ phần trăm (Frequencies/Percentages).
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INTERACTIVE WIDGET: VARIABLE CLASSIFIER LAB -->
+                <section id="variable-classifier" class="bg-slate-900 text-slate-100 rounded-3xl p-6 md:p-8 space-y-6 shadow-lg scroll-mt-20">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div class="space-y-1">
+                            <span class="px-2.5 py-0.5 bg-teal-500/10 text-teal-400 text-xs font-bold rounded-full border border-teal-500/20 uppercase tracking-widest">Học cụ tương tác ảo</span>
+                            <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-tags text-teal-400 mr-2"></i>Phòng Thí nghiệm: Phân loại Thang đo</h3>
+                            <p class="text-xs text-slate-400">Hãy giúp nhóm nghiên cứu lựa chọn loại thang đo phù hợp trong SPSS cho các biến số lâm sàng dưới đây.</p>
+                        </div>
+                        <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 self-start text-xs text-slate-400 flex items-center space-x-2">
+                            <span>Đúng:</span>
+                            <span id="vLabScore" class="font-bold text-emerald-400 text-sm">0 / 5</span>
+                        </div>
+                    </div>
+
+                    <!-- Variable Display Card -->
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs text-slate-500">Tên biến:</span>
+                                <span id="vLabName" class="font-mono text-teal-400 font-bold bg-teal-950/40 px-2 py-0.5 rounded border border-teal-500/20 text-sm">GioiTinh</span>
+                            </div>
+                            <p id="vLabDesc" class="text-sm font-semibold text-white">Giới tính bệnh nhân (Mã hóa: 1 = Nam, 2 = Nữ)</p>
+                            <p id="vLabExplain" class="text-xs text-slate-400 italic min-h-[32px]"></p>
+                        </div>
+
+                        <!-- Buttons options -->
+                        <div class="flex flex-col sm:flex-row gap-3 min-w-[240px]">
+                            <button onclick="answerVLab('Nominal')" class="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-teal-500 rounded-xl text-xs font-bold transition-all text-center">Nominal (Định danh)</button>
+                            <button onclick="answerVLab('Ordinal')" class="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-teal-500 rounded-xl text-xs font-bold transition-all text-center">Ordinal (Thứ bậc)</button>
+                            <button onclick="answerVLab('Scale')" class="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-teal-500 rounded-xl text-xs font-bold transition-all text-center">Scale (Định lượng)</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 3: KỸ THUẬT CHỌN MẪU Y DƯỢC -->
+                <section id="sampling-methods" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                            <i class="fa-solid fa-users-viewfinder text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">3. Kỹ thuật Chọn mẫu trong Nghiên cứu Y Dược</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Chọn mẫu là quá trình lựa chọn một nhóm nhỏ các cá thể từ quần thể nghiên cứu lớn nhằm thay mặt đại diện cung cấp các số liệu thực tế chính xác. Có hai phương pháp lớn:
+                    </p>
+
+                    <!-- Sampling Methods Tab System -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="bg-slate-100 p-1 flex border-b border-slate-200">
+                            <button onclick="switchSamplingTab('probability')" id="btn-sampling-prob" class="sampling-tab-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-teal-700 bg-white shadow-sm flex items-center justify-center space-x-2 transition-all">
+                                <i class="fa-solid fa-dice"></i>
+                                <span>Chọn mẫu Xác suất</span>
+                            </button>
+                            <button onclick="switchSamplingTab('nonprobability')" id="btn-sampling-nonprob" class="sampling-tab-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2 transition-all">
+                                <i class="fa-solid fa-hand-holding-hand"></i>
+                                <span>Chọn mẫu Phi Xác suất</span>
+                            </button>
+                        </div>
+
+                        <!-- Probability content -->
+                        <div id="content-sampling-prob" class="p-6 space-y-4">
+                            <h4 class="font-extrabold text-teal-900 text-base">Chọn mẫu Xác suất (Probability Sampling)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Đảm bảo mọi đối tượng trong quần thể nghiên cứu đều có cơ hội được chọn vào mẫu như nhau. Giúp hạn chế tối đa sai số lựa chọn và cho phép suy rộng kết quả ra quần thể gốc.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">1. Chọn mẫu Ngẫu nhiên đơn (Simple Random)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Mỗi cá thể được gắn một mã số. Sử dụng máy tính hoặc bảng số ngẫu nhiên để chọn ra đủ số lượng bệnh án cần nghiên cứu.
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">2. Chọn mẫu Hệ thống (Systematic Random)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Tính khoảng cách chọn mẫu $k = N / n$. Chọn ngẫu nhiên cá thể khởi đầu $i$, các cá thể tiếp theo sẽ là $i+k, i+2k...$
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">3. Chọn mẫu Phân tầng (Stratified)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Chia quần thể thành các phân nhóm độc lập trước (Ví dụ: Tầng theo giới tính, hoặc mức độ nghiêm trọng bệnh), sau đó chọn ngẫu nhiên độc lập trong từng tầng.
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">4. Chọn mẫu Chùm (Cluster)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Chọn ngẫu nhiên các nhóm quần thể trước (Ví dụ: chọn ngẫu nhiên 3 Khoa nội trong số 10 Khoa), sau đó khảo sát toàn bộ cá thể trong các chùm được chọn.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Non-Probability content -->
+                        <div id="content-sampling-nonprob" class="p-6 space-y-4 hidden">
+                            <h4 class="font-extrabold text-amber-900 text-base">Chọn mẫu Phi Xác suất (Non-probability Sampling)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Cơ hội được chọn của các cá thể không ngang bằng nhau. Thường áp dụng khi thiếu danh sách khung mẫu hoàn chỉnh hoặc nguồn kinh phí hạn chế.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">1. Chọn mẫu Thuận tiện (Convenience)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Chọn những bệnh nhân dễ tiếp cận nhất tại thời điểm nghiên cứu cho đến khi đạt đủ cỡ mẫu. (Ví dụ: khảo sát bệnh nhân đến quầy thuốc ngoại trú từ 8h - 11h sáng).
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">2. Chọn mẫu Chủ đích (Purposive)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Chỉ lựa chọn các cá thể đáp ứng các tiêu chí y khoa cụ thể dựa trên đánh giá chuyên môn của nghiên cứu viên.
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">3. Chọn mẫu Định mức (Quota)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Thuận tiện hóa nhưng có tỷ lệ kiểm soát các tầng cụ thể (Ví dụ: tuyển chọn thuận tiện sao cho đủ 50 nam và 50 nữ).
+                                    </p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                                    <h5 class="text-xs font-bold text-slate-900 uppercase">4. Chọn mẫu Hạt tuyết (Snowball)</h5>
+                                    <p class="text-[11px] text-slate-600">
+                                        Áp dụng cho quần thể khó tiếp cận (Người nhiễm HIV, nhóm nghiện ma túy). Cá thể này giới thiệu cá thể tiếp theo tham gia nghiên cứu.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- LAB: SAMPLING SIMULATOR WIDGET -->
+                <section id="sampling-simulator" class="bg-slate-900 text-slate-100 rounded-3xl p-6 md:p-8 space-y-6 shadow-lg scroll-mt-20">
+                    <div class="space-y-1 border-b border-slate-800 pb-4">
+                        <span class="px-2.5 py-0.5 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20 uppercase tracking-widest">Phòng Thí nghiệm Mô phỏng</span>
+                        <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-dice text-amber-400 mr-2"></i>Chọn mẫu Ngẫu nhiên Hệ thống (Systematic Sampling Tool)</h3>
+                        <p class="text-xs text-slate-400">Giả sử bạn có danh sách gồm 20 bệnh án (N = 20) và cần chọn ngẫu nhiên ra 4 bệnh án (n = 4). Hệ thống tính khoảng cách chọn mẫu: $k = 20 / 4 = 5$. Hãy thực hành để hiểu cách chọn mẫu hệ thống.</p>
+                    </div>
+
+                    <!-- Simulator UI -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Inputs Panel -->
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                            <h4 class="font-bold text-xs text-amber-400 uppercase tracking-wider">Thông số nhập liệu</h4>
+                            
+                            <div class="space-y-1">
+                                <label class="text-[11px] text-slate-400 block">Số khởi đầu ngẫu nhiên (Từ 1 đến 5):</label>
+                                <input type="number" id="simStart" min="1" max="5" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                            </div>
+
+                            <button onclick="runSystematicSim()" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold rounded-xl text-xs transition-all shadow-md">
+                                <i class="fa-solid fa-play mr-1"></i>Bắt đầu chọn mẫu
+                            </button>
+                            
+                            <div class="border-t border-slate-800 pt-3">
+                                <p class="text-[11px] text-slate-500">
+                                    *Khoảng cách $k = 5$. Danh sách bệnh án được chọn sẽ bao gồm: <span class="font-mono text-amber-400">Start, Start+5, Start+10, Start+15</span>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Results Visual Panel -->
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 col-span-2 space-y-4">
+                            <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Sơ đồ bệnh án bệnh viện (Mẫu 1 - 20)</h4>
+                            <div class="grid grid-cols-5 gap-2.5" id="simGrid">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 4: XÁC ĐỊNH CỠ MẪU -->
+                <section id="sample-size" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                            <i class="fa-solid fa-calculator text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">4. Xác định Cỡ mẫu trong Nghiên cứu Y Dược</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Cỡ mẫu phải đủ lớn để các ước lượng thống kê thu được đạt mức ý nghĩa mong muốn và có độ tin cậy khoa học cao. Tuy nhiên, nó cũng cần hợp lý để bảo đảm ngân sách và nguồn lực nhân sự lâm sàng cho phép.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Proportion formula -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-md">Định tính</span>
+                                <i class="fa-solid fa-percent text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-950 text-base">Cỡ mẫu ước lượng một tỷ lệ (Mẫu cắt ngang)</h4>
+                            <p class="text-xs text-slate-600">
+                                Áp dụng khi muốn khảo sát tỷ lệ một đặc tính lâm sàng trong một quần thể (Ví dụ tỷ lệ tuân thủ điều trị của bệnh nhân đái tháo đường).
+                            </p>
+                            <!-- LaTeX format equation beautifully rendered by KaTeX -->
+                            <div class="bg-slate-900 text-teal-400 p-4 rounded-xl text-center text-base font-semibold">
+                                $$n = Z^2_{1-\alpha/2} \frac{p(1-p)}{d^2}$$
+                            </div>
+                            <div class="text-[11px] text-slate-500 space-y-1">
+                                <p>- $Z_{1-\alpha/2}$: Thường chọn $1.96$ (với mức độ tin cậy $95\%$).</p>
+                                <p>- $p$: Tỷ lệ ước tính từ các nghiên cứu trước đó (Ví dụ $p = 0.40$).</p>
+                                <p>- $d$: Sai số cho phép tuyệt đối (Thường chọn $0.05$ hoặc $0.07$).</p>
+                            </div>
+                        </div>
+
+                        <!-- Rules of thumb -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-md">Mô hình hồi quy / EFA</span>
+                                <i class="fa-solid fa-square-root-variable text-slate-400"></i>
+                            </div>
+                            <h4 class="font-extrabold text-slate-950 text-base">Cỡ mẫu theo nhân tố khám phá EFA & Hồi quy</h4>
+                            <p class="text-xs text-slate-600">
+                                Khi nghiên cứu sử dụng bảng hỏi Likert nhiều nhân tố cần chạy kiểm định Cronbach's Alpha và phân tích nhân tố khám phá (EFA):
+                            </p>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-2">
+                                <p class="text-[11px] text-slate-700">
+                                    - <strong class="text-teal-800">Phân tích EFA:</strong> Quy tắc tối thiểu cần $5$ quan sát cho một biến quan sát (Ví dụ bảng hỏi có $30$ câu Likert cần ít nhất $30 \times 5 = 150$ mẫu bệnh nhân).
+                                </p>
+                                <p class="text-[11px] text-slate-700">
+                                    - <strong class="text-teal-800">Phân tích Hồi quy tuyến tính bội:</strong> Theo quy tắc của Green ($N \ge 50 + 8p$, với $p$ là số biến độc lập).
+                                </p>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed italic">
+                                *Học viên CK1 cần lưu ý khai báo đầy đủ cơ sở tính cỡ mẫu trong đề cương để không bị hội đồng phản biện nhắc nhở.*
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 5: HƯỚNG DẪN THAO TÁC SPSS & EXCEL -->
+                <section id="spss-excel-guide" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                            <i class="fa-solid fa-laptop-code text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">5. Hướng dẫn Thao tác SPSS & Excel bổ trợ</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Dưới đây là các bước thao tác cụ thể giúp học viên lấy mẫu ngẫu nhiên trực tiếp trên 2 phần mềm phổ biến nhất.
+                    </p>
+
+                    <!-- SPSS & Excel Splitter Tabs -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="bg-slate-100 p-1 flex border-b border-slate-200">
+                            <button onclick="switchGuideTab('spss')" id="btn-guide-spss" class="guide-tab-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-teal-700 bg-white shadow-sm flex items-center justify-center space-x-2 transition-all">
+                                <i class="fa-solid fa-cube"></i>
+                                <span>Thao tác trên SPSS</span>
+                            </button>
+                            <button onclick="switchGuideTab('excel')" id="btn-guide-excel" class="guide-tab-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-2 transition-all">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Thao tác trên Excel</span>
+                            </button>
+                        </div>
+
+                        <!-- SPSS Content Guide -->
+                        <div id="content-guide-spss" class="p-6 space-y-4">
+                            <h4 class="font-extrabold text-slate-900 text-sm">Lấy mẫu Ngẫu nhiên đơn bằng SPSS (Select Cases)</h4>
+                            <div class="bg-slate-50 border-l-4 border-teal-500 p-4 rounded-r-xl">
+                                <p class="text-xs font-bold text-teal-900 uppercase tracking-wider mb-1">Đường dẫn thực hiện lệnh:</p>
+                                <p class="text-sm font-semibold text-slate-800">Data &rarr; Select Cases...</p>
+                            </div>
+                            <ol class="text-xs text-slate-600 list-decimal pl-5 space-y-3">
+                                <li>Trong cửa sổ Data View, chọn đường dẫn <strong>Data &rarr; Select Cases...</strong></li>
+                                <li>Tại hộp thoại Select Cases, nhấp chọn mục <strong>Random sample of cases</strong> và bấm nút <strong>Sample...</strong> ngay phía dưới.</li>
+                                <li>Hộp thoại con mở ra, bạn có 2 lựa chọn chính xác:
+                                    <ul class="list-disc pl-5 mt-1 text-slate-500 space-y-1">
+                                        <li><strong>Approximately:</strong> Nhập số phần trạng số ca cần chọn (Ví dụ nhập 20% mẫu).</li>
+                                        <li><strong>Exactly:</strong> Chọn đúng số lượng ca (Ví dụ chọn đúng 50 cases từ tổng số 200 cases đầu tiên).</li>
+                                    </ul>
+                                </li>
+                                <li>Nhấn <strong>Continue</strong> rồi chọn <strong>OK</strong>. SPSS sẽ gạch chéo những dòng không được chọn và tạo thêm một biến lọc <code class="font-mono bg-slate-100 text-teal-600 px-1 rounded">filter_$</code> có giá trị 1 cho các dòng được chọn.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Excel Content Guide -->
+                        <div id="content-guide-excel" class="p-6 space-y-4 hidden">
+                            <h4 class="font-extrabold text-slate-900 text-sm">Lấy mẫu Ngẫu nhiên đơn bằng Excel</h4>
+                            <ol class="text-xs text-slate-600 list-decimal pl-5 space-y-3">
+                                <li>Tạo một cột phụ mới bên cạnh bộ dữ liệu (Ví dụ cột A, đặt tên tiêu đề là <code class="font-mono bg-slate-100 text-teal-600 px-1 rounded">So_Ngau_Nhien</code>).</li>
+                                <li>Tại dòng dữ liệu đầu tiên, nhập công thức lấy số ngẫu nhiên:
+                                    <div class="bg-slate-900 text-teal-400 font-mono text-xs p-2 rounded-lg my-1 select-all w-fit">
+                                        =RAND()
+                                    </div>
+                                </li>
+                                <li>Bôi đen kéo công thức này xuống tất cả các dòng dữ liệu của bộ dữ liệu gốc. Hàm RAND() sẽ sinh ra các số thực ngẫu nhiên có giá trị từ 0 đến 1.</li>
+                                <li>Chọn toàn bộ bảng dữ liệu &rarr; Vào tab <strong>Data &rarr; Sort (Sắp xếp)</strong> &rarr; Chọn sắp xếp theo cột phụ <code class="font-mono bg-slate-100 text-teal-600 px-1 rounded">So_Ngau_Nhien</code> theo thứ tự nhỏ nhất đến lớn nhất (hoặc ngược lại).</li>
+                                <li>Bây giờ, trật tự các dòng dữ liệu đã được xáo trộn ngẫu nhiên hoàn toàn. Học viên chỉ cần lấy đúng số lượng bệnh nhân mong muốn (Ví dụ lấy 50 dòng đầu tiên của bảng sau khi sắp xếp).</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- NEW: CO CỤ AI ĐỘC QUYỀN - TRỢ LÝ ĐỀ CƯƠNG AI -->
+                <section id="ai-assistant-section" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="p-2 bg-teal-50 rounded-xl text-teal-600 animate-pulse">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900">Trợ lý Thiết lập Đề cương Nghiên cứu AI</h3>
+                    </div>
+
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Hãy nhập ý tưởng nghiên cứu y khoa hoặc chủ đề luận văn CK1 của anh/chị vào khung dưới đây. Trí tuệ nhân tạo Gemini sẽ tự động phân tích và kiến thiết kế cấu trúc khoa học chuẩn xác ngay lập tức.
+                    </p>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-6">
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-800">Ý tưởng/Chủ đề nghiên cứu của anh/chị:</label>
+                            <textarea id="aiInputTopic" rows="3" class="w-full border border-slate-200 rounded-2xl p-4 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 bg-slate-50" placeholder="Ví dụ: Khảo sát kiến thức sử dụng kháng sinh của các bà mẹ có con dưới 5 tuổi điều trị ngoại trú tại bệnh viện tỉnh..."></textarea>
+                        </div>
+
+                        <!-- Suggested Ideas -->
+                        <div class="space-y-2">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ý tưởng gợi ý lâm sàng nhanh:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="fillAISuggestion('Đánh giá sự tuân thủ điều trị của bệnh nhân Tăng huyết áp vô căn điều trị ngoại trú tại bệnh viện.')" class="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-xl text-xs font-semibold transition-all">Sự tuân thủ tăng huyết áp</button>
+                                <button onclick="fillAISuggestion('Khảo sát mức độ hài lòng của người bệnh về dịch vụ cấp phát thuốc bảo hiểm y tế tại khoa dược bệnh viện quận.')" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-semibold transition-all">Hài lòng bảo hiểm y tế</button>
+                                <button onclick="fillAISuggestion('Nghiên cứu bệnh chứng tìm hiểu mối quan hệ giữa sử dụng thuốc giảm đau NSAID kéo dài và nguy cơ loét dạ dày tá tràng.')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl text-xs font-semibold transition-all">Hồi cứu NSAIDs & Loét dạ dày</button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs text-slate-400">Thời gian tạo: ~5 giây</span>
+                            <button id="btnRunAI" onclick="generateAIOutline()" class="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white text-xs md:text-sm font-bold rounded-2xl transition-all shadow-md flex items-center space-x-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>✨ Thiết kế Đề cương AI</span>
+                            </button>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div id="aiLoading" class="hidden flex flex-col items-center justify-center py-12 space-y-4">
+                            <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+                            <p class="text-xs font-bold text-teal-800 animate-pulse">✨ Đang phân tích lâm sàng và kết xuất bộ biến số...</p>
+                        </div>
+
+                        <!-- Error Box -->
+                        <div id="aiErrorBox" class="hidden p-4 bg-red-50 border border-red-200 text-red-800 text-xs rounded-2xl leading-relaxed"></div>
+
+                        <!-- Output Box -->
+                        <div id="aiOutputBox" class="hidden bg-slate-50 border border-slate-100 rounded-3xl p-6 md:p-8 space-y-4 animate-fade-in">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                                <div class="flex items-center space-x-2 text-teal-700 font-bold text-sm">
+                                    <i class="fa-solid fa-file-shield text-lg"></i>
+                                    <span>HỒ SƠ KHUNG NGHIÊN CỨU ĐỀ XUẤT</span>
+                                </div>
+                                <button onclick="copyAIOutput()" class="text-slate-500 hover:text-teal-600 text-xs flex items-center space-x-1.5 transition-all">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span>Sao chép đề cương</span>
+                                </button>
+                            </div>
+                            <div id="aiOutputText" class="ai-output-content text-xs md:text-sm text-slate-700">
+                                <!-- Results appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- KNOWLEDGE CHECK: TRẮC NGHIỆM TƯƠNG TÁC 20 CÂU -->
+                <section id="knowledge-check" class="space-y-6 scroll-mt-20">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-teal-50 rounded-xl text-teal-600">
+                                <i class="fa-solid fa-graduation-cap text-xl"></i>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-900">Trắc nghiệm Lượng giá (20 Câu)</h3>
+                        </div>
+                        <div class="text-xs text-slate-400 font-medium">Bản quyền DSCK1 Y Dược</div>
+                    </div>
+
+                    <!-- Quiz Area -->
+                    <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center text-xs text-slate-500">
+                            <span id="quizIndex">Câu hỏi 1 / 20</span>
+                            <span id="quizScore" class="bg-teal-50 text-teal-700 font-bold px-3 py-1 rounded-full border border-teal-200">Đúng: 0</span>
+                        </div>
+
+                        <!-- Progress Bar UI -->
+                        <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div id="quizBar" class="h-full bg-teal-600 w-[5%] transition-all duration-300"></div>
+                        </div>
+
+                        <!-- Question Box -->
+                        <div class="space-y-4">
+                            <h4 id="questionText" class="text-sm md:text-base font-extrabold text-slate-950 leading-snug"></h4>
+                            <div id="quizAnswers" class="grid grid-cols-1 gap-2.5">
+                                <!-- Answers will be rendered via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback Box -->
+                        <div id="quizFeedback" class="hidden p-4 rounded-2xl border text-xs leading-relaxed space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span id="feedbackStatus" class="px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase"></span>
+                                <span class="font-bold text-slate-900">Giải thích chuyên khoa:</span>
+                            </div>
+                            <p id="feedbackExplanation" class="text-slate-600"></p>
+                            <button onclick="nextQuizQuestion()" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all shadow-md self-start text-xs">
+                                Câu tiếp theo <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CHECKLIST & TAKEAWAYS -->
+                <section id="takeaways" class="bg-slate-900 text-slate-100 rounded-3xl p-6 md:p-8 space-y-6 shadow-lg scroll-mt-20">
+                    <div class="flex items-center space-x-3 border-b border-slate-800 pb-4">
+                        <div class="p-2 bg-slate-800 rounded-xl text-teal-400">
+                            <i class="fa-solid fa-clipboard-check text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Checklist Đề cương Luận văn CK1 Y Dược</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300">
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-teal-400 uppercase tracking-wider text-[11px]"><i class="fa-solid fa-check-double mr-1"></i>Trước khi thu thập dữ liệu</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-square-check text-teal-500 mt-0.5"></i>
+                                    <span>Xác định rõ ràng câu hỏi nghiên cứu dựa trên bộ khung chuẩn PICO hoặc mục tiêu can thiệp cụ thể.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-square-check text-teal-500 mt-0.5"></i>
+                                    <span>Khai báo chính xác thiết kế nghiên cứu (không được nhầm lẫn giữa mô tả cắt ngang và bệnh chứng hồi cứu).</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-square-check text-teal-500 mt-0.5"></i>
+                                    <span>Lập danh mục mã hóa các biến số (Codebook) với thang đo SPSS phù hợp (Nominal, Ordinal, Scale).</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-amber-400 uppercase tracking-wider text-[11px]"><i class="fa-solid fa-ban mr-1"></i>Sai lầm cần tránh khi chọn mẫu</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+                                    <span>Nhầm lẫn cỡ mẫu EFA ($n \ge 50 + 8p$) với cỡ mẫu ước lượng tỷ lệ đơn thuần.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+                                    <span>Sử dụng phương pháp chọn mẫu thuận tiện nhưng lại viết kết luận suy rộng ra cho toàn tỉnh hay cả nước.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-regular fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+                                    <span>Tự ý thay thế điểm trung bình cho các mã định danh (Ví dụ: tính điểm trung bình cho Mã bệnh án là sai hoàn toàn).</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script Area containing Simulation and Quiz Data -->
+    <script>
+        // Progress bar scroll handler
+        window.addEventListener('scroll', () => {
+            const windScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (windScroll / height) * 100;
+            document.getElementById('readingProgress').style.width = scrolled + '%';
+
+            // Menu Highlight on scroll
+            const sections = document.querySelectorAll('section');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('text-teal-400', 'bg-slate-800/50');
+                item.classList.add('text-slate-400');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.remove('text-slate-400');
+                    item.classList.add('text-teal-400', 'bg-slate-800/50');
+                }
+            });
+        });
+
+        // Mobile sidebar toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        });
+
+        // Close sidebar on clicking link on mobile
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            });
+        });
+
+        // ================= LAB: VARIABLE CLASSIFIER WIDGET =================
+        const vLabQuestions = [
+            { name: "GioiTinh", text: "Giới tính bệnh nhân (1 = Nam, 2 = Nữ)", correct: "Nominal", explain: "Bởi vì Nam và Nữ là các danh xưng bình đẳng, không có tính phân bậc hơn kém hay tính toán giá trị thực tế." },
+            { name: "SuyThan_GiaiDoan", text: "Giai đoạn suy thận (1 = Giai đoạn I, 2 = Giai đoạn II, 3 = Giai đoạn III)", correct: "Ordinal", explain: "Đây là biến phân loại có thứ bậc rõ rệt (mức độ suy thận tăng dần), nhưng khoảng cách giữa các giai đoạn không thể định lượng số đo bằng trị số học." },
+            { name: "HuyetAp_TamThu", text: "Trị số Huyết áp tâm thu thực tế (mmHg)", correct: "Scale", explain: "Đây là biến định lượng liên tục, có đơn vị thực tế (mmHg) và cho phép áp dụng tính giá trị trung bình cộng (Mean)." },
+            { name: "PhacDoDieuTri", text: "Mã phác đồ điều trị lâm sàng (1 = Phác đồ A, 2 = Phác đồ B, 3 = Phác đồ C)", correct: "Nominal", explain: "Các phác đồ này chỉ là các tên gọi định danh, không có thứ tự cao thấp." },
+            { name: "HocVan", text: "Trình độ học vấn (1 = Trung học, 2 = Đại học, 3 = Sau Đại học)", correct: "Ordinal", explain: "Bởi vì các mức độ này phản ánh thứ bậc trình độ giáo dục khác biệt tăng dần rõ rệt." }
+        ];
+
+        let currentVLabIndex = 0;
+        let vLabScore = 0;
+
+        function loadVLab() {
+            const currentQ = vLabQuestions[currentVLabIndex];
+            document.getElementById('vLabName').innerText = currentQ.name;
+            document.getElementById('vLabDesc').innerText = currentQ.text;
+            document.getElementById('vLabExplain').innerText = "";
+        }
+
+        function answerVLab(selectedScale) {
+            const currentQ = vLabQuestions[currentVLabIndex];
+            const isCorrect = selectedScale === currentQ.correct;
+            
+            const explainEl = document.getElementById('vLabExplain');
+            if (isCorrect) {
+                vLabScore++;
+                document.getElementById('vLabScore').innerText = `${vLabScore} / 5`;
+                explainEl.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Chính xác!</span> ${currentQ.explain}`;
+            } else {
+                explainEl.innerHTML = `<span class="text-red-400 font-bold"><i class="fa-solid fa-circle-xmark mr-1"></i>Chưa chính xác!</span> Đúng phải là <strong>${currentQ.correct}</strong>. ${currentQ.explain}`;
+            }
+
+            setTimeout(() => {
+                currentVLabIndex = (currentVLabIndex + 1) % vLabQuestions.length;
+                loadVLab();
+            }, 3500);
+        }
+
+        // ================= SAMPLING METHODS TABS =================
+        function switchSamplingTab(tab) {
+            document.querySelectorAll('.sampling-tab-btn').forEach(btn => {
+                btn.classList.remove('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                btn.classList.add('text-slate-600', 'hover:text-slate-900', 'font-semibold');
+            });
+            
+            if (tab === 'probability') {
+                document.getElementById('btn-sampling-prob').classList.add('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                document.getElementById('content-sampling-prob').classList.remove('hidden');
+                document.getElementById('content-sampling-nonprob').classList.add('hidden');
+            } else {
+                document.getElementById('btn-sampling-nonprob').classList.add('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                document.getElementById('content-sampling-prob').classList.add('hidden');
+                document.getElementById('content-sampling-nonprob').classList.remove('hidden');
+            }
+        }
+
+        // ================= LAB: SAMPLING SIMULATOR =================
+        function initSamplingSim() {
+            const grid = document.getElementById('simGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 20; i++) {
+                const cell = document.createElement('div');
+                cell.id = `simCell-${i}`;
+                cell.className = "p-3 bg-slate-900 border border-slate-800 rounded-xl text-center text-xs text-slate-400 font-mono transition-all flex flex-col justify-center items-center gap-1";
+                cell.innerHTML = `
+                    <span class="text-[10px] text-slate-600">ID BA</span>
+                    <span class="font-bold text-slate-300">${String(i).padStart(3, '0')}</span>
+                `;
+                grid.appendChild(cell);
+            }
+        }
+
+        function runSystematicSim() {
+            const startVal = parseInt(document.getElementById('simStart').value);
+            if (isNaN(startVal) || startVal < 1 || startVal > 5) {
+                alert("Vui lòng nhập giá trị khởi đầu ngẫu nhiên từ 1 đến 5!");
+                return;
+            }
+
+            // Clear previous simulation colors
+            for (let i = 1; i <= 20; i++) {
+                const cell = document.getElementById(`simCell-${i}`);
+                cell.className = "p-3 bg-slate-900 border border-slate-800 rounded-xl text-center text-xs text-slate-400 font-mono transition-all flex flex-col justify-center items-center gap-1";
+                const checkMark = cell.querySelector('i');
+                if (checkMark) checkMark.remove();
+            }
+
+            // k = 5, select startVal, startVal+5, startVal+10, startVal+15
+            const selectedIdxs = [startVal, startVal + 5, startVal + 10, startVal + 15];
+            
+            selectedIdxs.forEach(idx => {
+                const targetCell = document.getElementById(`simCell-${idx}`);
+                if (targetCell) {
+                    targetCell.className = "p-3 bg-amber-500/10 border-2 border-amber-500 rounded-xl text-center text-xs text-amber-400 font-mono transition-all flex flex-col justify-center items-center gap-1 shadow-lg shadow-amber-500/5";
+                    
+                    const check = document.createElement('i');
+                    check.className = "fa-solid fa-check text-[10px] text-amber-500 bg-amber-950/40 p-1 rounded-full";
+                    targetCell.appendChild(check);
+                }
+            });
+        }
+
+        // ================= COGNITIVE TOOL TABS =================
+        function switchGuideTab(tab) {
+            document.querySelectorAll('.guide-tab-btn').forEach(btn => {
+                btn.classList.remove('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                btn.classList.add('text-slate-600', 'hover:text-slate-900', 'font-semibold');
+            });
+            
+            if (tab === 'spss') {
+                document.getElementById('btn-guide-spss').classList.add('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                document.getElementById('content-guide-spss').classList.remove('hidden');
+                document.getElementById('content-guide-excel').classList.add('hidden');
+            } else {
+                document.getElementById('btn-guide-excel').classList.add('text-teal-700', 'bg-white', 'shadow-sm', 'font-bold');
+                document.getElementById('content-guide-spss').classList.add('hidden');
+                document.getElementById('content-guide-excel').classList.remove('hidden');
+            }
+        }
+
+        // ================= GEMINI AI OUTLINE MAKER =================
+        function fillAISuggestion(text) {
+            document.getElementById('aiInputTopic').value = text;
+        }
+
+        async function generateAIOutline() {
+            const topic = document.getElementById('aiInputTopic').value.trim();
+            if (!topic) {
+                alert("Vui lòng nhập ý tưởng hoặc chọn một gợi ý nhanh!");
+                return;
+            }
+
+            const btnRun = document.getElementById('btnRunAI');
+            const loader = document.getElementById('aiLoading');
+            const outputBox = document.getElementById('aiOutputBox');
+            const errorBox = document.getElementById('aiErrorBox');
+
+            // Set Loading state
+            btnRun.disabled = true;
+            loader.classList.remove('hidden');
+            outputBox.classList.add('hidden');
+            errorBox.classList.add('hidden');
+
+            const systemInstruction = `Bạn là một chuyên gia thống kê y sinh lâm sàng và phương pháp nghiên cứu cao cấp. Bạn đang hướng dẫn học viên Chuyên khoa 1 (CK1) ngành Dược/Y khoa tại Việt Nam thiết lập đề cương nghiên cứu. 
+Hãy phân tích ý tưởng nghiên cứu thô được nhập vào và thiết lập bộ khung cấu trúc chuẩn hóa khoa học.
+Phản hồi của bạn bắt buộc phải có cấu trúc sau (và định dạng HTML đẹp):
+1. Thiết kế nghiên cứu tối ưu (Giải thích tại sao chọn thiết kế đó).
+2. Bộ biến số đề xuất (Liệt kê rõ các biến Độc lập, Phụ thuộc, và Kiểm soát, kèm theo thang đo SPSS cụ thể: Nominal, Ordinal, hay Scale).
+3. Phương án chọn mẫu & Công thức cỡ mẫu khuyên dùng.
+4. Gợi ý 3 chỉ số lâm sàng/Dược lý và cách tránh sai lệch dữ liệu khi nhập liệu.
+Sử dụng tiếng Việt chuyên môn, khoa học, dễ hiểu, trực quan. Tránh xuất các thẻ html không có nội dung.`;
+
+            try {
+                const response = await fetchGeminiWithRetry(topic, systemInstruction);
+                const textResult = response.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!textResult) {
+                    throw new Error("Không nhận được dữ liệu phân tích từ AI.");
+                }
+
+                // Render output (Convert basic markdown to standard HTML tags)
+                document.getElementById('aiOutputText').innerHTML = parseSimpleMarkdown(textResult);
+                
+                // Re-trigger KaTeX rendering on dynamic AI content
+                if (typeof renderMathInElement === 'function') {
+                    renderMathInElement(document.getElementById('aiOutputText'), {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ]
+                    });
+                }
+                
+                outputBox.classList.remove('hidden');
+            } catch (err) {
+                errorBox.innerText = err.message || "Đã xảy ra lỗi không xác định.";
+                errorBox.classList.remove('hidden');
+            } finally {
+                btnRun.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+
+        async function fetchGeminiWithRetry(userQuery, systemPrompt) {
+            const apiKey = ""; // Platform automatically injects key at runtime
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let delay = 1000;
+            for (let attempt = 0; attempt < 5; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) {
+                        return await response.json();
+                    }
+                } catch (e) {
+                    // Fail silently during retries as per strict guardrails
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+            throw new Error("Hệ thống kết nối AI bận hoặc hết lượt dùng thử. Vui lòng kiểm tra kết nối mạng và thử lại sau.");
+        }
+
+        function parseSimpleMarkdown(markdown) {
+            // Basic markdown to HTML converter for beautiful structured display
+            let html = markdown;
+            
+            // Bold
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Bullet points
+            html = html.replace(/^\s*\*\s+(.*?)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+            // Clean up double wrappers
+            html = html.replace(/<\/ul>\s*<ul>/g, '');
+            // Headings
+            html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*?)$/gm, '<h3 class="text-teal-800 border-l-4 border-teal-600 pl-2 mt-4 font-bold">$1</h3>');
+            // Paragraph lines
+            html = html.split('\n').map(line => {
+                if (line.trim().startsWith('<h') || line.trim().startsWith('<ul') || line.trim().startsWith('<li') || line.trim().startsWith('</ul')) {
+                    return line;
+                }
+                return line.trim() ? `<p>${line}</p>` : '';
+            }).join('\n');
+
+            return html;
+        }
+
+        function copyAIOutput() {
+            const element = document.getElementById('aiOutputText');
+            // Extract text representation
+            const textToCopy = element.innerText;
+            
+            // Create temporary textarea as per platform rules to execute copy safely in iframe environment
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            try {
+                document.execCommand('copy');
+                alert("Đã sao chép nội dung Đề cương AI vào bộ nhớ tạm thành công!");
+            } catch (err) {
+                alert("Thiết bị không hỗ trợ sao chép nhanh, vui lòng chọn thủ công.");
+            }
+            document.body.removeChild(tempTextArea);
+        }
+
+        // ================= KNOWLEDGE CHECK: 20 DETAILED QUESTIONS =================
+        const quizData = [
+            {
+                q: "1. Thiết kế nghiên cứu nào được coi là tiêu chuẩn vàng để chứng minh hiệu quả lâm sàng điều trị của một thuốc mới?",
+                a: [
+                    "A. Nghiên cứu cắt ngang mô tả.",
+                    "B. Nghiên cứu bệnh chứng hồi cứu.",
+                    "C. Thử nghiệm lâm sàng ngẫu nhiên có đối chứng (RCT).",
+                    "D. Nghiên cứu thuần tập tiến cứu."
+                ],
+                c: 2,
+                e: "RCT (Randomized Controlled Trial) có tính ngẫu nhiên hóa và kiểm soát nhóm chứng chặt chẽ, là tiêu chuẩn cao nhất xác lập mối liên hệ nhân quả hiệu quả thuốc."
+            },
+            {
+                q: "2. Một học viên tiến hành khảo sát mức độ hài lòng của 150 bệnh nhân tại khoa ngoại trú vào một buổi sáng cụ thể. Phác đồ chọn mẫu nào đang được sử dụng?",
+                a: [
+                    "A. Chọn mẫu ngẫu nhiên đơn.",
+                    "B. Chọn mẫu thuận tiện (Phi xác suất).",
+                    "C. Chọn mẫu phân tầng xác suất.",
+                    "D. Chọn mẫu chùm."
+                ],
+                c: 1,
+                e: "Tận dụng các đối tượng sẵn có, dễ tiếp cận tại một mốc thời gian là kỹ thuật chọn mẫu Thuận tiện (Convenience Sampling)."
+            },
+            {
+                q: "3. Nhược điểm cốt lõi nhất của nghiên cứu cắt ngang (Cross-sectional Study) trong dịch tễ học là gì?",
+                a: [
+                    "A. Thời gian nghiên cứu quá kéo dài.",
+                    "B. Kinh phí thực hiện cực kỳ đắt đỏ.",
+                    "C. Không thể xác định được trình tự thời gian trước sau giữa phơi nhiễm và bệnh trạng (Không chứng minh nhân quả).",
+                    "D. Không thể áp dụng tính tỷ lệ phần trăm phân bố."
+                ],
+                c: 2,
+                e: "Bởi vì cả phơi nhiễm và bệnh được đo lường cùng một thời điểm, ta không rõ yếu tố nào xuất hiện trước."
+            },
+            {
+                q: "4. Thang đo nào trong SPSS được quy ước cho biến định tính không có thứ bậc (Ví dụ: Giới tính Nam/Nữ)?",
+                a: [
+                    "A. Nominal Scale",
+                    "B. Ordinal Scale",
+                    "C. Scale",
+                    "D. Interval Scale"
+                ],
+                c: 0,
+                e: "Nominal là thang đo định danh, dùng để phân nhóm các giá trị không có tính chất hơn kém hoặc thứ bậc."
+            },
+            {
+                q: "5. Lệnh nào trên thanh công cụ SPSS giúp bạn lọc lấy một lượng mẫu bệnh án ngẫu nhiên từ bộ dữ liệu tổng?",
+                a: [
+                    "A. Transform -> Compute Variable",
+                    "B. Analyze -> Descriptive Statistics -> Frequencies",
+                    "C. Data -> Select Cases",
+                    "D. Data -> Split File"
+                ],
+                c: 2,
+                e: "Đường dẫn Data -> Select Cases cho phép người dùng chọn ngẫu nhiên (Random sample of cases) một phần dữ liệu."
+            },
+            {
+                q: "6. Điểm Likert từ 1 (Rất không đồng ý) đến 5 (Rất đồng ý) của từng câu hỏi khuyết lẻ được quy ước thuộc loại thang đo nào trong SPSS?",
+                a: [
+                    "A. Nominal Scale",
+                    "B. Ordinal Scale",
+                    "C. Scale",
+                    "D. Ratio Scale"
+                ],
+                c: 1,
+                e: "Mỗi câu hỏi Likert đơn lẻ có giá trị biểu thị mức độ hơn kém rõ rệt nên thuộc loại Ordinal (Thứ bậc)."
+            },
+            {
+                q: "7. Khi gộp trung bình cộng nhiều câu hỏi Likert cùng nhân tố để chạy kiểm định hồi quy, biến nhân tố trung bình đại diện sẽ có thuộc tính thang đo nào?",
+                a: [
+                    "A. Nominal Scale",
+                    "B. Ordinal Scale",
+                    "C. Scale (Định lượng liên tục)",
+                    "D. Đơn thuần định danh"
+                ],
+                c: 2,
+                e: "Điểm trung bình nhân tố (Mean) là biến liên tục số thực, được khai báo thuộc thang đo Scale trong SPSS."
+            },
+            {
+                q: "8. Trình độ suy thận của bệnh nhân chia thành Giai đoạn I, II, III thuộc loại thang đo nào?",
+                a: [
+                    "A. Nominal",
+                    "B. Ordinal",
+                    "C. Scale",
+                    "D. Định lượng liên tục"
+                ],
+                c: 1,
+                e: "Có sự phân bậc mức độ nghiêm trọng rõ ràng nhưng không đo bằng khoảng cách định lượng cụ thể, thuộc Ordinal."
+            },
+            {
+                q: "9. Hàm nào trong Excel được áp dụng để sinh số ngẫu nhiên phục vụ việc lấy mẫu thô thuận tiện?",
+                a: [
+                    "A. =AVERAGE()",
+                    "B. =COUNTIF()",
+                    "C. =RAND()",
+                    "D. =SUM()"
+                ],
+                c: 2,
+                e: "Hàm RAND() sinh các số thực ngẫu nhiên từ 0 đến dưới 1 hỗ trợ xáo trộn ngẫu nhiên dữ liệu."
+            },
+            {
+                q: "10. Để thực hiện phân tích nhân tố khám phá (EFA) ổn định, quy tắc tối thiểu cỡ mẫu cần đạt được là bao nhiêu?",
+                a: [
+                    "A. Chỉ cần tối thiểu 30 mẫu cho tất cả các nghiên cứu.",
+                    "B. Tối thiểu 5 quan sát cho một biến quan sát (biến đo lường).",
+                    "C. Phải lấy mẫu trên 1000 bệnh nhân.",
+                    "D. Không có quy tắc liên quan."
+                ],
+                c: 1,
+                e: "Trong EFA, cỡ mẫu tối thiểu thường yêu cầu tỷ lệ là 5 quan sát cho 1 biến quan sát ($n \\ge 5 \\times p$)."
+            },
+            {
+                q: "11. Công thức tính cỡ mẫu theo Green ($N \\ge 50 + 8p$) áp dụng cho phép kiểm thống kê nào?",
+                a: [
+                    "A. Kiểm định Chi-bình phương so sánh tỷ lệ.",
+                    "B. Phân tích hồi quy tuyến tính bội (với p là số biến độc lập).",
+                    "C. Kiểm định Independent Samples T-test.",
+                    "D. Phân tích nhân tố khám phá EFA."
+                ],
+                c: 1,
+                e: "Quy tắc Green ($50 + 8p$) ước tính cỡ mẫu tối thiểu để chạy mô hình hồi quy đa biến có ý nghĩa thống kê."
+            },
+            {
+                q: "12. Sai lệch lựa chọn (Selection Bias) thường xuất hiện nghiêm trọng nhất ở nhóm phương pháp chọn mẫu nào?",
+                a: [
+                    "A. Chọn mẫu ngẫu nhiên hệ thống.",
+                    "B. Chọn mẫu xác suất phân tầng.",
+                    "C. Chọn mẫu phi xác suất (Chọn mẫu thuận tiện).",
+                    "D. Chọn mẫu ngẫu nhiên đơn."
+                ],
+                c: 2,
+                e: "Chọn mẫu phi xác suất không đảm bảo mọi đối tượng đều có cơ hội được chọn, rất dễ thiên vị hoặc mất tính đại diện."
+            },
+            {
+                q: "13. Thiết kế nghiên cứu nào đi ngược chiều thời gian, lấy nhóm đối tượng bị bệnh và nhóm không bị bệnh ở hiện tại để tìm hiểu yếu tố tiếp xúc trong quá khứ?",
+                a: [
+                    "A. Nghiên cứu thuần tập tiến cứu.",
+                    "B. Nghiên cứu bệnh chứng hồi cứu (Case-control).",
+                    "C. Nghiên cứu mô tả cắt ngang.",
+                    "D. Thử nghiệm lâm sàng ngẫu nhiên."
+                ],
+                c: 1,
+                e: "Nghiên cứu bệnh chứng đi ngược thời gian để tìm hiểu nguyên nhân phơi nhiễm quá khứ của ca bệnh."
+            },
+            {
+                q: "14. Một nghiên cứu viên chia danh sách bệnh nhân thành 2 tầng: tầng bệnh ngoại trú và tầng bệnh nội trú, sau đó lấy mẫu ngẫu nhiên từ mỗi tầng. Đây là kỹ thuật gì?",
+                a: [
+                    "A. Chọn mẫu ngẫu nhiên đơn.",
+                    "B. Chọn mẫu xác suất phân tầng (Stratified Sampling).",
+                    "C. Chọn mẫu chùm.",
+                    "D. Chọn mẫu thuận tiện."
+                ],
+                c: 1,
+                e: "Sự phân chia quần thể thành các tầng riêng biệt trước khi rút mẫu ngẫu nhiên là chọn mẫu phân tầng."
+            },
+            {
+                q: "15. Nếu bộ dữ liệu nghiên cứu chỉ có 50 bệnh nhân nhưng học viên muốn thiết lập phân tích EFA cho bộ câu hỏi 30 biến quan sát, điều gì xảy ra?",
+                a: [
+                    "A. SPSS vẫn tự động chạy và cho kết quả chuẩn xác 100%.",
+                    "B. Vi phạm nghiêm trọng cỡ mẫu tối thiểu của EFA, kết quả phân tích không đạt độ tin cậy khoa học.",
+                    "C. Kết quả p-value sẽ tự động đạt tối ưu.",
+                    "D. Phân mềm sẽ bị hỏng hoàn toàn không chạy được."
+                ],
+                c: 1,
+                e: "Với 30 biến, EFA cần ít nhất $30 \\times 5 = 150$ mẫu. Việc chạy trên 50 mẫu sẽ làm sai lệch ma trận tương quan."
+            },
+            {
+                q: "16. Trong công thức tính cỡ mẫu ước lượng tỷ lệ cắt ngang, trị số $Z_{1-\\alpha/2}$ tương ứng với độ tin cậy 95% có giá trị quy định là bao nhiêu?",
+                a: [
+                    "A. 1.65",
+                    "B. 1.96",
+                    "C. 2.58",
+                    "D. 0.05"
+                ],
+                c: 1,
+                e: "Với mức ý nghĩa $\\alpha = 0.05$ (độ tin cậy 95%), giá trị phân vị chuẩn Z tương ứng là 1.96."
+            },
+            {
+                q: "17. Thuật ngữ 'PICO' được sử dụng để xây dựng nội dung nào trong nghiên cứu y học?",
+                a: [
+                    "A. Khung câu hỏi nghiên cứu lâm sàng.",
+                    "B. Hệ thống mã hóa SPSS.",
+                    "C. Thiết kế bảng Pivot Table.",
+                    "D. Biểu đồ râu hộp."
+                ],
+                c: 0,
+                e: "PICO (Patient/Population, Intervention, Comparison, Outcome) là khung chuẩn thiết kế câu hỏi nghiên cứu."
+            },
+            {
+                q: "18. Sự khác biệt cốt lõi nhất giữa chọn mẫu chùm (Cluster) và chọn mẫu phân tầng (Stratified) là gì?",
+                a: [
+                    "A. Chọn mẫu phân tầng không dùng tính ngẫu nhiên.",
+                    "B. Phân tầng là lấy ngẫu nhiên từ TẤT CẢ các tầng; còn Chọn mẫu chùm là chỉ lấy ngẫu nhiên một số chùm và khảo sát toàn bộ chùm đó.",
+                    "C. Hai phương pháp hoàn toàn trùng khớp nhau.",
+                    "D. Chọn mẫu chùm chỉ dùng trong nghiên cứu hồi cứu."
+                ],
+                c: 1,
+                e: "Phân tầng bảo đảm tầng nào cũng có đại diện tham gia, còn chọn chùm chọn ngẫu nhiên đơn vị chùm làm đại diện."
+            },
+            {
+                q: "19. Phát biểu nào đúng khi viết phần 'Phương pháp nghiên cứu' trong luận văn CK1?",
+                a: [
+                    "A. Không cần viết cách chọn mẫu nếu cỡ mẫu lấy thuận tiện.",
+                    "B. Luôn luôn phải trình bày rõ cách tính cỡ mẫu và phương pháp chọn mẫu cụ thể để hội đồng đánh giá tính đại diện.",
+                    "C. Chỉ cần copy lý thuyết sách giáo khoa vào luận văn.",
+                    "D. Chỉ viết về phần chạy mô hình SPSS, bỏ qua phần chọn mẫu."
+                ],
+                c: 1,
+                e: "Minh bạch phương pháp luận, cỡ mẫu và quy trình thu thập dữ liệu là yêu cầu bắt buộc của mọi nghiên cứu khoa học."
+            },
+            {
+                q: "20. SPSS chỉ là công cụ tính toán. Chất lượng và tính đúng đắn của đề tài nghiên cứu y dược được quyết định trước hết bởi yếu tố nào?",
+                a: [
+                    "A. Việc máy tính chạy nhanh hay chậm.",
+                    "B. Tư duy phương pháp luận, cách thiết kế biến và chất lượng thu thập mẫu.",
+                    "C. Sự phức tạp của mô hình hồi quy tuyến tính.",
+                    "D. Số lượng trang in của cuốn luận văn."
+                ],
+                c: 1,
+                e: "Tư duy nghiên cứu khoa học khách quan và kỹ năng thiết lập số liệu là cốt lõi tạo nên giá trị y học thực tiễn."
+            }
+        ];
+
+        let quizIndex = 0;
+        let quizScore = 0;
+        let quizAnswerSelected = false;
+
+        function loadQuiz() {
+            quizAnswerSelected = false;
+            document.getElementById('quizFeedback').classList.add('hidden');
+            
+            const qData = quizData[quizIndex];
+            document.getElementById('quizIndex').innerText = `Câu hỏi ${quizIndex + 1} / ${quizData.length}`;
+            document.getElementById('quizScore').innerText = `Đúng: ${quizScore}`;
+            
+            const percent = ((quizIndex + 1) / quizData.length) * 100;
+            document.getElementById('quizBar').style.width = percent + '%';
+            
+            document.getElementById('questionText').innerText = qData.q;
+            
+            const answersContainer = document.getElementById('quizAnswers');
+            answersContainer.innerHTML = '';
+            
+            qData.a.forEach((ans, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-teal-500/30 transition-all text-xs md:text-sm font-medium flex justify-between items-center group";
+                btn.innerHTML = `
+                    <span>${ans}</span>
+                    <i class="fa-regular fa-circle text-slate-300 group-hover:text-teal-500 transition-all text-sm"></i>
+                `;
+                btn.onclick = () => selectAnswer(idx, btn);
+                answersContainer.appendChild(btn);
+            });
+
+            // Re-render KaTeX in quiz container dynamically
+            setTimeout(() => {
+                if (typeof renderMathInElement === 'function') {
+                    renderMathInElement(document.getElementById('questionText'), {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ]
+                    });
+                }
+            }, 10);
+        }
+
+        function selectAnswer(selIdx, btnEl) {
+            if (quizAnswerSelected) return;
+            quizAnswerSelected = true;
+            
+            const qData = quizData[quizIndex];
+            const isCorrect = selIdx === qData.c;
+            
+            const allBtns = document.querySelectorAll('#quizAnswers button');
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                const icon = btn.querySelector('i');
+                if (idx === qData.c) {
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-900');
+                    icon.className = "fa-solid fa-circle-check text-emerald-500 text-sm";
+                } else if (idx === selIdx && !isCorrect) {
+                    btn.classList.add('bg-red-50', 'border-red-500', 'text-red-900');
+                    icon.className = "fa-solid fa-circle-xmark text-red-500 text-sm";
+                } else {
+                    btn.classList.add('opacity-60');
+                }
+            });
+
+            const statusBadge = document.getElementById('feedbackStatus');
+            if (isCorrect) {
+                quizScore++;
+                document.getElementById('quizScore').innerText = `Đúng: ${quizScore}`;
+                statusBadge.innerText = "CHÍNH XÁC";
+                statusBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase bg-emerald-500";
+            } else {
+                statusBadge.innerText = "CHƯA ĐÚNG";
+                statusBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase bg-red-500";
+            }
+
+            const feedbackExplanationEl = document.getElementById('feedbackExplanation');
+            feedbackExplanationEl.innerText = qData.e;
+            
+            // Re-render math inside explanation
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(feedbackExplanationEl, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+
+            document.getElementById('quizFeedback').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            quizIndex++;
+            if (quizIndex < quizData.length) {
+                loadQuiz();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            const quizContainer = document.getElementById('knowledge-check');
+            let level = "";
+            let medalColor = "";
+            let msg = "";
+            const rate = (quizScore / quizData.length) * 100;
+
+            if (rate >= 90) {
+                level = "BẬC THẦY PHƯƠNG PHÁP NGHIÊN CỨU LÂM SÀNG";
+                medalColor = "text-amber-500";
+                msg = "Hoàn hảo! Trình độ của bạn đã sẵn sàng tự tay thiết lập đề cương nghiên cứu khoa học CK1 đạt điểm số tối đa trước các Hội đồng khoa học.";
+            } else if (rate >= 70) {
+                level = "NGHIÊN CỨU VIÊN CÓ NĂNG LỰC";
+                medalColor = "text-slate-400";
+                msg = "Rất tốt! Bạn nắm vững các khái niệm cơ bản về biến số và chọn mẫu. Chỉ cần rà soát lại kỹ các thao tác SPSS là tự tin thực hiện đề tài.";
+            } else {
+                level = "HỌC VIÊN CẦN CỐ GẮNG THÊM";
+                medalColor = "text-amber-700";
+                msg = "Chưa đạt! Bạn nên dành thời gian xem lại các mô hình thiết kế nghiên cứu lâm sàng cùng các phòng thí nghiệm mô phỏng tương tác trên đây để củng cố lại kiến thức.";
+            }
+
+            quizContainer.innerHTML = `
+                <div class="bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-3xl p-8 text-center space-y-6 shadow-xl max-w-2xl mx-auto">
+                    <div class="space-y-1">
+                        <span class="px-3 py-1 bg-teal-500/20 text-teal-300 text-xs font-semibold rounded-full border border-teal-500/30 uppercase tracking-widest">KẾT QUẢ ĐÁNH GIÁ CUỐI KHÓA</span>
+                        <h3 class="text-2xl font-extrabold text-white">Hoàn Thành Bài Học</h3>
+                    </div>
+                    
+                    <div class="py-6 flex flex-col items-center justify-center space-y-2">
+                        <i class="fa-solid fa-graduation-cap text-6xl ${medalColor} animate-bounce"></i>
+                        <div class="text-5xl font-black text-white mt-2">${quizScore} / ${quizData.length}</div>
+                        <p class="text-xs font-bold text-teal-400 uppercase tracking-wider mt-1">${level}</p>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-md mx-auto">
+                        ${msg}
+                    </p>
+
+                    <button onclick="location.reload()" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-2xl transition-all shadow-md">
+                        Học lại từ đầu
+                    </button>
+                </div>
+            `;
+        }
+
+        // Initialize E-learning App
+        window.onload = function() {
+            loadVLab();
+            initSamplingSim();
+            runSystematicSim();
+            loadQuiz();
+            
+            // Execute first pass of KaTeX rendering on statically available content
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        };
+    </script>
+</body>
+</html>

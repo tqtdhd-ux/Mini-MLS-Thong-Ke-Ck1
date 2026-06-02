@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 9: Hồi Quy Tuyến Tính Bội - Thống Kê Y Sinh CK1</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- KaTeX cho công thức Toán -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a', // Blue-900 y tế
+                        secondary: '#0284c7', // Light blue
+                        accent: '#10b981', // Emerald
+                        warning: '#f59e0b', // Amber
+                        danger: '#ef4444' // Red
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .sidebar { height: 100vh; overflow-y: auto; transition: transform 0.3s ease-in-out; }
+        .content-area { height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
+        
+        .module-section { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .module-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Callouts */
+        .callout { border-left: 4px solid; padding: 1rem; margin: 1.5rem 0; border-radius: 0.25rem; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .callout-info { border-color: #3b82f6; } /* Blue */
+        .callout-info h4 { color: #1d4ed8; }
+        .callout-warning { border-color: #f59e0b; } /* Amber */
+        .callout-warning h4 { color: #b45309; }
+        .callout-success { border-color: #10b981; } /* Emerald */
+        .callout-success h4 { color: #047857; }
+        .callout-purple { border-color: #8b5cf6; } /* Purple cho áp dụng luận văn */
+        .callout-purple h4 { color: #6d28d9; }
+
+        .quiz-option { cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { background-color: #e0f2fe; }
+        .quiz-option.selected { background-color: #bfdbfe; border-color: #3b82f6; }
+        .quiz-option.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-option.wrong { background-color: #fee2e2; border-color: #ef4444; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Mobile Menu Button -->
+    <div class="md:hidden bg-primary text-white p-4 flex justify-between items-center z-20 shadow-md">
+        <h1 class="font-bold text-lg truncate">Thống Kê Y Sinh CK1</h1>
+        <button id="mobileMenuBtn" class="focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar w-full md:w-80 bg-white shadow-xl absolute md:relative z-10 transform -translate-x-full md:translate-x-0 flex flex-col">
+        <div class="p-6 bg-primary text-white hidden md:block">
+            <h1 class="font-bold text-xl leading-tight">Thống Kê Y Sinh CK1</h1>
+            <p class="text-sm text-blue-200 mt-2">Chương 9: Hồi quy tuyến tính bội</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="showModule('intro')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium text-gray-700 active-nav" id="btn-intro">
+                <i class="fas fa-home w-6 text-primary"></i> 1. Tổng quan & Mô hình
+            </button>
+            <button onclick="showModule('assumptions')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium text-gray-700" id="btn-assumptions">
+                <i class="fas fa-check-double w-6 text-warning"></i> 2. Các giả định hồi quy
+            </button>
+            <button onclick="showModule('spss')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium text-gray-700" id="btn-spss">
+                <i class="fas fa-desktop w-6 text-secondary"></i> 3. Thực hành SPSS
+            </button>
+            <button onclick="showModule('output')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium text-gray-700" id="btn-output">
+                <i class="fas fa-chart-bar w-6 text-accent"></i> 4. Đọc & Giải thích Output
+            </button>
+            <button onclick="showModule('quiz')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors font-bold text-primary" id="btn-quiz">
+                <i class="fas fa-clipboard-check w-6"></i> 5. Lượng giá (20 Câu)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content-area flex-1 bg-gray-50 p-4 md:p-8 relative">
+        
+        <!-- Module 1: Tổng quan -->
+        <section id="intro" class="module-section active max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-8 border-t-4 border-primary">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">1. Tổng quan Hồi quy tuyến tính bội</h2>
+                <p class="text-gray-600 mb-6 text-lg">Đánh giá đồng thời tác động của nhiều nhân tố đến sự hài lòng của bệnh nhân.</p>
+                
+                <h3 class="text-xl font-semibold text-primary mt-6 mb-3">Mục đích nghiên cứu</h3>
+                <p class="mb-4">Trong nghiên cứu y dược và quản lý bệnh viện, một kết quả (ví dụ: Sự hài lòng chung - <strong>SHL</strong>) hiếm khi do một nguyên nhân duy nhất gây ra. Nó bị chi phối bởi nhiều yếu tố cùng lúc. Hồi quy tuyến tính bội giúp chúng ta trả lời các câu hỏi:</p>
+                <ul class="list-disc pl-6 mb-6 space-y-2 text-gray-700">
+                    <li>Các nhân tố nào (Hiệu quả, Thái độ, Chi phí...) thực sự có tác động đến SHL?</li>
+                    <li>Mức độ tác động của từng nhân tố mạnh/yếu ra sao?</li>
+                    <li>Nhân tố nào quan trọng nhất cần ưu tiên cải thiện trong quản lý chất lượng bệnh viện?</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-primary mt-6 mb-3">Mô hình lý thuyết</h3>
+                <p class="mb-4">Dựa trên cơ sở lý thuyết, ta xây dựng mô hình với 6 biến độc lập dự báo biến phụ thuộc là <strong>SHL</strong>:</p>
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 text-center text-lg font-mono text-blue-900 mb-6">
+                    $SHL = \beta_0 + \beta_1 HQ + \beta_2 TD + \beta_3 QL + \beta_4 TT + \beta_5 DV + \beta_6 CP + \epsilon$
+                </div>
+
+                <div class="callout callout-info">
+                    <h4 class="font-bold flex items-center mb-2"><i class="fas fa-bolt mr-2"></i> Ghi nhớ nhanh</h4>
+                    <ul class="list-disc pl-5">
+                        <li><strong>Biến phụ thuộc (Y):</strong> SHL (Sự hài lòng chung) - Chỉ có 1 biến.</li>
+                        <li><strong>Biến độc lập (X):</strong> HQ, TD, QL, TT, DV, CP - Có từ 2 biến trở lên gọi là "Bội" (Multiple).</li>
+                        <li>Hồi quy chỉ thực hiện trên các biến đã tạo thành <strong>biến đại diện</strong> (sau khi chạy Cronbach's Alpha và EFA).</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h4 class="font-bold flex items-center mb-2"><i class="fas fa-exclamation-triangle mr-2"></i> Lỗi thường gặp</h4>
+                    <p>Học viên thường nhầm lẫn giữa Tương quan Pearson và Hồi quy. Pearson chỉ xét quan hệ tuyến tính "từng đôi một". Hồi quy xét sự tác động "có tính phương hướng" và đánh giá "đồng thời" các biến.</p>
+                </div>
+
+                <div class="flex justify-end mt-8">
+                    <button onclick="showModule('assumptions')" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition shadow-md font-medium">Tiếp theo: Giả định hồi quy <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 2: Giả định -->
+        <section id="assumptions" class="module-section max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-8 border-t-4 border-warning">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">2. Các giả định bắt buộc (Tiền đề hồi quy)</h2>
+                <p class="text-gray-600 mb-6 text-lg">Nếu vi phạm các giả định này, kết quả của mô hình hồi quy sẽ không đáng tin cậy.</p>
+
+                <div class="space-y-6">
+                    <div class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition">
+                        <h4 class="text-lg font-bold text-primary mb-2">1. Cỡ mẫu đủ lớn</h4>
+                        <p>Sử dụng công thức kinh nghiệm của Tabachnick & Fidell: <span class="bg-gray-100 px-2 py-1 rounded font-mono text-red-600">$N \ge 50 + 8p$</span> (với $p$ là số biến độc lập).</p>
+                        <p class="text-sm text-gray-500 mt-2">Ví dụ: Mô hình có 6 biến độc lập $\rightarrow N \ge 50 + 8 \times 6 = 98$. Mẫu của bạn n=250 là hoàn toàn đáp ứng.</p>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition">
+                        <h4 class="text-lg font-bold text-primary mb-2">2. Không có hiện tượng Đa cộng tuyến (Multicollinearity)</h4>
+                        <p>Đa cộng tuyến xảy ra khi các biến độc lập tương quan quá mạnh với nhau. Điều này làm nhiễu mô hình, không biết biến nào thực sự tác động.</p>
+                        <p class="mt-2 text-red-600 font-semibold"><i class="fas fa-search mr-1"></i> Cách kiểm tra: Hệ số VIF (Variance Inflation Factor).</p>
+                        <ul class="list-disc pl-6 mt-1">
+                            <li>Nếu <strong>VIF &lt; 2</strong> (hoặc VIF &lt; 10 tùy trường phái): Tuyệt vời, không có đa cộng tuyến.</li>
+                            <li>Nếu <strong>VIF &ge; 10</strong>: Đa cộng tuyến nghiêm trọng, phải loại biến.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition">
+                        <h4 class="text-lg font-bold text-primary mb-2">3. Tính độc lập của phần dư (Không tự tương quan)</h4>
+                        <p>Kiểm tra bằng đại lượng <strong>Durbin-Watson (DW)</strong>.</p>
+                        <p>Giá trị DW chạy từ 0 đến 4. Nếu <strong class="text-green-600">$1.5 \le DW \le 2.5$</strong>: Phần dư độc lập, mô hình tốt.</p>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition">
+                        <h4 class="text-lg font-bold text-primary mb-2">4. Phần dư phân phối chuẩn & Phương sai phần dư đồng đều</h4>
+                        <p>Kiểm tra thông qua biểu đồ Histogram, Normal P-P Plot và Scatterplot.</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-purple">
+                    <h4 class="font-bold flex items-center mb-2"><i class="fas fa-book-open mr-2"></i> Áp dụng trong luận văn CK1</h4>
+                    <p>Trong luận văn, trước khi trình bày bảng hệ số hồi quy, bạn <strong>bắt buộc phải có một mục nhỏ "Kiểm định các giả định của mô hình hồi quy"</strong>. Nếu thiếu mục này, Hội đồng có thể đánh giá nghiên cứu thiếu chặt chẽ.</p>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button onclick="showModule('intro')" class="text-gray-500 hover:text-primary transition font-medium"><i class="fas fa-arrow-left mr-2"></i> Quay lại</button>
+                    <button onclick="showModule('spss')" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition shadow-md font-medium">Tiếp theo: Thực hành SPSS <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 3: Thực hành SPSS -->
+        <section id="spss" class="module-section max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-8 border-t-4 border-secondary">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">3. Hướng dẫn thao tác trên máy (SPSS)</h2>
+                <p class="text-gray-600 mb-6 text-lg">Các bước cụ thể trên SPSS 20.0 trở lên.</p>
+
+                <div class="relative pl-8 border-l-2 border-blue-200 space-y-8 mt-8">
+                    <!-- Step 1 -->
+                    <div class="relative">
+                        <div class="absolute -left-12 bg-secondary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow">1</div>
+                        <h4 class="text-xl font-bold text-gray-800">Mở lệnh phân tích</h4>
+                        <p class="mt-2 text-gray-700">Trên thanh menu, chọn: <strong>Analyze</strong> > <strong>Regression</strong> > <strong>Linear...</strong></p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative">
+                        <div class="absolute -left-12 bg-secondary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow">2</div>
+                        <h4 class="text-xl font-bold text-gray-800">Khai báo biến</h4>
+                        <div class="bg-gray-100 p-4 rounded-md mt-2">
+                            <p><strong>Dependent (Phụ thuộc):</strong> Đưa biến <code>SHL</code> vào.</p>
+                            <p class="mt-2"><strong>Independent(s) (Độc lập):</strong> Đưa các biến <code>HQ, TD, QL, TT, DV, CP</code> vào. <em>(Method để nguyên là <strong>Enter</strong>)</em>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative">
+                        <div class="absolute -left-12 bg-secondary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow">3</div>
+                        <h4 class="text-xl font-bold text-gray-800">Cài đặt Statistics (Thống kê)</h4>
+                        <p class="mt-2 text-gray-700">Click nút <strong>Statistics...</strong>, tích chọn các ô:</p>
+                        <ul class="list-disc pl-6 mt-2 text-gray-700">
+                            <li>Estimates, Model fit (Mặc định).</li>
+                            <li><strong>Collinearity diagnostics:</strong> Để xuất hệ số VIF (kiểm tra đa cộng tuyến).</li>
+                            <li><strong>Durbin-Watson:</strong> Ở mục Residuals.</li>
+                        </ul>
+                        <p class="mt-2 text-sm italic">Click Continue.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative">
+                        <div class="absolute -left-12 bg-secondary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow">4</div>
+                        <h4 class="text-xl font-bold text-gray-800">Cài đặt Plots (Biểu đồ)</h4>
+                        <p class="mt-2 text-gray-700">Click nút <strong>Plots...</strong></p>
+                        <ul class="list-disc pl-6 mt-2 text-gray-700">
+                            <li>Chuyển <strong>*ZRESID</strong> vào ô Y.</li>
+                            <li>Chuyển <strong>*ZPRED</strong> vào ô X.</li>
+                            <li>Tích chọn <strong>Histogram</strong> và <strong>Normal probability plot</strong>.</li>
+                        </ul>
+                        <p class="mt-2 text-sm italic">Click Continue, sau đó click <strong>OK</strong> để chạy.</p>
+                    </div>
+                </div>
+
+                <div class="callout callout-warning mt-8">
+                    <h4 class="font-bold flex items-center mb-2"><i class="fas fa-times-circle mr-2"></i> Lỗi thường gặp</h4>
+                    <p>Học viên hay quên đưa biến <strong>SHL tổng hợp</strong> vào ô Dependent mà lại lôi nhầm các biến quan sát nhỏ (như SHL1, SHL2) hoặc biến phân loại (Giới tính) vào chạy hồi quy tuyến tính.</p>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button onclick="showModule('assumptions')" class="text-gray-500 hover:text-primary transition font-medium"><i class="fas fa-arrow-left mr-2"></i> Quay lại</button>
+                    <button onclick="showModule('output')" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition shadow-md font-medium">Tiếp theo: Đọc Output <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 4: Đọc kết quả -->
+        <section id="output" class="module-section max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-8 border-t-4 border-accent">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">4. Đọc, Giải thích Output & Kết luận</h2>
+                <p class="text-gray-600 mb-6 text-lg">Có 3 bảng quan trọng nhất bạn cần đưa vào Luận văn.</p>
+
+                <!-- Bảng 1 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-primary mb-3">1. Bảng Model Summary (Tóm tắt mô hình)</h3>
+                    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm mb-4">
+                        <table class="min-w-full text-sm text-left">
+                            <thead class="bg-gray-100 text-gray-700 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-3">Model</th>
+                                    <th class="px-4 py-3">R</th>
+                                    <th class="px-4 py-3">R Square</th>
+                                    <th class="px-4 py-3 bg-yellow-100 text-yellow-800">Adjusted R Square</th>
+                                    <th class="px-4 py-3 bg-blue-100 text-blue-800">Durbin-Watson</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-3">1</td>
+                                    <td class="px-4 py-3">.750</td>
+                                    <td class="px-4 py-3">.563</td>
+                                    <td class="px-4 py-3 font-bold">.551</td>
+                                    <td class="px-4 py-3 font-bold">1.824</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        <li><strong>Adjusted R Square ($R^2$ hiệu chỉnh) = 0.551:</strong> Có nghĩa là 6 biến độc lập trong mô hình giải thích được <strong>55.1%</strong> sự biến thiên của sự hài lòng (SHL). Phần còn lại do các yếu tố ngoài mô hình.</li>
+                        <li><strong>Durbin-Watson = 1.824:</strong> Nằm trong khoảng 1.5 - 2.5, thỏa mãn điều kiện độc lập của phần dư.</li>
+                    </ul>
+                </div>
+
+                <!-- Bảng 2 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-primary mb-3">2. Bảng ANOVA (Mức độ phù hợp)</h3>
+                    <p class="mb-2 text-gray-700">Bạn chỉ cần nhìn vào cột <strong>Sig.</strong> của dòng Regression.</p>
+                    <p class="bg-green-50 text-green-800 p-3 rounded-lg border border-green-200">
+                        Nếu <strong>Sig. &lt; 0.05</strong> (thường hiện là .000): Mô hình hồi quy phù hợp với dữ liệu mẫu, có thể suy rộng ra tổng thể.
+                    </p>
+                </div>
+
+                <!-- Bảng 3 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-primary mb-3">3. Bảng Coefficients (Trọng số hồi quy) - QUAN TRỌNG NHẤT</h3>
+                    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm mb-4">
+                        <table class="min-w-full text-sm text-left">
+                            <thead class="bg-gray-100 text-gray-700 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b">Model</th>
+                                    <th class="px-4 py-2 border-b">Unstandardized B</th>
+                                    <th class="px-4 py-2 border-b bg-green-100">Standardized Beta</th>
+                                    <th class="px-4 py-2 border-b">t</th>
+                                    <th class="px-4 py-2 border-b bg-red-100">Sig.</th>
+                                    <th class="px-4 py-2 border-b bg-purple-100">VIF</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-2">(Constant)</td>
+                                    <td class="px-4 py-2">0.512</td>
+                                    <td class="px-4 py-2 bg-green-50">-</td>
+                                    <td class="px-4 py-2">2.100</td>
+                                    <td class="px-4 py-2 bg-red-50">.037</td>
+                                    <td class="px-4 py-2 bg-purple-50">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2">HQ</td>
+                                    <td class="px-4 py-2">0.250</td>
+                                    <td class="px-4 py-2 bg-green-50 font-bold">0.245</td>
+                                    <td class="px-4 py-2">4.120</td>
+                                    <td class="px-4 py-2 bg-red-50 font-bold">.000</td>
+                                    <td class="px-4 py-2 bg-purple-50">1.215</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2">TD</td>
+                                    <td class="px-4 py-2">0.315</td>
+                                    <td class="px-4 py-2 bg-green-50 font-bold text-green-700">0.380</td>
+                                    <td class="px-4 py-2">5.650</td>
+                                    <td class="px-4 py-2 bg-red-50 font-bold">.000</td>
+                                    <td class="px-4 py-2 bg-purple-50">1.402</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2">TT (Thông tin)</td>
+                                    <td class="px-4 py-2">0.050</td>
+                                    <td class="px-4 py-2 bg-green-50">0.045</td>
+                                    <td class="px-4 py-2">0.850</td>
+                                    <td class="px-4 py-2 bg-red-50 font-bold text-red-600">.395</td>
+                                    <td class="px-4 py-2 bg-purple-50">1.110</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="font-bold text-gray-800 mt-4 mb-2">Cách đọc bảng này:</h4>
+                    <ul class="list-disc pl-5 space-y-3 text-gray-700">
+                        <li><strong>VIF:</strong> Tất cả VIF đều &lt; 2, kết luận không có hiện tượng đa cộng tuyến.</li>
+                        <li><strong>Cột Sig.:</strong> Biến <strong>TT (Thông tin)</strong> có Sig. = 0.395 (> 0.05). Nghĩa là biến này <strong>không có ý nghĩa thống kê</strong> tác động đến SHL. Phải loại khỏi mô hình hoặc kết luận không có bằng chứng về sự tác động. (HQ và TD có ý nghĩa vì Sig < 0.05).</li>
+                        <li><strong>Cột Standardized Beta (Beta chuẩn hóa):</strong> Dùng để <em>so sánh mức độ tác động</em>. So sánh HQ (0.245) và TD (0.380). Kết luận: <strong>Thái độ (TD) có mức độ tác động mạnh nhất</strong> đến Sự hài lòng.</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <h4 class="font-bold flex items-center mb-2"><i class="fas fa-stethoscope mr-2"></i> Kết luận Lâm sàng / Quản lý Dược</h4>
+                    <p>Để nâng cao sự hài lòng chung của bệnh nhân về dịch vụ cung ứng thuốc, khoa Dược/Bệnh viện cần ưu tiên nguồn lực cải thiện <strong>Thái độ phục vụ của nhân viên y tế (TD)</strong> trước tiên, sau đó mới đến <strong>Hiệu quả điều trị (HQ)</strong>. Việc cải thiện thông tin thuốc (TT) trong nghiên cứu này chưa cho thấy tác động rõ rệt.</p>
+                    <p class="mt-2 text-red-600 font-bold">Lưu ý cực kỳ quan trọng:</p>
+                    <p class="italic">Nghiên cứu cắt ngang (Cross-sectional) chỉ chỉ ra <strong>sự liên quan/mức độ dự báo</strong>, <strong>KHÔNG</strong> chứng minh được quan hệ nhân quả tuyệt đối (Causation) rằng A chắc chắn sinh ra B.</p>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button onclick="showModule('spss')" class="text-gray-500 hover:text-primary transition font-medium"><i class="fas fa-arrow-left mr-2"></i> Quay lại</button>
+                    <button onclick="showModule('quiz')" class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-green-700 transition shadow-md font-bold text-lg"><i class="fas fa-clipboard-check mr-2"></i> Bắt đầu Lượng giá (20 Câu)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 5: Quiz -->
+        <section id="quiz" class="module-section max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-8 border-t-4 border-primary">
+                <div class="flex justify-between items-end mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">5. Lượng giá & Tình huống lâm sàng</h2>
+                        <p class="text-gray-500 mt-2">Bài tập trắc nghiệm bao quát kiến thức Hồi quy tuyến tính (Chương 9). Vượt qua 15/20 để đạt yêu cầu.</p>
+                    </div>
+                    <div id="score-display" class="hidden text-center bg-blue-50 p-3 rounded-lg border border-blue-200">
+                        <p class="text-sm text-blue-800 font-bold">Điểm của bạn</p>
+                        <p class="text-2xl font-black text-primary"><span id="score-val">0</span>/20</p>
+                    </div>
+                </div>
+
+                <div id="quiz-container" class="space-y-8">
+                    <!-- Quiz content generated by JS -->
+                </div>
+
+                <div class="mt-8 pt-6 border-t text-center">
+                    <button id="submit-quiz" onclick="evaluateQuiz()" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition shadow-lg font-bold text-lg w-full md:w-auto">
+                        <i class="fas fa-paper-plane mr-2"></i> Nộp Bài & Xem Giải Thích
+                    </button>
+                    <button id="retry-quiz" onclick="resetQuiz()" class="hidden bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition shadow-lg font-bold text-lg w-full md:w-auto mt-4 md:mt-0 md:ml-4">
+                        <i class="fas fa-redo mr-2"></i> Làm lại bài
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Data Quiz (20 câu hỏi)
+        const quizData = [
+            {
+                question: "Trong mô hình hồi quy đánh giá HQ, TD, QL, TT, DV, CP tác động đến SHL, biến SHL đóng vai trò gì?",
+                options: [
+                    "Biến độc lập",
+                    "Biến phụ thuộc",
+                    "Biến nhiễu",
+                    "Biến kiểm soát"
+                ],
+                correct: 1,
+                rationale: "SHL (Sự hài lòng chung) là kết quả chịu sự tác động, được dự báo bởi các biến khác, do đó nó là Biến phụ thuộc (Y)."
+            },
+            {
+                question: "Mục đích chính của phân tích hồi quy tuyến tính bội trong nghiên cứu này là gì?",
+                options: [
+                    "Đánh giá độ tin cậy của bảng hỏi.",
+                    "Gom nhóm các câu hỏi thành các nhân tố.",
+                    "Đánh giá đồng thời mức độ tác động của các nhân tố đến sự hài lòng.",
+                    "So sánh sự khác biệt về sự hài lòng giữa nam và nữ."
+                ],
+                correct: 2,
+                rationale: "Hồi quy bội đánh giá sự tác động đồng thời của nhiều biến độc lập lên một biến phụ thuộc. Các đáp án khác thuộc về Cronbach's Alpha, EFA, và T-test."
+            },
+            {
+                question: "Để kiểm tra hiện tượng đa cộng tuyến, ta sử dụng chỉ số nào trong bảng Coefficients?",
+                options: [
+                    "Sig. (P-value)",
+                    "Durbin-Watson",
+                    "VIF",
+                    "Adjusted R Square"
+                ],
+                correct: 2,
+                rationale: "VIF (Variance Inflation Factor) là hệ số phóng đại phương sai, dùng để chẩn đoán hiện tượng đa cộng tuyến. Ngưỡng thường dùng là VIF < 2 hoặc < 10."
+            },
+            {
+                question: "Chỉ số nào cho biết mức độ giải thích (theo % tỷ lệ) của toàn bộ mô hình đối với sự biến thiên của biến phụ thuộc trong mẫu tổng thể?",
+                options: [
+                    "R Square ($R^2$)",
+                    "Adjusted R Square ($R^2$ hiệu chỉnh)",
+                    "Durbin-Watson",
+                    "Unstandardized B"
+                ],
+                correct: 1,
+                rationale: "Trong hồi quy bội, ta luôn đọc Adjusted R Square ($R^2$ hiệu chỉnh) vì nó phản ánh chính xác hơn sự phù hợp của mô hình khi có nhiều biến độc lập, tránh sự thổi phồng của R Square thông thường."
+            },
+            {
+                question: "Để tính cỡ mẫu tối thiểu cho hồi quy tuyến tính bội, với mô hình có 6 biến độc lập, công thức $N \\ge 50 + 8p$ cho ra kết quả bao nhiêu?",
+                options: ["50", "58", "98", "150"],
+                correct: 2,
+                rationale: "Với p = 6 (số biến độc lập). N >= 50 + 8 * 6 = 50 + 48 = 98."
+            },
+            {
+                question: "Biến QL (Năng lực quản lý) có Beta chuẩn hóa = 0,390, Sig. = 0,000. Cách diễn giải nào sau đây phù hợp nhất trong luận văn?",
+                options: [
+                    "QL chắc chắn là nguyên nhân gốc rễ gây ra SHL.",
+                    "QL có mối liên hệ thuận chiều có ý nghĩa thống kê với SHL và có tác động tương đối mạnh trong mô hình.",
+                    "QL không có ý nghĩa thống kê đối với SHL.",
+                    "Khi QL tăng 1 đơn vị, SHL tăng đúng 0,390 đơn vị."
+                ],
+                correct: 1,
+                rationale: "Vì Sig = 0.000 < 0.05 nên có ý nghĩa thống kê. Beta dương (0.390) thể hiện tác động thuận chiều. Không được khẳng định 'nguyên nhân gốc rễ' trong nghiên cứu cắt ngang."
+            },
+            {
+                question: "Trong bảng ANOVA, giá trị Sig. = 0,125 (lớn hơn 0,05) có ý nghĩa gì?",
+                options: [
+                    "Mô hình hồi quy rất tốt và có thể suy rộng ra tổng thể.",
+                    "Cần chạy thêm kiểm định T-test.",
+                    "Mô hình hồi quy xây dựng KHÔNG phù hợp với dữ liệu tổng thể, giả thuyết bị bác bỏ.",
+                    "Chỉ có biến Chi phí là không phù hợp."
+                ],
+                correct: 2,
+                rationale: "Kiểm định ANOVA (kiểm định F) đánh giá sự phù hợp của toàn bộ mô hình. Nếu Sig > 0.05, mô hình không có ý nghĩa thống kê, không thể dùng để dự báo."
+            },
+            {
+                question: "Trong bảng Coefficients, biến Chi phí (CP) có Sig. = 0.650. Bạn phải làm gì?",
+                options: [
+                    "Kết luận CP là nhân tố tác động mạnh nhất.",
+                    "Kết luận không có bằng chứng thống kê cho thấy CP tác động đến SHL trong mô hình này.",
+                    "Sửa lại dữ liệu để Sig < 0.05.",
+                    "Thay đổi phương pháp sang phân tích nhân tố EFA."
+                ],
+                correct: 1,
+                rationale: "Sig. > 0.05 tức là không có ý nghĩa thống kê. Ta không được quyền bóp méo số liệu mà phải tôn trọng sự thật khách quan này và kết luận như phương án B."
+            },
+            {
+                question: "Để so sánh TẦM QUAN TRỌNG hay MỨC ĐỘ TÁC ĐỘNG của các nhân tố (xem nhân tố nào tác động mạnh nhất), ta nhìn vào cột nào trong bảng Coefficients?",
+                options: [
+                    "Unstandardized B (Hệ số B chưa chuẩn hóa)",
+                    "Standardized Beta (Hệ số Beta chuẩn hóa)",
+                    "t (Giá trị t)",
+                    "Sig. (P-value)"
+                ],
+                correct: 1,
+                rationale: "Beta chuẩn hóa loại bỏ đơn vị đo lường ban đầu, cho phép so sánh sức mạnh tác động tương đối giữa các biến độc lập với nhau."
+            },
+            {
+                question: "Hệ số Durbin-Watson dùng để kiểm định giả định nào của hồi quy?",
+                options: [
+                    "Phân phối chuẩn của phần dư.",
+                    "Tính độc lập của phần dư (không có tự tương quan bậc 1).",
+                    "Đa cộng tuyến.",
+                    "Phương sai sai số thay đổi."
+                ],
+                correct: 1,
+                rationale: "Durbin-Watson (DW) kiểm tra hiện tượng tự tương quan. Giá trị từ 1.5 đến 2.5 cho thấy phần dư độc lập, mô hình thỏa mãn điều kiện."
+            },
+            {
+                question: "Biểu đồ Normal P-P Plot of Regression Standardized Residual cho thấy các điểm phân tán nằm bám sát dọc theo đường chéo. Điều này kết luận gì?",
+                options: [
+                    "Mô hình bị đa cộng tuyến.",
+                    "Phần dư có phân phối xấp xỉ chuẩn, thỏa mãn điều kiện hồi quy.",
+                    "Dữ liệu có nhiều giá trị ngoại lai (outlier) cần xóa bỏ.",
+                    "Không thể kết luận được gì."
+                ],
+                correct: 1,
+                rationale: "Trong P-P Plot, nếu các điểm nằm sát đường chéo, ta kết luận giả định về phân phối chuẩn của phần dư được thỏa mãn."
+            },
+            {
+                question: "Biểu đồ Scatterplot (ZRESID ở Y và ZPRED ở X) dùng để kiểm tra giả định gì?",
+                options: [
+                    "Phân phối chuẩn.",
+                    "Đa cộng tuyến.",
+                    "Phương sai phần dư đồng đều (không đổi).",
+                    "Tính tuyến tính giữa X và Y."
+                ],
+                correct: 2,
+                rationale: "Scatterplot của phần dư chuẩn hóa và giá trị dự đoán chuẩn hóa được dùng để kiểm tra tính đồng đều của phương sai. Nếu điểm phân bố ngẫu nhiên, không tạo hình phễu hay đường cong thì giả định được thỏa mãn."
+            },
+            {
+                question: "Một học viên chạy hồi quy và thu được Adjusted R Square = 0.05 (5%). Nhận xét nào là đúng chuyên môn lâm sàng nhất?",
+                options: [
+                    "Mô hình quá tốt, giải thích được 5% vấn đề.",
+                    "Mô hình rất yếu, giải thích được rất ít sự biến thiên của SHL. Cần xem xét lại các nhân tố lâm sàng bị bỏ sót.",
+                    "Mô hình bị lỗi SPSS.",
+                    "Cần tiếp tục chạy để ra 50%."
+                ],
+                correct: 1,
+                rationale: "R2 hiệu chỉnh = 5% là rất thấp. Nghĩa là 95% sự thay đổi của Sự hài lòng do các yếu tố khác chưa được đưa vào mô hình gây ra. Học viên cần thảo luận về các giới hạn này."
+            },
+            {
+                question: "Biến Thái độ (TD) có Unstandardized B = 0.45, Sig = 0.001. Có thể viết phương trình hồi quy chứa biến TD như thế nào?",
+                options: [
+                    "$SHL = ... + 0.001 * TD + ...$",
+                    "$SHL = ... + 0.45 * TD + ...$",
+                    "$TD = 0.45 * SHL$",
+                    "$SHL = ... + (0.45 / 0.001) * TD + ...$"
+                ],
+                correct: 1,
+                rationale: "Phương trình hồi quy được viết bằng hệ số B chưa chuẩn hóa (Unstandardized B). Dạng phương trình là Y = B0 + B1*X1 + ... Nên là + 0.45*TD."
+            },
+            {
+                question: "Một lỗi THƯỜNG GẶP nhất khi học viên khai báo biến cho lệnh Regression là gì?",
+                options: [
+                    "Không chọn mục Durbin-Watson.",
+                    "Đưa cả biến Giới tính (Biến phân loại định danh) trực tiếp vào ô Independent mà chưa mã hóa Dummy.",
+                    "Quên lưu file dữ liệu.",
+                    "Mở nhầm file Word."
+                ],
+                correct: 1,
+                rationale: "Hồi quy tuyến tính bội thông thường (như bài học) yêu cầu các biến độc lập phải là định lượng. Nếu muốn đưa biến phân loại (như Giới tính, Nghề nghiệp) vào, phải tạo biến giả (Dummy variable) hoặc dùng ANOVA."
+            },
+            {
+                question: "Khi hội đồng hỏi: 'Tại sao em kết luận biến HQ tác động thuận chiều đến SHL?', bạn sẽ chỉ vào chỉ số nào?",
+                options: [
+                    "Chỉ số VIF",
+                    "Dấu (+) của hệ số Beta hoặc B trong bảng Coefficients.",
+                    "Chỉ số Sig. của ANOVA.",
+                    "Chỉ số R Square."
+                ],
+                correct: 1,
+                rationale: "Dấu của hệ số B hoặc Beta cho biết chiều tác động. Dấu (+) là thuận chiều (HQ tăng thì SHL tăng), dấu (-) là ngược chiều."
+            },
+            {
+                question: "Nếu có 1 biến độc lập có VIF = 15. Bạn nên xử lý như thế nào?",
+                options: [
+                    "Mặc kệ nó, vì Sig < 0.05 là được.",
+                    "Loại bỏ biến này khỏi mô hình và chạy lại hồi quy, vì nó gây ra đa cộng tuyến nghiêm trọng.",
+                    "Tăng cỡ mẫu lên gấp đôi.",
+                    "Cộng biến đó vào biến phụ thuộc."
+                ],
+                correct: 1,
+                rationale: "VIF > 10 biểu hiện đa cộng tuyến mạnh. Cách xử lý tiêu chuẩn là loại bỏ biến gây đa cộng tuyến và chạy lại mô hình."
+            },
+            {
+                question: "Câu nào CHƯA CHÍNH XÁC khi viết kết luận trong Luận văn CK1 về Hồi quy cắt ngang?",
+                options: [
+                    "Kết quả phân tích cho thấy Thái độ phục vụ là yếu tố dự báo mạnh nhất sự hài lòng.",
+                    "Có mối liên hệ thuận chiều giữa Hiệu quả điều trị và Sự hài lòng.",
+                    "Nghiên cứu chứng minh Thái độ phục vụ kém chắc chắn gây ra sự không hài lòng của bệnh nhân.",
+                    "Mô hình giải thích được 55% sự biến thiên của biến phụ thuộc."
+                ],
+                correct: 2,
+                rationale: "Nghiên cứu cắt ngang (Cross-sectional) khảo sát tại 1 thời điểm nên KHÔNG THỂ chứng minh mối quan hệ nhân quả (Causation - 'gây ra'). Chỉ được dùng từ 'dự báo', 'liên quan', 'tác động trong mô hình'."
+            },
+            {
+                question: "Bạn tiến hành chạy hồi quy tuyến tính trong SPSS theo thao tác: Analyze -> Regression -> ...?",
+                options: [
+                    "Correlate",
+                    "Linear",
+                    "Binary Logistic",
+                    "Factor"
+                ],
+                correct: 1,
+                rationale: "Đường dẫn đúng cho Hồi quy tuyến tính bội là Analyze -> Regression -> Linear."
+            },
+            {
+                question: "Theo quan điểm lâm sàng và quản lý chất lượng Dược, nếu biến 'Thông tin thuốc' (TT) bị loại khỏi mô hình (do Sig > 0.05), bạn diễn giải thế nào?",
+                options: [
+                    "Việc cung cấp thông tin thuốc cho bệnh nhân là vô nghĩa, nên bỏ qua khâu này.",
+                    "Bệnh nhân hoàn toàn không quan tâm đến thuốc họ đang uống.",
+                    "Trong phạm vi mẫu nghiên cứu này, việc nhân viên cung cấp thông tin thuốc chưa thể hiện sự ảnh hưởng rõ rệt đến mức độ hài lòng chung. Cần khảo sát sâu hơn ở các nghiên cứu sau.",
+                    "Dữ liệu đã bị nhập sai 100%."
+                ],
+                correct: 2,
+                rationale: "Không có ý nghĩa thống kê không đồng nghĩa với việc vô nghĩa trong thực tiễn lâm sàng. Cần giải thích cẩn trọng, giới hạn trong phạm vi mẫu nghiên cứu và gợi ý nghiên cứu sâu hơn, thay vì đưa ra kết luận cực đoan."
+            }
+        ];
+
+        let userAnswers = new Array(20).fill(null);
+
+        // Khởi tạo Quiz
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-gray-50 p-6 rounded-lg border border-gray-200';
+                qDiv.id = `q-block-${index}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <div class="quiz-option p-3 border rounded-lg mb-2 flex items-start" onclick="selectOption(${index}, ${optIndex})" id="opt-${index}-${optIndex}">
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex-shrink-0 flex items-center justify-center mr-3 mt-0.5 opt-circle"></div>
+                            <span class="text-gray-700">${opt}</span>
+                        </div>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <h3 class="text-lg font-bold text-gray-800 mb-4"><span class="text-primary mr-2">Câu ${index + 1}:</span> ${q.question}</h3>
+                    <div class="space-y-2">
+                        ${optionsHtml}
+                    </div>
+                    <div id="rationale-${index}" class="hidden mt-4 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg text-sm">
+                        <strong>Giải thích:</strong> <span class="rationale-text">${q.rationale}</span>
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+
+            // Trigger KaTeX render after quiz is injected
+            renderMathInElement(container, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ]
+            });
+        }
+
+        // Chọn đáp án
+        function selectOption(qIndex, optIndex) {
+            if (document.getElementById(`rationale-${qIndex}`).classList.contains('hidden') === false) return; // Không cho đổi nếu đã nộp bài
+
+            userAnswers[qIndex] = optIndex;
+            
+            // Reset styles for this question
+            for (let i = 0; i < 4; i++) {
+                const el = document.getElementById(`opt-${qIndex}-${i}`);
+                if (el) {
+                    el.classList.remove('selected', 'bg-blue-100', 'border-blue-500');
+                    el.querySelector('.opt-circle').classList.remove('bg-blue-500', 'border-blue-500');
+                    el.querySelector('.opt-circle').innerHTML = '';
+                }
+            }
+            
+            // Set style for selected
+            const selectedEl = document.getElementById(`opt-${qIndex}-${optIndex}`);
+            selectedEl.classList.add('selected');
+            selectedEl.querySelector('.opt-circle').classList.add('bg-blue-500', 'border-blue-500');
+            selectedEl.querySelector('.opt-circle').innerHTML = '<div class="w-2 h-2 bg-white rounded-full"></div>';
+        }
+
+        // Nộp bài & Đánh giá
+        function evaluateQuiz() {
+            let score = 0;
+            let answeredCount = 0;
+
+            userAnswers.forEach((ans, index) => {
+                if (ans !== null) answeredCount++;
+            });
+
+            if (answeredCount < 20) {
+                alert(`Bạn mới trả lời ${answeredCount}/20 câu. Hãy hoàn thành tất cả để xem kết quả nhé!`);
+                
+                // Find first unanswered
+                const firstUnanswered = userAnswers.indexOf(null);
+                document.getElementById(`q-block-${firstUnanswered}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            userAnswers.forEach((ans, index) => {
+                const correctAns = quizData[index].correct;
+                const correctEl = document.getElementById(`opt-${index}-${correctAns}`);
+                const rationaleEl = document.getElementById(`rationale-${index}`);
+                
+                // Show Rationale
+                rationaleEl.classList.remove('hidden');
+
+                if (ans === correctAns) {
+                    score++;
+                    correctEl.classList.add('correct');
+                    correctEl.querySelector('.opt-circle').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                    correctEl.querySelector('.opt-circle').classList.remove('bg-blue-500');
+                    correctEl.querySelector('.opt-circle').classList.add('bg-green-500', 'border-green-500');
+                } else {
+                    const wrongEl = document.getElementById(`opt-${index}-${ans}`);
+                    wrongEl.classList.add('wrong');
+                    wrongEl.querySelector('.opt-circle').innerHTML = '<i class="fas fa-times text-white text-xs"></i>';
+                    wrongEl.querySelector('.opt-circle').classList.remove('bg-blue-500');
+                    wrongEl.querySelector('.opt-circle').classList.add('bg-red-500', 'border-red-500');
+                    
+                    // Highlight correct
+                    correctEl.classList.add('correct');
+                    correctEl.querySelector('.opt-circle').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                    correctEl.querySelector('.opt-circle').classList.add('bg-green-500', 'border-green-500');
+                }
+            });
+
+            // Show Score
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('score-display').classList.remove('hidden');
+            
+            // Buttons
+            document.getElementById('submit-quiz').classList.add('hidden');
+            document.getElementById('retry-quiz').classList.remove('hidden');
+
+            // Scroll to top of quiz
+            document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+
+            // Feedback
+            setTimeout(() => {
+                if (score >= 15) {
+                    alert(`Chúc mừng! Bạn đạt ${score}/20 điểm. Bạn đã nắm rất vững kiến thức Hồi quy tuyến tính áp dụng cho lâm sàng.`);
+                } else {
+                    alert(`Bạn đạt ${score}/20 điểm. Hãy xem lại kỹ phần "Đọc Output" và "Lỗi thường gặp" nhé!`);
+                }
+            }, 500);
+        }
+
+        // Làm lại bài
+        function resetQuiz() {
+            userAnswers = new Array(20).fill(null);
+            document.getElementById('score-display').classList.add('hidden');
+            document.getElementById('submit-quiz').classList.remove('hidden');
+            document.getElementById('retry-quiz').classList.add('hidden');
+            renderQuiz();
+            document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Điều hướng các Module
+        function showModule(moduleId) {
+            // Hide all
+            document.querySelectorAll('.module-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Show target
+            document.getElementById(moduleId).classList.add('active');
+            
+            // Update sidebar styles
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-blue-50', 'text-primary', 'font-bold', 'border-r-4', 'border-primary');
+                el.classList.add('text-gray-700');
+            });
+            
+            const btnId = `btn-${moduleId}`;
+            document.getElementById(btnId).classList.add('bg-blue-50', 'text-primary', 'font-bold', 'border-r-4', 'border-primary');
+            document.getElementById(btnId).classList.remove('text-gray-700');
+
+            // Close mobile menu if open
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.add('-translate-x-full');
+            }
+
+            // Scroll top
+            document.querySelector('.content-area').scrollTo(0, 0);
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Init
+        document.addEventListener("DOMContentLoaded", function() {
+            renderQuiz();
+            // Cấu hình KaTeX tự động kết xuất
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError : false
+            });
+        });
+    </script>
+</body>
+</html>

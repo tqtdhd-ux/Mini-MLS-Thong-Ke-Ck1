@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning: Xây dựng Đề tài, Mô hình & Bảng khảo sát Y Dược</title>
+    <style>
+        :root {
+            --primary: #0284c7; /* Medical Blue */
+            --primary-dark: #0369a1;
+            --secondary: #f8fafc;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --accent: #10b981; /* Success Green */
+            --danger: #ef4444; /* Error Red */
+            --warning: #f59e0b;
+            --bg-body: #e2e8f0;
+            --bg-card: #ffffff;
+            --border: #cbd5e1;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: #1e293b;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.1rem;
+            color: #38bdf8;
+            line-height: 1.4;
+        }
+
+        .nav-list {
+            list-style: none;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background-color: #1e293b;
+            color: #38bdf8;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: white;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background-color: var(--bg-card);
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Module Structure */
+        .module-section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .module-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Components */
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Pedagogical Boxes */
+        .box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .box-note { /* Ghi nhớ nhanh */
+            background-color: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+        .box-note::before { content: "💡 Ghi nhớ nhanh:"; font-weight: bold; color: #1d4ed8; display: block; margin-bottom: 5px; }
+
+        .box-error { /* Lỗi thường gặp */
+            background-color: #fef2f2;
+            border-left-color: #ef4444;
+        }
+        .box-error::before { content: "⚠️ Lỗi thường gặp:"; font-weight: bold; color: #b91c1c; display: block; margin-bottom: 5px; }
+
+        .box-thesis { /* Áp dụng luận văn */
+            background-color: #f0fdf4;
+            border-left-color: #22c55e;
+        }
+        .box-thesis::before { content: "🎓 Áp dụng trong luận văn CK1:"; font-weight: bold; color: #15803d; display: block; margin-bottom: 5px; }
+
+        .box-vital { /* Nguyên tắc sống còn */
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+        .box-vital::before { content: "🔥 Nguyên tắc Sống Còn:"; font-weight: bold; color: #b45309; display: block; margin-bottom: 5px; }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .quiz-title {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quiz-option {
+            display: block;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback-correct {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback-incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Flowchart/Model Diagram CSS */
+        .model-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .variables-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .var-box {
+            padding: 10px 15px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            background: white;
+            font-weight: bold;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .var-box.dependent {
+            border-color: var(--accent);
+            background-color: #f0fdf4;
+            padding: 20px;
+        }
+
+        .arrow-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: var(--primary);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* Navigation Buttons */
+        .module-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-nav {
+            padding: 10px 20px;
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .btn-nav:hover {
+            background-color: #f1f5f9;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .model-diagram {
+                flex-direction: column;
+            }
+            .arrow-group {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Đào tạo Thống kê CK1 Dược</h2>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">Chương 4: Đề tài & Bảng khảo sát</p>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item active" onclick="showModule('mod1')">
+                <span class="nav-icon">🎯</span> 1. Đề tài & Câu hỏi NC
+            </li>
+            <li class="nav-item" onclick="showModule('mod2')">
+                <span class="nav-icon">📊</span> 2. Mô hình & Giả thuyết
+            </li>
+            <li class="nav-item" onclick="showModule('mod3')">
+                <span class="nav-icon">🧬</span> 3. Phân loại Biến số
+            </li>
+            <li class="nav-item" onclick="showModule('mod4')">
+                <span class="nav-icon">📝</span> 4. Thiết kế Thang đo Likert
+            </li>
+            <li class="nav-item" onclick="showModule('mod5')">
+                <span class="nav-icon">💻</span> 5. Thực hành Excel & SPSS
+            </li>
+            <li class="nav-item" onclick="showModule('mod6')">
+                <span class="nav-icon">🏆</span> 6. Tổng kết & Lượng giá
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+            <div style="font-weight: bold; color: var(--text-main);">E-Learning Module</div>
+            <div style="font-size: 0.9rem; color: var(--text-light);">Tiến độ: <span id="progress-text">1/6</span></div>
+        </header>
+
+        <div class="content-area" id="content-area">
+            
+            <!-- MODULE 1 -->
+            <section id="mod1" class="module-section active">
+                <h1 class="module-title">Module 1: Xác định Đề tài & Câu hỏi Nghiên cứu</h1>
+                
+                <div class="card">
+                    <h3>Từ Vấn đề Thực tiễn đến Đề tài</h3>
+                    <p>Trong thực hành lâm sàng hoặc quản lý dược, bạn thường gặp các vấn đề thực tiễn (Ví dụ: <i>Bệnh nhân hay phàn nàn về thời gian chờ cấp phát thuốc</i>). Nhiệm vụ của người làm nghiên cứu là chuyển đổi vấn đề này thành một <strong>Đề tài nghiên cứu</strong> cụ thể và đo lường được.</p>
+                    
+                    <p>Một đề tài tốt cần chỉ rõ: <strong>Đối tượng + Vấn đề + Không gian + Thời gian</strong>.</p>
+                    <ul>
+                        <li>❌ <strong>Chung chung:</strong> Khảo sát sự hài lòng của bệnh nhân.</li>
+                        <li>✅ <strong>Chuẩn CK1:</strong> Đánh giá sự hài lòng của bệnh nhân ngoại trú đối với dịch vụ cấp phát thuốc BHYT tại Bệnh viện X năm 2024.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Câu hỏi Nghiên cứu</h3>
+                    <p>Câu hỏi nghiên cứu là kim chỉ nam. Mọi dữ liệu thu thập (SPSS/Excel) chỉ nhằm mục đích duy nhất: Trả lời câu hỏi này.</p>
+                    <ol>
+                        <li>Mức độ hài lòng chung của bệnh nhân là bao nhiêu?</li>
+                        <li>Những yếu tố nào (Hiệu quả, Thái độ, Quy trình...) tác động đến sự hài lòng?</li>
+                    </ol>
+                </div>
+
+                <div class="box box-vital">
+                    Nghiên cứu cắt ngang (Cross-sectional) chỉ phản ánh tính thời điểm. Cần hết sức thận trọng khi sử dụng ngôn ngữ nhân quả (nguyên nhân - kết quả) trong kết luận. Hãy dùng từ "yếu tố liên quan" hoặc "yếu tố tác động".
+                </div>
+
+                <div class="box box-note">
+                    Đề tài càng hẹp, dữ liệu thu thập càng sâu. Đừng cố gắng giải quyết mọi vấn đề của bệnh viện trong 1 luận văn CK1.
+                </div>
+
+                <div class="box box-error">
+                    Chọn đề tài nhưng không tham khảo y văn. Dẫn đến việc tự nghĩ ra bộ câu hỏi mà không có cơ sở lý thuyết chứng minh.
+                </div>
+
+                <div class="box box-thesis">
+                    Trong phần Mở đầu của luận văn CK1, cần nêu rõ lý do chọn đề tài xuất phát từ thực trạng nào tại cơ sở y tế của bạn, từ đó dẫn dắt logic đến Mục tiêu nghiên cứu.
+                </div>
+
+                <!-- Quick Check 1 -->
+                <div class="quiz-container">
+                    <div class="quiz-title">⏱️ Kiểm tra nhanh:</div>
+                    <p>Tên đề tài nào sau đây phù hợp nhất cho luận văn CK1 Dược?</p>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="A"> A. Thực trạng sử dụng thuốc tại bệnh viện.
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="B"> B. Phân tích các yếu tố ảnh hưởng đến sự tuân thủ điều trị của bệnh nhân đái tháo đường tuýp 2 ngoại trú tại Bệnh viện Y năm 2024.
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="C"> C. Đánh giá chất lượng dịch vụ y tế toàn quốc.
+                    </label>
+                    <button class="btn-submit" onclick="checkQuickQuiz('q1', 'B', 'Tên đề tài B đầy đủ thành phần: Vấn đề (Tuân thủ) + Đối tượng (BN ĐTĐ tuýp 2 ngoại trú) + Không gian (BV Y) + Thời gian (2024).')">Kiểm tra</button>
+                    <div id="fb-q1" class="quiz-feedback"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <div></div>
+                    <button class="btn-nav" onclick="showModule('mod2')">Tiếp theo: Mô hình & Giả thuyết ➔</button>
+                </div>
+            </section>
+
+            <!-- MODULE 2 -->
+            <section id="mod2" class="module-section">
+                <h1 class="module-title">Module 2: Xây dựng Mô hình & Giả thuyết (H1-H6)</h1>
+                
+                <div class="card">
+                    <h3>Mô hình Nghiên cứu (Research Model)</h3>
+                    <p>Mô hình nghiên cứu là sự sơ đồ hóa mối quan hệ giữa các khái niệm. <strong>Lưu ý: Mô hình nghiên cứu phải có cơ sở chuyên môn y dược và y văn hỗ trợ, không được tự vẽ.</strong></p>
+                    
+                    <p>Dưới đây là mô hình nghiên cứu đánh giá sự hài lòng (SHL) thường áp dụng trong Y/Dược:</p>
+                    
+                    <div class="model-diagram">
+                        <div class="variables-group">
+                            <div class="var-box">Hiệu quả (HQ)</div>
+                            <div class="var-box">Thái độ (TD)</div>
+                            <div class="var-box">Quản lý (QL)</div>
+                            <div class="var-box">Thông tin (TT)</div>
+                            <div class="var-box">Dịch vụ (DV)</div>
+                            <div class="var-box">Chi phí (CP)</div>
+                        </div>
+                        <div class="arrow-group">
+                            <div>H1 ➔</div>
+                            <div>H2 ➔</div>
+                            <div>H3 ➔</div>
+                            <div>H4 ➔</div>
+                            <div>H5 ➔</div>
+                            <div>H6 ➔</div>
+                        </div>
+                        <div class="variables-group">
+                            <div class="var-box dependent">
+                                Sự Hài Lòng Chung<br>(SHL)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Viết Giả thuyết Nghiên cứu (Hypotheses)</h3>
+                    <p>Giả thuyết (H) là một dự đoán có cơ sở khoa học về mối quan hệ giữa hai hay nhiều biến. Dựa vào mô hình trên, ta thiết lập:</p>
+                    <ul>
+                        <li><strong>H1:</strong> Hiệu quả điều trị (HQ) tác động thuận chiều đến Sự hài lòng (SHL).</li>
+                        <li><strong>H2:</strong> Thái độ phục vụ (TD) tác động thuận chiều đến Sự hài lòng (SHL).</li>
+                        <li><strong>H3:</strong> Năng lực quản lý/Quy trình (QL) tác động thuận chiều đến Sự hài lòng (SHL).</li>
+                        <li><strong>H4:</strong> Thông tin thuốc/bệnh (TT) tác động thuận chiều đến Sự hài lòng (SHL).</li>
+                        <li><strong>H5:</strong> Dịch vụ hỗ trợ (DV) tác động thuận chiều đến Sự hài lòng (SHL).</li>
+                        <li><strong>H6:</strong> Chi phí điều trị (CP) tác động <i>ngược chiều</i> (hoặc thuận chiều tùy y văn) đến Sự hài lòng (SHL).</li>
+                    </ul>
+                </div>
+
+                <div class="box box-vital">
+                    Không đưa biến vào mô hình chỉ vì có dữ liệu. Mỗi mũi tên trong sơ đồ đều phải chứng minh được bằng y văn hoặc lý thuyết hành vi y tế trước khi đi thu thập dữ liệu.
+                </div>
+
+                <div class="box box-thesis">
+                    Trước khi trình bày phân tích Cronbach’s Alpha và EFA trong Chương 3 của luận văn, cần mô tả thật rõ sơ đồ mô hình nghiên cứu này và liệt kê đầy đủ các giả thuyết H1-H6.
+                </div>
+
+                <div class="box box-error">
+                    Nhiều học viên bối rối khi kết quả chạy SPSS ra p-value > 0.05 (bác bỏ giả thuyết). <br>
+                    <strong>Diễn giải khi giả thuyết không có ý nghĩa:</strong> Đây KHÔNG phải là nghiên cứu thất bại. Nó phản ánh thực tế tại cơ sở của bạn (VD: Chi phí không tác động đến SHL vì bệnh nhân 100% BHYT chi trả). Hãy biện luận bằng bối cảnh lâm sàng!
+                </div>
+
+                <!-- Quick Check 2 -->
+                <div class="quiz-container">
+                    <div class="quiz-title">⏱️ Kiểm tra nhanh:</div>
+                    <p>Trong mô hình: HQ, TD, QL, TT, DV, CP ➔ SHL, biến SHL đóng vai trò là gì?</p>
+                    <label class="quiz-option"><input type="radio" name="q2" value="A"> A. Biến độc lập</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="B"> B. Biến nền</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="C"> C. Mã missing</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="D"> D. Biến phụ thuộc</label>
+                    <button class="btn-submit" onclick="checkQuickQuiz('q2', 'D', 'Chính xác! SHL (Sự hài lòng) là kết quả chịu sự tác động của các yếu tố khác, nên nó là biến phụ thuộc.')">Kiểm tra</button>
+                    <div id="fb-q2" class="quiz-feedback"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <button class="btn-nav" onclick="showModule('mod1')">⬅ Quay lại</button>
+                    <button class="btn-nav" onclick="showModule('mod3')">Tiếp theo: Biến số ➔</button>
+                </div>
+            </section>
+
+            <!-- MODULE 3 -->
+            <section id="mod3" class="module-section">
+                <h1 class="module-title">Module 3: Phân loại Biến số</h1>
+                
+                <div class="card">
+                    <h3>3 Nhóm Biến số Cốt lõi</h3>
+                    <p>Để thiết lập Codebook (Bảng mã) chuẩn bị cho Excel và SPSS, bạn cần phân định rõ 3 loại biến:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Loại biến</th>
+                            <th>Định nghĩa & Vai trò</th>
+                            <th>Ví dụ trong DATA.csv</th>
+                        </tr>
+                        <tr>
+                            <td><strong>1. Biến Độc lập (Independent)</strong></td>
+                            <td>Yếu tố nguyên nhân, đóng vai trò giải thích hoặc tác động lên sự thay đổi.</td>
+                            <td>HQ1-HQ5, TD1-TD4, QL1-QL5, TT1-TT4, DV1-DV5, CP1-CP4</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Biến Phụ thuộc (Dependent)</strong></td>
+                            <td>Kết quả, yếu tố bị tác động. Là trọng tâm nghiên cứu.</td>
+                            <td>SHL1-SHL3</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Biến Nền / Kiểm soát (Background/Demographic)</strong></td>
+                            <td>Đặc điểm nhân khẩu học, lâm sàng. Dùng để mô tả mẫu, chạy T-Test, ANOVA.</td>
+                            <td>Giới tính (GioiTinh), Nhóm tuổi (NhomTuoi), Trình độ (TrinhDo), Phác đồ (PhacDo)...</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="box box-vital">
+                    Biến quan sát (Indicator) vs Khái niệm (Construct):<br>
+                    "Thái độ phục vụ" (TD) là một khái niệm ẩn, không thể đo trực tiếp. Ta phải dùng các <strong>biến quan sát</strong> TD1, TD2, TD3, TD4 (các câu hỏi cụ thể) để đo lường nó. Trong SPSS, sau khi kiểm định độ tin cậy, ta sẽ dùng lệnh COMPUTE để tính trung bình TD = Mean(TD1, TD2, TD3, TD4).
+                </div>
+
+                <div class="box box-error">
+                    Quên thu thập biến nền (tuổi, giới, chẩn đoán). Nếu không có biến nền, bạn không thể biết nhóm bệnh nhân nào (nam hay nữ, bảo hiểm hay dịch vụ) hài lòng hay không hài lòng để đề xuất giải pháp cải thiện cụ thể.
+                </div>
+
+                <!-- Quick Check 3 -->
+                <div class="quiz-container">
+                    <div class="quiz-title">⏱️ Kiểm tra nhanh:</div>
+                    <p>Ký hiệu "HQ" trong mô hình (được tính từ HQ1 đến HQ5) có nghĩa là gì?</p>
+                    <label class="quiz-option"><input type="radio" name="q3" value="A"> A. Hiệu quả điều trị</label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="B"> B. Hài lòng chung</label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="C"> C. Hỗ trợ hành chính</label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="D"> D. Hồi quy</label>
+                    <button class="btn-submit" onclick="checkQuickQuiz('q3', 'A', 'Chính xác! HQ là viết tắt của Hiệu quả điều trị, một nhân tố độc lập trong mô hình.')">Kiểm tra</button>
+                    <div id="fb-q3" class="quiz-feedback"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <button class="btn-nav" onclick="showModule('mod2')">⬅ Quay lại</button>
+                    <button class="btn-nav" onclick="showModule('mod4')">Tiếp theo: Bảng khảo sát Likert ➔</button>
+                </div>
+            </section>
+
+            <!-- MODULE 4 -->
+            <section id="mod4" class="module-section">
+                <h1 class="module-title">Module 4: Thiết kế Bảng khảo sát Thang đo Likert</h1>
+                
+                <div class="card">
+                    <h3>Nguyên tắc Thiết kế Thang đo Likert 5 mức độ</h3>
+                    <p>Bảng khảo sát quyết định chất lượng toàn bộ dữ liệu. Thang đo Likert 5 điểm là phổ biến nhất trong nghiên cứu sự hài lòng (1: Rất không đồng ý ➔ 5: Rất đồng ý).</p>
+                    
+                    <p><strong>Yêu cầu cốt lõi khi soạn câu hỏi:</strong></p>
+                    <ul>
+                        <li><strong>Ngắn gọn, dễ hiểu:</strong> Bệnh nhân mọi trình độ văn hóa đều phải hiểu được. Tránh thuật ngữ y khoa phức tạp (VD: đừng dùng "phản ứng có hại ADR", hãy dùng "tác dụng phụ").</li>
+                        <li><strong>Đơn trị (Một khái niệm):</strong> Mỗi câu hỏi Likert chỉ được đo <strong>ĐÚNG MỘT</strong> khái niệm.</li>
+                        <li><strong>Không dùng câu hỏi phủ định kép:</strong> Gây bối rối cho người trả lời.</li>
+                    </ul>
+                </div>
+
+                <div class="box box-error">
+                    <strong>Lỗi Câu hỏi Trộn nhân tố (Double-barreled question):</strong><br>
+                    ❌ <i>"Nhân viên Dược giải thích rõ ràng và thời gian chờ đợi nhận thuốc ngắn."</i><br>
+                    <strong>Tại sao sai?</strong> Bệnh nhân được giải thích rõ (Đồng ý = 5) nhưng đợi quá lâu (Không đồng ý = 1). Bệnh nhân sẽ không biết khoanh vào số mấy! Dữ liệu thu về sẽ vô nghĩa.<br>
+                    ✅ <strong>Sửa lại:</strong> Tách thành 2 câu: <br>
+                    (1) Nhân viên Dược giải thích rõ ràng cách dùng thuốc. (Nhân tố TT)<br>
+                    (2) Thời gian chờ đợi nhận thuốc ngắn. (Nhân tố QL)
+                </div>
+
+                <div class="box box-vital">
+                    <strong>Bảng khảo sát quyết định chất lượng thang đo!</strong><br>
+                    Kiểm định Cronbach’s Alpha và phân tích EFA trên SPSS là công cụ đánh giá, <strong>chúng KHÔNG THỂ sửa được một bảng hỏi thiết kế sai từ đầu</strong> (Garbage in, Garbage out).
+                </div>
+
+                <!-- Quick Check 4 -->
+                <div class="quiz-container">
+                    <div class="quiz-title">⏱️ Kiểm tra nhanh:</div>
+                    <p>Vì sao KHÔNG NÊN viết câu hỏi: "Nhân viên giải thích rõ và thời gian chờ ngắn"?</p>
+                    <label class="quiz-option"><input type="radio" name="q4" value="A"> A. Vì câu quá ngắn.</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="B"> B. Vì không có số liệu.</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="C"> C. Vì bắt buộc dùng tiếng Anh.</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="D"> D. Vì trộn hai khái niệm (Thái độ/Thông tin và Quy trình quản lý) vào 1 câu.</label>
+                    <button class="btn-submit" onclick="checkQuickQuiz('q4', 'D', 'Đúng! Đây là lỗi trộn nhân tố (double-barreled). Người khảo sát sẽ không biết đánh giá yếu tố nào nếu 1 cái tốt, 1 cái tệ.')">Kiểm tra</button>
+                    <div id="fb-q4" class="quiz-feedback"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <button class="btn-nav" onclick="showModule('mod3')">⬅ Quay lại</button>
+                    <button class="btn-nav" onclick="showModule('mod5')">Tiếp theo: Thực hành Data ➔</button>
+                </div>
+            </section>
+
+            <!-- MODULE 5 -->
+            <section id="mod5" class="module-section">
+                <h1 class="module-title">Module 5: Codebook & Thực hành trên Excel/SPSS</h1>
+                
+                <div class="card">
+                    <h3>1. Xây dựng Codebook (Bảng mã)</h3>
+                    <p>Trước khi gõ bất kỳ con số nào vào máy, bạn phải quy ước mã hóa. Ví dụ biến <strong>GioiTinh</strong>:</p>
+                    <ul>
+                        <li><strong>Name (Tên biến):</strong> GioiTinh (Không dấu, không khoảng trắng)</li>
+                        <li><strong>Label (Nhãn giải thích):</strong> Giới tính của bệnh nhân</li>
+                        <li><strong>Values (Quy ước):</strong> 1 = Nam, 2 = Nữ</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>2. Thực hành trên Excel: Nhập liệu & Khóa chặn lỗi</h3>
+                    <p>Excel/SPSS chỉ hỗ trợ thao tác, không thay thế tư duy phương pháp nghiên cứu. Để tránh nhập sai (VD: gõ nhầm số 33 thay vì 3 cho giới tính), hãy dùng <strong>Data Validation</strong> trên Excel:</p>
+                    <ol>
+                        <li>Quét chọn cột dữ liệu (VD: Cột điểm Likert HQ1).</li>
+                        <li>Vào tab <strong>Data</strong> ➔ <strong>Data Validation</strong>.</li>
+                        <li>Mục <i>Allow</i> chọn <strong>Whole number</strong>.</li>
+                        <li>Mục <i>Data</i> chọn <strong>between</strong>. Nhập Minimum = 1, Maximum = 5.</li>
+                        <li>Nhấn OK. Giờ đây, Excel sẽ báo lỗi nếu nhân viên nhập số 6!</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h3>3. Thực hành trên SPSS: Khai báo Variable View & Compute</h3>
+                    <ul>
+                        <li><strong>Import:</strong> <i>File ➔ Import Data ➔ Excel</i>. Nhớ tick chọn đọc tên dòng đầu tiên.</li>
+                        <li><strong>Variable View:</strong> Khai báo Measure. Biến Likert (HQ1) để <strong>Ordinal/Scale</strong>. Biến danh mục (GioiTinh) để <strong>Nominal</strong>. Khai báo thuộc tính <strong>Values</strong> (1=Hoàn toàn không đồng ý... 5=Hoàn toàn đồng ý).</li>
+                        <li><strong>Tính điểm nhân tố:</strong> Sau khi kiểm định tin cậy, dùng lệnh <i>Transform ➔ Compute Variable</i>. 
+                            <br>Target Variable: <strong>HQ</strong> 
+                            <br>Numeric Expression: <strong>MEAN(HQ1, HQ2, HQ3, HQ4, HQ5)</strong>.
+                            <br><i>(Tương đương hàm =AVERAGE(A2:E2) trong Excel).</i></li>
+                    </ul>
+                </div>
+                
+                <div class="box box-note">
+                    Trước khi chạy phân tích hồi quy, luôn nhớ kiểm tra dữ liệu Missing (dữ liệu khuyết) bằng bảng tần số (Frequencies).
+                </div>
+
+                <!-- Quick Check 5 -->
+                <div class="quiz-container">
+                    <div class="quiz-title">⏱️ Kiểm tra nhanh:</div>
+                    <p>Để tạo biến nhân tố đại diện "HQ" từ các biến quan sát (HQ1 đến HQ5) trong SPSS, ta dùng lệnh nào?</p>
+                    <label class="quiz-option"><input type="radio" name="q5" value="A"> A. Analyze > Frequencies</label>
+                    <label class="quiz-option"><input type="radio" name="q5" value="B"> B. Data > Sort Cases</label>
+                    <label class="quiz-option"><input type="radio" name="q5" value="C"> C. Transform > Compute Variable</label>
+                    <button class="btn-submit" onclick="checkQuickQuiz('q5', 'C', 'Chính xác! Lệnh Compute Variable dùng để tính toán tạo biến mới (như tính điểm trung bình MEAN).')">Kiểm tra</button>
+                    <div id="fb-q5" class="quiz-feedback"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <button class="btn-nav" onclick="showModule('mod4')">⬅ Quay lại</button>
+                    <button class="btn-nav" onclick="showModule('mod6')">Tiếp theo: Lượng giá ➔</button>
+                </div>
+            </section>
+
+            <!-- MODULE 6: TỔNG KẾT & LƯỢNG GIÁ -->
+            <section id="mod6" class="module-section">
+                <h1 class="module-title">Tổng kết & Lượng giá Cuối bài</h1>
+                
+                <div class="box box-thesis" style="background-color: var(--primary); color: white; border-left: none;">
+                    <h3 style="color: white; margin-bottom: 10px;">🏆 3 Thông điệp Cốt lõi:</h3>
+                    <ol style="margin-bottom: 0;">
+                        <li><strong>Lý thuyết dẫn đường:</strong> Mô hình nghiên cứu phải xuất phát từ y văn, không phải từ trí tưởng tượng hay cảm tính.</li>
+                        <li><strong>Khảo sát là gốc:</strong> Một bảng hỏi Likert tồi (trộn nhân tố, khó hiểu) sẽ tạo ra dữ liệu rác. Phần mềm không thể cứu vãn.</li>
+                        <li><strong>Dữ liệu phục vụ Lâm sàng:</strong> p-value có ý nghĩa hay không không quan trọng bằng việc kết quả đó giải thích được gì cho thực trạng y tế cơ sở của bạn.</li>
+                    </ol>
+                </div>
+
+                <h3>📝 Bài tập Tình huống (Final Quiz)</h3>
+                
+                <div class="quiz-container" id="final-quiz">
+                    <!-- Q1 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 1. Trong mô hình "HQ, TD, QL, TT, DV, CP tác động đến SHL", mệnh đề nào sau đây biểu diễn giả thuyết H1?</p>
+                        <label class="quiz-option"><input type="radio" name="fq1" value="A"> A. Hiệu quả điều trị tác động thuận chiều đến Sự hài lòng (SHL).</label>
+                        <label class="quiz-option"><input type="radio" name="fq1" value="B"> B. Sự hài lòng tác động đến Hiệu quả điều trị.</label>
+                        <label class="quiz-option"><input type="radio" name="fq1" value="C"> C. Hiệu quả điều trị là biến nền.</label>
+                        <label class="quiz-option"><input type="radio" name="fq1" value="D"> D. Sự hài lòng tác động đến Giới tính.</label>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 2. Khi thiết lập khai báo biến trong Variable View của SPSS, cột "Values" có chức năng gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq2" value="A"> A. Để tính giá trị trung bình.</label>
+                        <label class="quiz-option"><input type="radio" name="fq2" value="B"> B. Để gán nhãn giải thích cho các con số (VD: 1 = Nam, 2 = Nữ).</label>
+                        <label class="quiz-option"><input type="radio" name="fq2" value="C"> C. Để xóa dữ liệu bị Missing.</label>
+                        <label class="quiz-option"><input type="radio" name="fq2" value="D"> D. Để nhập trực tiếp số liệu của bệnh nhân.</label>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 3. Học viên A thu về dữ liệu và phát hiện giả thuyết H6 (Chi phí tác động đến Sự hài lòng) bị bác bỏ (p > 0.05). Học viên A nên làm gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq3" value="A"> A. Sửa lại dữ liệu để p < 0.05 cho đẹp luận văn.</label>
+                        <label class="quiz-option"><input type="radio" name="fq3" value="B"> B. Xóa bỏ nhân tố Chi phí khỏi mô hình vì coi như nghiên cứu thất bại.</label>
+                        <label class="quiz-option"><input type="radio" name="fq3" value="C"> C. Giữ nguyên và biện luận dựa trên thực tế lâm sàng (VD: Bệnh nhân có BHYT 100% nên không bận tâm chi phí).</label>
+                        <label class="quiz-option"><input type="radio" name="fq3" value="D"> D. Chạy lại EFA để loại bỏ bớt biến quan sát.</label>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 4. Trong Excel, tính năng nào giúp "khóa" ô nhập liệu, chỉ cho phép nhập các số từ 1 đến 5 để tránh sai sót gõ nhầm?</p>
+                        <label class="quiz-option"><input type="radio" name="fq4" value="A"> A. AVERAGE</label>
+                        <label class="quiz-option"><input type="radio" name="fq4" value="B"> B. VLOOKUP</label>
+                        <label class="quiz-option"><input type="radio" name="fq4" value="C"> C. Data Validation</label>
+                        <label class="quiz-option"><input type="radio" name="fq4" value="D"> D. Format Painter</label>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 5. Trong mô hình: HQ, TD, QL, TT, DV, CP ➔ SHL, biến SHL đóng vai trò là gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq5" value="A"> A. Biến độc lập</label>
+                        <label class="quiz-option"><input type="radio" name="fq5" value="B"> B. Biến nền</label>
+                        <label class="quiz-option"><input type="radio" name="fq5" value="C"> C. Mã missing</label>
+                        <label class="quiz-option"><input type="radio" name="fq5" value="D"> D. Biến phụ thuộc</label>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 6. Lỗi "trộn nhân tố" (Double-barreled) trong thiết kế bảng hỏi Likert là gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq6" value="A"> A. Câu hỏi quá dài và nhiều từ chuyên môn.</label>
+                        <label class="quiz-option"><input type="radio" name="fq6" value="B"> B. Câu hỏi mang ý nghĩa phủ định kép.</label>
+                        <label class="quiz-option"><input type="radio" name="fq6" value="C"> C. Không có đáp án mức độ trung lập.</label>
+                        <label class="quiz-option"><input type="radio" name="fq6" value="D"> D. Đưa 2 khái niệm khác nhau vào cùng 1 câu hỏi để đánh giá.</label>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 7. Thang đo định danh (Nominal) trong SPSS phù hợp để khai báo cho các biến nào dưới đây?</p>
+                        <label class="quiz-option"><input type="radio" name="fq7" value="A"> A. Giới tính, Phác đồ điều trị.</label>
+                        <label class="quiz-option"><input type="radio" name="fq7" value="B"> B. Điểm trung bình hài lòng.</label>
+                        <label class="quiz-option"><input type="radio" name="fq7" value="C"> C. Chi phí điều trị (VNĐ).</label>
+                        <label class="quiz-option"><input type="radio" name="fq7" value="D"> D. Trình độ học vấn (Cấp 1, Cấp 2, Đại học).</label>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 8. Lệnh nào trong SPSS được sử dụng để tính điểm trung bình (Mean) cho một nhân tố dựa trên các biến quan sát (VD: HQ1 đến HQ5)?</p>
+                        <label class="quiz-option"><input type="radio" name="fq8" value="A"> A. Analyze > Frequencies</label>
+                        <label class="quiz-option"><input type="radio" name="fq8" value="B"> B. Data > Sort Cases</label>
+                        <label class="quiz-option"><input type="radio" name="fq8" value="C"> C. Transform > Compute Variable</label>
+                        <label class="quiz-option"><input type="radio" name="fq8" value="D"> D. Analyze > Correlate</label>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 9. Kiểm định Cronbach's Alpha và EFA trên SPSS có thể giúp khắc phục một bảng hỏi được thiết kế sai (trộn nhân tố, khó hiểu) ngay từ đầu không?</p>
+                        <label class="quiz-option"><input type="radio" name="fq9" value="A"> A. Có, phần mềm sẽ tự động sửa lỗi logic của câu hỏi.</label>
+                        <label class="quiz-option"><input type="radio" name="fq9" value="B"> B. Có, nhưng chỉ khi cỡ mẫu lớn hơn 500.</label>
+                        <label class="quiz-option"><input type="radio" name="fq9" value="C"> C. Không thể. Bảng hỏi sai sẽ cho ra dữ liệu vô nghĩa (Garbage in, Garbage out).</label>
+                        <label class="quiz-option"><input type="radio" name="fq9" value="D"> D. Không thể, cần dùng phần mềm Excel mới sửa được.</label>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 10. Trong các nghiên cứu sự hài lòng ngành Dược, nhân tố "Chi phí" (CP) thường được hiểu đúng về chuyên môn là gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq10" value="A"> A. Tổng số tiền bệnh nhân phải trả (càng thấp càng tốt).</label>
+                        <label class="quiz-option"><input type="radio" name="fq10" value="B"> B. Sự cảm nhận của bệnh nhân về tính hợp lý, minh bạch của chi phí.</label>
+                        <label class="quiz-option"><input type="radio" name="fq10" value="C"> C. Mức lương hàng tháng của bệnh nhân.</label>
+                        <label class="quiz-option"><input type="radio" name="fq10" value="D"> D. Lợi nhuận của nhà thuốc bệnh viện.</label>
+                    </div>
+
+                    <!-- Q11 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 11. Tại sao KHÔNG NÊN đưa bất kỳ biến nào vào mô hình nghiên cứu chỉ vì "có sẵn dữ liệu thu thập được"?</p>
+                        <label class="quiz-option"><input type="radio" name="fq11" value="A"> A. Vì mọi mối quan hệ trong mô hình đều phải có cơ sở y văn hoặc lý thuyết chứng minh từ trước.</label>
+                        <label class="quiz-option"><input type="radio" name="fq11" value="B"> B. Vì phần mềm SPSS chỉ chạy được tối đa 5 biến.</label>
+                        <label class="quiz-option"><input type="radio" name="fq11" value="C"> C. Vì biến đó sẽ luôn làm giảm ý nghĩa thống kê (p-value).</label>
+                        <label class="quiz-option"><input type="radio" name="fq11" value="D"> D. Vì Excel không hỗ trợ lưu trữ số lượng biến lớn.</label>
+                    </div>
+
+                    <!-- Q12 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 12. Khi khai báo tên biến (Name) trong phần mềm SPSS, quy tắc nào sau đây là ĐÚNG?</p>
+                        <label class="quiz-option"><input type="radio" name="fq12" value="A"> A. Có thể viết tiếng Việt có dấu (VD: Giới tính).</label>
+                        <label class="quiz-option"><input type="radio" name="fq12" value="B"> B. Có thể chứa khoảng trắng (VD: Gioi tinh).</label>
+                        <label class="quiz-option"><input type="radio" name="fq12" value="C"> C. Không dấu, không khoảng trắng, không ký tự đặc biệt ở đầu (VD: GioiTinh).</label>
+                        <label class="quiz-option"><input type="radio" name="fq12" value="D"> D. Bắt buộc phải viết hoa toàn bộ (VD: GIOITINH).</label>
+                    </div>
+
+                    <!-- Q13 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 13. Hành động nào sau đây là thiết yếu trước khi tiến hành chạy phân tích hồi quy trên SPSS?</p>
+                        <label class="quiz-option"><input type="radio" name="fq13" value="A"> A. Xóa tất cả các biến nhân khẩu học (biến nền).</label>
+                        <label class="quiz-option"><input type="radio" name="fq13" value="B"> B. Bỏ qua các giá trị khuyết thiếu (missing data) vì SPSS tự bù đắp.</label>
+                        <label class="quiz-option"><input type="radio" name="fq13" value="C"> C. Kiểm tra rà soát dữ liệu lỗi, Missing data bằng bảng tần số (Frequencies).</label>
+                        <label class="quiz-option"><input type="radio" name="fq13" value="D"> D. Nhân đôi số lượng mẫu (Copy-Paste) để kết quả đẹp hơn.</label>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 14. Trong nghiên cứu khảo sát, biến nền / biến kiểm soát thường KHÔNG bao gồm yếu tố nào?</p>
+                        <label class="quiz-option"><input type="radio" name="fq14" value="A"> A. Giới tính bệnh nhân.</label>
+                        <label class="quiz-option"><input type="radio" name="fq14" value="B"> B. Phác đồ điều trị đang sử dụng.</label>
+                        <label class="quiz-option"><input type="radio" name="fq14" value="C"> C. Trình độ học vấn.</label>
+                        <label class="quiz-option"><input type="radio" name="fq14" value="D"> D. Mức độ hiệu quả lâm sàng (Đo bằng thang đo Likert).</label>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 15. Hàm nào trong Excel tương đương với lệnh Compute ➔ MEAN(HQ1, HQ2, HQ3, HQ4, HQ5) trong SPSS?</p>
+                        <label class="quiz-option"><input type="radio" name="fq15" value="A"> A. =SUM()</label>
+                        <label class="quiz-option"><input type="radio" name="fq15" value="B"> B. =COUNT()</label>
+                        <label class="quiz-option"><input type="radio" name="fq15" value="C"> C. =AVERAGE()</label>
+                        <label class="quiz-option"><input type="radio" name="fq15" value="D"> D. =MEDIAN()</label>
+                    </div>
+
+                    <!-- Q16 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 16. Do đặc thù "nghiên cứu cắt ngang" (Cross-sectional) chỉ phản ánh tính thời điểm, người viết luận văn nên tránh sử dụng từ ngữ nào khi kết luận?</p>
+                        <label class="quiz-option"><input type="radio" name="fq16" value="A"> A. "Có liên quan"</label>
+                        <label class="quiz-option"><input type="radio" name="fq16" value="B"> B. "Gây ra" hoặc "Quyết định"</label>
+                        <label class="quiz-option"><input type="radio" name="fq16" value="C"> C. "Có xu hướng tác động"</label>
+                        <label class="quiz-option"><input type="radio" name="fq16" value="D"> D. "Yếu tố dự báo"</label>
+                    </div>
+
+                    <!-- Q17 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 17. Việc ĐẦU TIÊN học viên cần làm trước khi thu thập dữ liệu và nhập liệu là gì?</p>
+                        <label class="quiz-option"><input type="radio" name="fq17" value="A"> A. Xây dựng Codebook (Bảng quy ước mã hóa).</label>
+                        <label class="quiz-option"><input type="radio" name="fq17" value="B"> B. Mở ngay phần mềm SPSS và gõ bừa vào Data View.</label>
+                        <label class="quiz-option"><input type="radio" name="fq17" value="C"> C. Xin số liệu giả từ khóa trước.</label>
+                        <label class="quiz-option"><input type="radio" name="fq17" value="D"> D. Báo cáo tiến độ với hội đồng.</label>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 18. Nếu nhân viên đánh máy nhầm giá trị "33" vào cột Giới tính (quy ước 1=Nam, 2=Nữ) trong Excel. Khi Import file này vào SPSS, điều gì sẽ xảy ra?</p>
+                        <label class="quiz-option"><input type="radio" name="fq18" value="A"> A. SPSS sẽ tự động nhận diện và sửa thành số 3.</label>
+                        <label class="quiz-option"><input type="radio" name="fq18" value="B"> B. SPSS sẽ chặn không cho Import file Excel.</label>
+                        <label class="quiz-option"><input type="radio" name="fq18" value="C"> C. SPSS vẫn Import số 33, nếu không dùng bảng tần số kiểm tra, kết quả phân tích sẽ sai lệch hoàn toàn.</label>
+                        <label class="quiz-option"><input type="radio" name="fq18" value="D"> D. SPSS tự động quy số 33 về giá trị Missing (Khuyết).</label>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 19. Biến Trình độ học vấn (1: Cấp 1, 2: Cấp 2, 3: Cấp 3, 4: Đại học/Sau ĐH) nên được khai báo Measure là gì trong SPSS?</p>
+                        <label class="quiz-option"><input type="radio" name="fq19" value="A"> A. Nominal (Định danh)</label>
+                        <label class="quiz-option"><input type="radio" name="fq19" value="B"> B. Ordinal (Thứ bậc)</label>
+                        <label class="quiz-option"><input type="radio" name="fq19" value="C"> C. Scale (Định lượng liên tục)</label>
+                        <label class="quiz-option"><input type="radio" name="fq19" value="D"> D. String (Chuỗi văn bản)</label>
+                    </div>
+
+                    <!-- Q20 -->
+                    <div style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <p class="quiz-title">Câu 20. Tên đề tài y dược chuẩn mực cho một luận văn CK1 cần phản ánh đủ các yếu tố nào?</p>
+                        <label class="quiz-option"><input type="radio" name="fq20" value="A"> A. Tên bệnh viện và Tên khoa.</label>
+                        <label class="quiz-option"><input type="radio" name="fq20" value="B"> B. Tên phương pháp thống kê và Phần mềm sử dụng.</label>
+                        <label class="quiz-option"><input type="radio" name="fq20" value="C"> C. Chỉ cần nêu rõ vấn đề nghiên cứu.</label>
+                        <label class="quiz-option"><input type="radio" name="fq20" value="D"> D. Đối tượng + Vấn đề + Không gian (Cơ sở y tế) + Thời gian.</label>
+                    </div>
+
+                    <button class="btn-submit" style="width: 100%; font-size: 1.1rem; padding: 15px;" onclick="evaluateFinalQuiz()">CHẤM ĐIỂM BÀI TỔNG KẾT</button>
+                    
+                    <div id="final-results" class="quiz-feedback" style="margin-top: 20px; font-size: 1.1rem; text-align: center;"></div>
+                </div>
+
+                <div class="module-nav-buttons">
+                    <button class="btn-nav" onclick="showModule('mod5')">⬅ Quay lại</button>
+                    <div></div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Navigation Logic
+        const modules = ['mod1', 'mod2', 'mod3', 'mod4', 'mod5', 'mod6'];
+        
+        function showModule(moduleId) {
+            // Hide all modules
+            modules.forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+            // Show target module
+            document.getElementById(moduleId).classList.add('active');
+            
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach((el, index) => {
+                el.classList.remove('active');
+                if(modules[index] === moduleId) {
+                    el.classList.add('active');
+                    document.getElementById('progress-text').innerText = `${index + 1}/6`;
+                }
+            });
+
+            // Scroll to top of content area
+            document.getElementById('content-area').scrollTop = 0;
+
+            // Close sidebar on mobile after click
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        // Quick Quiz Logic
+        function checkQuickQuiz(qName, correctValue, explanation) {
+            const selected = document.querySelector(`input[name="${qName}"]:checked`);
+            const feedbackDiv = document.getElementById(`fb-${qName}`);
+            
+            if (!selected) {
+                feedbackDiv.style.display = 'block';
+                feedbackDiv.className = 'quiz-feedback feedback-incorrect';
+                feedbackDiv.innerHTML = '⚠️ Vui lòng chọn một đáp án.';
+                return;
+            }
+
+            feedbackDiv.style.display = 'block';
+            if (selected.value === correctValue) {
+                feedbackDiv.className = 'quiz-feedback feedback-correct';
+                feedbackDiv.innerHTML = `✅ <strong>Chính xác!</strong> ${explanation}`;
+            } else {
+                feedbackDiv.className = 'quiz-feedback feedback-incorrect';
+                feedbackDiv.innerHTML = `❌ <strong>Chưa chính xác.</strong> Đáp án đúng là <strong>${correctValue}</strong>. <br><br><i>Giải thích:</i> ${explanation}`;
+            }
+        }
+
+        // Final Quiz Evaluation Logic
+        function evaluateFinalQuiz() {
+            const answers = {
+                'fq1': 'A', 'fq2': 'B', 'fq3': 'C', 'fq4': 'C', 'fq5': 'D',
+                'fq6': 'D', 'fq7': 'A', 'fq8': 'C', 'fq9': 'C', 'fq10': 'B',
+                'fq11': 'A', 'fq12': 'C', 'fq13': 'C', 'fq14': 'D', 'fq15': 'C',
+                'fq16': 'B', 'fq17': 'A', 'fq18': 'C', 'fq19': 'B', 'fq20': 'D'
+            };
+            
+            let score = 0;
+            let total = Object.keys(answers).length;
+            let allAnswered = true;
+
+            for (let q in answers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (!selected) {
+                    allAnswered = false;
+                    break;
+                }
+                if (selected.value === answers[q]) {
+                    score++;
+                }
+            }
+
+            const resultsDiv = document.getElementById('final-results');
+            resultsDiv.style.display = 'block';
+
+            if (!allAnswered) {
+                resultsDiv.className = 'quiz-feedback feedback-incorrect';
+                resultsDiv.innerHTML = '⚠️ Vui lòng hoàn thành tất cả 20 câu hỏi trước khi chấm điểm!';
+                return;
+            }
+
+            if (score === total) {
+                resultsDiv.className = 'quiz-feedback feedback-correct';
+                resultsDiv.innerHTML = `🎉 <strong>XUẤT SẮC! Bạn đạt ${score}/${total} điểm.</strong><br>Bạn đã hoàn toàn nắm vững cách xây dựng đề tài, mô hình và bảng hỏi chuẩn bị cho luận văn CK1!`;
+            } else if (score >= total * 0.7) {
+                resultsDiv.className = 'quiz-feedback feedback-correct';
+                resultsDiv.style.backgroundColor = '#fef3c7'; // warning bg
+                resultsDiv.style.color = '#92400e';
+                resultsDiv.style.borderColor = '#fde68a';
+                resultsDiv.innerHTML = `👍 <strong>KHÁ TỐT! Bạn đạt ${score}/${total} điểm.</strong><br>Hãy xem lại các khái niệm bị nhầm lẫn trong các Module trước nhé.`;
+            } else {
+                resultsDiv.className = 'quiz-feedback feedback-incorrect';
+                resultsDiv.innerHTML = `📚 <strong>Bạn đạt ${score}/${total} điểm.</strong><br>Đừng lo lắng, thống kê cần thời gian thẩm thấu. Hãy đọc lại Module 2 (Mô hình) và Module 4 (Thiết kế bảng hỏi) nhé!`;
+            }
+        }
+    </script>
+</body>
+</html>

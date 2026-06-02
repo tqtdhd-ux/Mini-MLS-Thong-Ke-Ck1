@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 6: Đánh Giá Độ Tin Cậy Thang Đo - E-Learning CK1 Dược</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- KaTeX cho công thức toán học nếu cần -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ]
+                });
+            }
+        });
+    </script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0fdf4; }
+        .module-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .module-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #059669; }
+
+        .pedagogy-box { border-left-width: 4px; padding: 1rem; border-radius: 0.375rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        .box-note { background-color: #eff6ff; border-color: #3b82f6; }
+        .box-error { background-color: #fef2f2; border-color: #ef4444; }
+        .box-apply { background-color: #f0fdf4; border-color: #22c55e; }
+        
+        .quiz-option { transition: all 0.2s; }
+        .quiz-option:hover:not(.disabled) { background-color: #e0f2fe; border-color: #3b82f6; cursor: pointer; }
+        .quiz-option.selected { background-color: #dbeafe; border-color: #2563eb; font-weight: bold; }
+        .quiz-option.correct { background-color: #dcfce7; border-color: #16a34a; color: #166534; }
+        .quiz-option.incorrect { background-color: #fee2e2; border-color: #dc2626; color: #991b1b; }
+        .disabled { pointer-events: none; opacity: 0.8; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased h-screen flex overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <nav class="w-64 bg-emerald-800 text-white flex-shrink-0 flex flex-col h-full shadow-xl z-10 transition-transform duration-300 md:translate-x-0 absolute md:relative -translate-x-full" id="sidebar">
+        <div class="p-6 border-b border-emerald-700 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-wider text-emerald-100">SPSS MASTER</h1>
+                <p class="text-xs text-emerald-300 mt-1">Dành cho Học viên CK1 Dược</p>
+            </div>
+            <button id="closeSidebarBtn" class="md:hidden text-white hover:text-emerald-300">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 px-3">
+                <li><button onclick="showTab('intro')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center bg-emerald-700" data-target="intro"><i class="fas fa-home w-6"></i> Tổng quan</button></li>
+                <li><button onclick="showTab('mod1')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod1"><i class="fas fa-balance-scale w-6"></i> 1. Bản chất Cronbach's Alpha</button></li>
+                <li><button onclick="showTab('mod2')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod2"><i class="fas fa-exclamation-circle w-6"></i> 2. Khi nào sử dụng?</button></li>
+                <li><button onclick="showTab('mod3')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod3"><i class="fas fa-desktop w-6"></i> 3. Thực hành SPSS</button></li>
+                <li><button onclick="showTab('mod4')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod4"><i class="fas fa-chart-bar w-6"></i> 4. Đọc Output & Ra Quyết Định</button></li>
+                <li><button onclick="showTab('mod5')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod5"><i class="fas fa-file-excel w-6"></i> 5. Kiểm tra sơ bộ bằng Excel</button></li>
+                <li><button onclick="showTab('mod6')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center" data-target="mod6"><i class="fas fa-pen-nib w-6"></i> 6. Viết luận văn chuẩn CK1</button></li>
+                <li class="pt-4 mt-4 border-t border-emerald-700"><button onclick="showTab('quiz')" class="nav-btn w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-600 transition flex items-center text-yellow-300 font-bold" data-target="quiz"><i class="fas fa-tasks w-6"></i> Lượng giá (20 Câu)</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full bg-slate-50 relative w-full">
+        <!-- Header Mobile -->
+        <header class="md:hidden bg-emerald-800 text-white p-4 flex justify-between items-center shadow-md">
+            <h2 class="text-lg font-bold">Chương 6: Cronbach's Alpha</h2>
+            <button id="openSidebarBtn" class="text-white hover:text-emerald-200">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative scroll-smooth">
+            <div class="max-w-4xl mx-auto pb-20">
+
+                <!-- INTRO -->
+                <section id="intro" class="module-content active">
+                    <div class="bg-white rounded-xl shadow-sm p-8 border-t-4 border-emerald-600">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-emerald-100 p-4 rounded-full text-emerald-600">
+                                <i class="fas fa-shield-alt text-3xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800">CHƯƠNG 6. ĐÁNH GIÁ ĐỘ TIN CẬY THANG ĐO</h2>
+                                <p class="text-slate-500">Bằng hệ số Cronbach's Alpha</p>
+                            </div>
+                        </div>
+                        
+                        <div class="prose max-w-none text-slate-700 text-lg leading-relaxed">
+                            <p>Chào các anh chị học viên CK1,</p>
+                            <p>Trong Chương 4, chúng ta đã thiết kế bảng hỏi Likert để đo lường các khái niệm trừu tượng (như Sự hài lòng, Nhận thức về chi phí...). Nhưng trước khi mang dữ liệu đi phân tích sâu hơn, chúng ta phải đối mặt với một câu hỏi cốt lõi:</p>
+                            <p class="font-bold text-emerald-700 text-xl text-center my-6">"Làm sao biết các câu hỏi trong thang đo thực sự đang 'hiểu ý nhau' và cùng đo lường một thứ?"</p>
+                            <p>Đó chính là nhiệm vụ của <strong>Cronbach's Alpha</strong>. Bài học này sẽ hướng dẫn anh chị thao tác trên SPSS từng bước một, cách đọc bảng Output chính xác và đặc biệt là: <span class="text-red-600 font-semibold">Quyết định khi nào nên loại bỏ, khi nào nên giữ lại một câu hỏi dựa trên bối cảnh lâm sàng/quản lý dược.</span></p>
+                        </div>
+                        <button onclick="showTab('mod1')" class="mt-8 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-md w-full md:w-auto">Bắt đầu học <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 1 -->
+                <section id="mod1" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">1. Bản chất của Cronbach's Alpha</h2>
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h3 class="text-xl font-bold text-emerald-700 mb-4"><i class="fas fa-crosshairs mr-2"></i> Độ tin cậy (Reliability) vs Giá trị (Validity)</h3>
+                        <p class="mb-4">Trong nghiên cứu Y Dược, chúng ta cần phân biệt hai khái niệm:</p>
+                        <ul class="list-disc pl-6 space-y-3 mb-6">
+                            <li><strong>Độ tin cậy (Reliability):</strong> Tính nhất quán. Ví dụ: Anh chị bước lên cái cân 3 lần liên tiếp, cân đều chỉ 60kg. Cái cân đó có độ tin cậy cao. (Cronbach's Alpha đo lường cái này).</li>
+                            <li><strong>Giá trị (Validity):</strong> Tính chính xác. Cái cân chỉ 60kg, nhưng thực tế anh chị nặng 65kg. Cân nhất quán nhưng bị sai lệch. (Phân tích nhân tố EFA ở chương sau sẽ đo lường cái này).</li>
+                        </ul>
+                        
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <p class="font-semibold text-slate-800 mb-2">Định nghĩa y dược thực tế:</p>
+                            <p>Nếu thang đo "Cảm nhận Chi phí" (CP) gồm 4 câu hỏi CP1, CP2, CP3, CP4. Nếu một bệnh nhân đã đánh giá điểm cao ở CP1, họ cũng có xu hướng đánh giá điểm cao ở CP2, CP3, CP4. Sự đồng thuận nội bộ này được tính toán thành một con số: <strong>Hệ số Cronbach's Alpha</strong> (chạy từ 0 đến 1).</p>
+                        </div>
+                    </div>
+
+                    <!-- Hộp Sư Phạm -->
+                    <div class="pedagogy-box box-note">
+                        <h4 class="font-bold text-blue-800 flex items-center"><i class="fas fa-lightbulb text-yellow-500 mr-2 text-xl"></i> Ghi nhớ nhanh</h4>
+                        <p class="text-blue-900 mt-2">“Cronbach’s Alpha đánh giá <strong>độ tin cậy nội tại</strong> trong TỪNG thang đo riêng biệt, không đánh giá toàn bộ mô hình nghiên cứu cùng một lúc.”</p>
+                    </div>
+
+                    <div class="pedagogy-box box-error">
+                        <h4 class="font-bold text-red-800 flex items-center"><i class="fas fa-exclamation-triangle mr-2 text-xl"></i> Lỗi thường gặp</h4>
+                        <p class="text-red-900 mt-2">“Nhiều học viên gom TẤT CẢ các biến từ HQ, TD, CP, SHL vào chạy chung 1 lần Cronbach's Alpha. <strong>Đây là lỗi sai nghiêm trọng!</strong> Các biến này thuộc các khái niệm khác nhau, không thể ép chúng đồng thuận với nhau.”</p>
+                    </div>
+
+                    <div class="pedagogy-box box-apply">
+                        <h4 class="font-bold text-green-800 flex items-center"><i class="fas fa-graduation-cap mr-2 text-xl"></i> Áp dụng trong luận văn CK1</h4>
+                        <p class="text-green-900 mt-2">“Trong luận văn, anh chị phải chạy Cronbach's Alpha LẦN LƯỢT cho từng nhóm biến. Ví dụ: Chạy cho nhóm [HQ1 đến HQ5] xong ghi kết quả, sau đó chạy tiếp cho nhóm [CP1 đến CP4], v.v.”</p>
+                    </div>
+                    
+                    <div class="text-right mt-6">
+                        <button onclick="showTab('mod2')" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Tiếp theo: Khi nào sử dụng? <i class="fas fa-chevron-right ml-1"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 2 -->
+                <section id="mod2" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">2. Khi nào sử dụng Cronbach's Alpha?</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <p class="mb-4">Trong bộ số liệu nghiên cứu tại bệnh viện/nhà thuốc, anh chị sẽ có rất nhiều loại biến số (Giới tính, Tuổi, Nhóm bệnh, Điểm Likert...). Không phải biến nào cũng dùng để tính Cronbach's Alpha.</p>
+                        
+                        <table class="w-full text-left border-collapse border border-slate-200 mt-4">
+                            <thead>
+                                <tr class="bg-emerald-100 text-emerald-800">
+                                    <th class="p-3 border border-slate-200">Loại biến số</th>
+                                    <th class="p-3 border border-slate-200">Ví dụ thực tế</th>
+                                    <th class="p-3 border border-slate-200 text-center">Có dùng Cronbach's Alpha?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border border-slate-200 font-semibold">Biến Định danh / Thứ bậc (Nhân khẩu học)</td>
+                                    <td class="p-3 border border-slate-200">Giới tính (1=Nam, 2=Nữ), Phác đồ điều trị, Trình độ học vấn</td>
+                                    <td class="p-3 border border-slate-200 text-center font-bold text-red-600">KHÔNG <i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="p-3 border border-slate-200 font-semibold">Biến Định lượng Độc lập</td>
+                                    <td class="p-3 border border-slate-200">Tuổi (45, 60 tuổi), Chi phí tiền mặt (1.5 triệu, 2 triệu)</td>
+                                    <td class="p-3 border border-slate-200 text-center font-bold text-red-600">KHÔNG <i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border border-slate-200 font-semibold">Thang đo Likert đa biến (Cùng đo 1 khái niệm)</td>
+                                    <td class="p-3 border border-slate-200">Các câu hỏi đánh giá Sự hài lòng: SHL1, SHL2, SHL3 (Đo từ 1: Rất không đồng ý đến 5: Rất đồng ý)</td>
+                                    <td class="p-3 border border-slate-200 text-center font-bold text-green-600">CÓ <i class="fas fa-check"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pedagogy-box box-error">
+                        <h4 class="font-bold text-red-800 flex items-center"><i class="fas fa-exclamation-triangle mr-2 text-xl"></i> Lỗi thường gặp</h4>
+                        <p class="text-red-900 mt-2">“Đưa các biến nhân khẩu học (như NhomTuoi, GioiTinh) vào chạy Cronbach's Alpha cùng với các biến Likert. Phần mềm vẫn chạy ra kết quả, nhưng con số đó hoàn toàn vô nghĩa về mặt thống kê.”</p>
+                    </div>
+
+                    <div class="text-right mt-6 flex justify-between">
+                        <button onclick="showTab('mod1')" class="bg-slate-200 text-slate-800 px-4 py-2 rounded hover:bg-slate-300"><i class="fas fa-chevron-left mr-1"></i> Quay lại</button>
+                        <button onclick="showTab('mod3')" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Tiếp theo: Thực hành SPSS <i class="fas fa-chevron-right ml-1"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 3 -->
+                <section id="mod3" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">3. Hướng dẫn thao tác trên SPSS</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <p class="mb-4 font-semibold text-emerald-700">Hãy tưởng tượng chúng ta đang thao tác trên bộ dữ liệu DATA.csv để đánh giá thang đo "Hiệu quả điều trị" (HQ) gồm 5 biến quan sát từ HQ1 đến HQ5.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">1</div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg">Mở công cụ Reliability Analysis</h4>
+                                    <p class="text-slate-600">Trên thanh menu SPSS, chọn: <strong>Analyze > Scale > Reliability Analysis...</strong></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">2</div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg">Đưa biến vào ô Items</h4>
+                                    <p class="text-slate-600">Chọn 5 biến <strong>HQ1, HQ2, HQ3, HQ4, HQ5</strong> từ danh sách bên trái và chuyển sang ô <strong>Items</strong> bên phải. Đảm bảo mục <em>Model</em> đang chọn là <strong>Alpha</strong>.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="bg-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 mt-1">3</div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg">Thiết lập Statistics (Bắt buộc)</h4>
+                                    <p class="text-slate-600">Nhấn vào nút <strong>Statistics...</strong> góc trên bên phải. Trong mục <em>Descriptives for</em>, tích chọn 3 ô:</p>
+                                    <ul class="list-disc pl-5 text-slate-600 mt-2 font-medium">
+                                        <li>Item</li>
+                                        <li>Scale</li>
+                                        <li class="text-red-600 bg-red-50 px-1 inline-block">Scale if item deleted (Cực kỳ quan trọng để ra quyết định loại biến)</li>
+                                    </ul>
+                                    <p class="text-slate-600 mt-2">Sau đó nhấn <strong>Continue</strong> -> <strong>OK</strong> để xuất kết quả.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pedagogy-box box-note">
+                        <h4 class="font-bold text-blue-800 flex items-center"><i class="fas fa-lightbulb text-yellow-500 mr-2 text-xl"></i> Ghi nhớ nhanh</h4>
+                        <p class="text-blue-900 mt-2">“Nếu quên tích vào ô <strong>Scale if item deleted</strong>, anh chị sẽ không biết câu hỏi nào đang làm giảm chất lượng của thang đo để loại bỏ nó.”</p>
+                    </div>
+
+                    <div class="text-right mt-6 flex justify-between">
+                        <button onclick="showTab('mod2')" class="bg-slate-200 text-slate-800 px-4 py-2 rounded hover:bg-slate-300"><i class="fas fa-chevron-left mr-1"></i> Quay lại</button>
+                        <button onclick="showTab('mod4')" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Tiếp theo: Đọc Output <i class="fas fa-chevron-right ml-1"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 4 -->
+                <section id="mod4" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">4. Đọc Output SPSS và Quyết định loại biến</h2>
+                    
+                    <p class="mb-4">SPSS sẽ xuất ra nhiều bảng, nhưng học viên CK1 chỉ cần tập trung vào 2 bảng cốt lõi sau đây:</p>
+
+                    <!-- Bảng 1 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h3 class="font-bold text-lg text-emerald-800 mb-2">Bảng 1: Reliability Statistics (Chỉ số tổng thể)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center border border-slate-300 mb-4">
+                                <thead class="bg-slate-100">
+                                    <tr>
+                                        <th class="p-2 border border-slate-300">Cronbach's Alpha</th>
+                                        <th class="p-2 border border-slate-300">N of Items</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border border-slate-300 font-bold text-xl text-blue-600">0.835</td>
+                                        <td class="p-2 border border-slate-300">5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                            <li><strong>N of Items = 5:</strong> Xác nhận chúng ta đang đánh giá 5 biến (HQ1-HQ5).</li>
+                            <li><strong>Cronbach's Alpha = 0.835:</strong> Tiêu chuẩn là <strong>> 0.6</strong> (chấp nhận được), từ <strong>0.7 - 0.8</strong> (Tốt), <strong>> 0.8</strong> (Rất tốt). Ở đây 0.835 là rất tốt.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bảng 2 -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h3 class="font-bold text-lg text-emerald-800 mb-2">Bảng 2: Item-Total Statistics (Khám bệnh cho từng biến)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm border-collapse border border-slate-300 mb-4">
+                                <thead class="bg-slate-100">
+                                    <tr>
+                                        <th class="p-2 border border-slate-300">Biến</th>
+                                        <th class="p-2 border border-slate-300">Scale Mean...</th>
+                                        <th class="p-2 border border-slate-300">Scale Var...</th>
+                                        <th class="p-2 border border-slate-300 bg-yellow-100">Corrected Item-Total Correlation</th>
+                                        <th class="p-2 border border-slate-300 bg-blue-100">Cronbach's Alpha if Item Deleted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="p-2 border">HQ1</td><td class="p-2 border">16.20</td><td class="p-2 border">12.45</td><td class="p-2 border font-bold">0.685</td><td class="p-2 border">0.791</td></tr>
+                                    <tr><td class="p-2 border">HQ2</td><td class="p-2 border">16.35</td><td class="p-2 border">12.10</td><td class="p-2 border font-bold">0.650</td><td class="p-2 border">0.802</td></tr>
+                                    <tr class="bg-red-50"><td class="p-2 border font-bold text-red-600">HQ3</td><td class="p-2 border">17.10</td><td class="p-2 border">14.50</td><td class="p-2 border font-bold text-red-600">0.215</td><td class="p-2 border font-bold text-red-600">0.865</td></tr>
+                                    <tr><td class="p-2 border">HQ4</td><td class="p-2 border">16.42</td><td class="p-2 border">11.85</td><td class="p-2 border font-bold">0.710</td><td class="p-2 border">0.785</td></tr>
+                                    <tr><td class="p-2 border">HQ5</td><td class="p-2 border">16.50</td><td class="p-2 border">11.90</td><td class="p-2 border font-bold">0.695</td><td class="p-2 border">0.788</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h4 class="font-bold text-slate-800 mt-4 mb-2">Cách đọc và ra quyết định:</h4>
+                        <p class="mb-2">Anh chị chỉ nhìn vào 2 cột cuối cùng:</p>
+                        <ol class="list-decimal pl-5 text-slate-700 space-y-3">
+                            <li><strong>Cột "Corrected Item-Total Correlation" (Hệ số tương quan biến-tổng):</strong> Tiêu chuẩn phải <strong>>= 0.3</strong>.
+                                <br><span class="text-sm text-slate-500">Trong bảng trên, HQ3 có hệ số <strong>0.215 &lt; 0.3</strong>. Biến này đang lạc nhịp so với 4 biến còn lại.</span>
+                            </li>
+                            <li><strong>Cột "Cronbach's Alpha if Item Deleted" (Alpha nếu xóa biến):</strong> 
+                                <br><span class="text-sm text-slate-500">Nếu xóa HQ3, Alpha chung sẽ tăng từ 0.835 lên <strong>0.865</strong>. Xóa nó đi thì tập thể mạnh hơn.</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="pedagogy-box box-error">
+                        <h4 class="font-bold text-red-800 flex items-center"><i class="fas fa-exclamation-triangle mr-2 text-xl"></i> Lỗi "Sát thủ": Loại biến cơ học!</h4>
+                        <p class="text-red-900 mt-2">Nếu biến HQ3 đo lường việc "Triệu chứng đau giảm hẳn", đây là cốt lõi của "Hiệu quả điều trị". Dù hệ số là 0.28 (hơi dưới 0.3 một chút), anh chị <strong>KHÔNG ĐƯỢC XÓA</strong> ngay lập tức. Hãy xem xét lại bảng hỏi hoặc mẫu khảo sát. Luôn ưu tiên <strong>Ý NGHĨA CHUYÊN MÔN Y DƯỢC</strong> lên trên một con số thống kê đơn thuần.</p>
+                    </div>
+                    
+                    <div class="pedagogy-box box-apply">
+                        <h4 class="font-bold text-green-800 flex items-center"><i class="fas fa-graduation-cap mr-2 text-xl"></i> Áp dụng trong luận văn CK1</h4>
+                        <p class="text-green-900 mt-2">“Sau khi kiểm tra, nếu loại bỏ biến HQ3, anh chị phải chạy lại lệnh Reliability Analysis cho 4 biến (HQ1, HQ2, HQ4, HQ5) để lấy kết quả Alpha mới nhất (0.865) đưa vào luận văn.”</p>
+                    </div>
+
+                    <div class="text-right mt-6 flex justify-between">
+                        <button onclick="showTab('mod3')" class="bg-slate-200 text-slate-800 px-4 py-2 rounded hover:bg-slate-300"><i class="fas fa-chevron-left mr-1"></i> Quay lại</button>
+                        <button onclick="showTab('mod5')" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Tiếp theo: Kiểm tra bằng Excel <i class="fas fa-chevron-right ml-1"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 5 -->
+                <section id="mod5" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">5. Thực hành sơ bộ bằng Excel</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <p class="mb-4">Dù phần mềm SPSS là bắt buộc khi làm luận văn, nhưng việc thực hành trên Excel giúp anh chị hiểu bản chất của con số <strong>"Tương quan biến - tổng" (Item-Total Correlation)</strong> là gì.</p>
+                        
+                        <div class="border border-slate-300 rounded-lg overflow-hidden">
+                            <div class="bg-slate-100 p-3 font-semibold border-b border-slate-300">Tính tay trên Excel (Ví dụ với 5 bệnh nhân)</div>
+                            <div class="p-4">
+                                <p class="mb-2"><strong>Bước 1:</strong> Tính cột TỔNG của thang đo (trừ đi chính biến đang xét).</p>
+                                <p class="mb-4 font-mono bg-slate-100 p-2 text-sm">Cột Tổng_Không_HQ1 = HQ2 + HQ3 + HQ4 + HQ5</p>
+                                
+                                <p class="mb-2"><strong>Bước 2:</strong> Dùng hàm <code>CORREL()</code> trong Excel để tính tương quan giữa cột HQ1 và cột Tổng_Không_HQ1.</p>
+                                <p class="mb-4 font-mono bg-slate-100 p-2 text-sm">=CORREL(Vùng_dữ_liệu_HQ1, Vùng_dữ_liệu_Tổng_Không_HQ1)</p>
+                                
+                                <p class="text-slate-700 italic mt-4"><i class="fas fa-info-circle text-blue-500"></i> Kết quả của hàm CORREL này chính là giá trị trong cột <strong>Corrected Item-Total Correlation</strong> trên SPSS. Nếu kết quả < 0.3, chứng tỏ câu HQ1 đang không ăn nhập với các câu còn lại.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-right mt-6 flex justify-between">
+                        <button onclick="showTab('mod4')" class="bg-slate-200 text-slate-800 px-4 py-2 rounded hover:bg-slate-300"><i class="fas fa-chevron-left mr-1"></i> Quay lại</button>
+                        <button onclick="showTab('mod6')" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Tiếp theo: Viết luận văn <i class="fas fa-chevron-right ml-1"></i></button>
+                    </div>
+                </section>
+
+                <!-- MODULE 6 -->
+                <section id="mod6" class="module-content">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">6. Viết nhận xét chuẩn Luận văn CK1</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <p class="mb-4">Trong luận văn CK1, hội đồng không cần anh chị copy nguyên xi bảng của SPSS vào. Hãy lập một bảng tổng hợp gọn gàng và viết nhận xét theo mẫu chuẩn dưới đây.</p>
+                        
+                        <h4 class="font-bold text-emerald-800 mb-2">Bảng trình bày trong luận văn (Mẫu gợi ý):</h4>
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm border-collapse border border-slate-300">
+                                <thead class="bg-slate-100">
+                                    <tr>
+                                        <th class="p-2 border border-slate-300">Khái niệm/Thang đo</th>
+                                        <th class="p-2 border border-slate-300">Ký hiệu biến</th>
+                                        <th class="p-2 border border-slate-300">Hệ số tương quan biến-tổng nhỏ nhất</th>
+                                        <th class="p-2 border border-slate-300">Cronbach's Alpha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border font-semibold" rowspan="2">Sự hài lòng của bệnh nhân</td>
+                                        <td class="p-2 border">SHL1</td>
+                                        <td class="p-2 border text-center" rowspan="2">0.512</td>
+                                        <td class="p-2 border text-center font-bold" rowspan="2">0.785</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border">SHL2, SHL3</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-blue-800 mb-2">Văn phong diễn giải (Có thể copy/sửa):</h4>
+                            <p class="text-slate-700 italic">"Kết quả kiểm định độ tin cậy thang đo cho thấy, thang đo Sự hài lòng (SHL) đạt độ tin cậy tốt với hệ số Cronbach’s Alpha là <strong>0.785</strong> (lớn hơn 0.6). Tất cả các biến quan sát trong thang đo đều có hệ số tương quan biến - tổng hiệu chỉnh (Corrected Item-Total Correlation) lớn hơn 0.3 (nhỏ nhất là 0.512). Do đó, không có biến quan sát nào bị loại và toàn bộ các biến này được giữ lại để tiếp tục đưa vào phân tích nhân tố khám phá (EFA)."</p>
+                        </div>
+                    </div>
+
+                    <div class="pedagogy-box box-apply">
+                        <h4 class="font-bold text-green-800 flex items-center"><i class="fas fa-graduation-cap mr-2 text-xl"></i> Áp dụng trong luận văn CK1</h4>
+                        <p class="text-green-900 mt-2">“Sau khi kiểm định Cronbach’s Alpha, chỉ những thang đo và biến số đạt yêu cầu (Alpha > 0.6 và Tương quan > 0.3) mới được phép lấy "tấm vé" đi tiếp vào bước Phân tích nhân tố EFA ở chương sau.”</p>
+                    </div>
+
+                    <div class="text-center mt-10">
+                        <h3 class="text-2xl font-bold text-emerald-800 mb-4">Hoàn thành Lý thuyết! Sẵn sàng kiểm tra kiến thức?</h3>
+                        <button onclick="showTab('quiz')" class="bg-yellow-500 hover:bg-yellow-600 text-white text-lg px-8 py-4 rounded-xl font-bold transition shadow-lg w-full md:w-auto"><i class="fas fa-tasks mr-2"></i> Bắt đầu Lượng giá (20 Câu hỏi)</button>
+                    </div>
+                </section>
+
+                <!-- QUIZ SECTION -->
+                <section id="quiz" class="module-content">
+                    <div class="bg-emerald-800 text-white rounded-t-xl p-6 shadow-md">
+                        <h2 class="text-3xl font-bold"><i class="fas fa-clipboard-check mr-2"></i> Lượng Giá Cuối Bài</h2>
+                        <p class="text-emerald-100 mt-2">20 câu hỏi tình huống thực tế dành cho học viên CK1. Hoàn thành để củng cố kỹ năng chạy và đọc số liệu SPSS.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-b-xl shadow-md p-4 md:p-6 mb-6" id="quiz-container">
+                        <!-- Quiz questions will be injected here via JS -->
+                    </div>
+
+                    <div id="quiz-results" class="hidden bg-white rounded-xl shadow-md p-8 text-center mt-6 border-t-4 border-emerald-500">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Kết Quả Bài Kiểm Tra</h3>
+                        <div class="text-5xl font-bold text-emerald-600 mb-4" id="score-display">0/20</div>
+                        <p class="text-lg text-slate-600 mb-6" id="score-message"></p>
+                        <button onclick="resetQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition"><i class="fas fa-redo mr-2"></i> Làm lại bài</button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- NAVIGATION LOGIC ---
+        function showTab(tabId) {
+            document.querySelectorAll('.module-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-emerald-700', 'border-l-4', 'border-white');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            const btn = document.querySelector(`.nav-btn[data-target="${tabId}"]`);
+            if(btn) btn.classList.add('bg-emerald-700', 'border-l-4', 'border-white');
+
+            // Scroll to top of content
+            document.querySelector('main > div').scrollTop = 0;
+
+            // Close sidebar on mobile after clicking
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
+
+        // Mobile sidebar toggle
+        document.getElementById('openSidebarBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+        });
+        document.getElementById('closeSidebarBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+        });
+
+        // --- QUIZ DATA ---
+        const quizData = [
+            {
+                q: "1. Trong nghiên cứu y dược, kiểm định Cronbach’s Alpha dùng để đánh giá điều gì?",
+                options: [
+                    "A. Giá trị của thang đo (Validity - đo có đúng không)",
+                    "B. Độ tin cậy của thang đo (Reliability - đo có nhất quán không)",
+                    "C. Mức độ ảnh hưởng của biến độc lập lên biến phụ thuộc",
+                    "D. Khả năng đại diện của mẫu nghiên cứu"
+                ],
+                ans: 1,
+                rationale: "Cronbach's Alpha đo lường độ tin cậy (tính nhất quán nội bộ) của thang đo. Ví dụ: Các câu hỏi cùng đo lường sự hài lòng có xu hướng trả lời giống nhau không."
+            },
+            {
+                q: "2. Học viên A đưa cả 5 biến: Giới tính, Tuổi, Trình độ, Phác đồ và Điểm đánh giá (Likert) vào chạy Cronbach's Alpha một lần. Thao tác này là:",
+                options: [
+                    "A. Đúng, để kiểm tra sự đồng thuận của mẫu.",
+                    "B. Sai, vì Cronbach's Alpha chỉ dùng cho các biến định lượng đo lường cùng một khái niệm (như Likert).",
+                    "C. Sai, vì SPSS không cho phép đưa biến Tuổi vào.",
+                    "D. Đúng, nếu mẫu lớn hơn 150."
+                ],
+                ans: 1,
+                rationale: "Lỗi rất thường gặp! Cronbach's Alpha tuyệt đối không dùng cho các biến nhân khẩu học (định danh, thứ bậc) hoặc biến không cùng đo 1 khái niệm mẹ."
+            },
+            {
+                q: "3. Khi kiểm tra thang đo 'Cảm nhận Chi phí' (CP) gồm 4 biến CP1, CP2, CP3, CP4. Học viên phải làm gì trên SPSS?",
+                options: [
+                    "A. Chạy gộp chung với các biến Hiệu quả (HQ) để so sánh.",
+                    "B. Chạy riêng nhóm biến CP1 đến CP4 trong một lệnh Reliability Analysis.",
+                    "C. Chạy từng biến riêng lẻ (chạy 4 lần).",
+                    "D. Tính trung bình 4 biến rồi mới chạy Cronbach's Alpha."
+                ],
+                ans: 1,
+                rationale: "Trong luận văn, phải chạy Cronbach's Alpha LẦN LƯỢT cho TỪNG nhóm biến (từng thang đo) để kiểm tra độ tin cậy nội bộ của khái niệm đó."
+            },
+            {
+                q: "4. Mức giá trị tối thiểu của hệ số Cronbach’s Alpha để thang đo được coi là 'chấp nhận được' trong các nghiên cứu cơ bản là bao nhiêu?",
+                options: [
+                    "A. > 0.3",
+                    "B. > 0.5",
+                    "C. > 0.6",
+                    "D. > 0.9"
+                ],
+                ans: 2,
+                rationale: "Tiêu chuẩn thông dụng nhất: Alpha > 0.6 là chấp nhận được, > 0.7 là tốt, > 0.8 là rất tốt."
+            },
+            {
+                q: "5. Khi đọc bảng Item-Total Statistics, chỉ số 'Corrected Item-Total Correlation' (Tương quan biến - tổng hiệu chỉnh) phải đạt mức tối thiểu là bao nhiêu để giữ lại biến?",
+                options: [
+                    "A. 0.05",
+                    "B. 0.3",
+                    "C. 0.6",
+                    "D. 1.0"
+                ],
+                ans: 1,
+                rationale: "Biến có Corrected Item-Total Correlation >= 0.3 mới được xem là có tương quan thuận chiều đủ mạnh với phần còn lại của thang đo."
+            },
+            {
+                q: "6. Nếu anh chị chạy SPSS mà QUÊN đánh dấu mục 'Scale if item deleted' trong nút Statistics, hậu quả là gì?",
+                options: [
+                    "A. SPSS sẽ báo lỗi Error 1099.",
+                    "B. SPSS không hiện ra chỉ số Cronbach's Alpha.",
+                    "C. Không biết được việc loại bỏ một biến cụ thể sẽ làm Alpha tăng hay giảm để ra quyết định.",
+                    "D. Chỉ số Alpha sẽ bị tính sai."
+                ],
+                ans: 2,
+                rationale: "Mục này quyết định việc tạo ra 2 cột cực kỳ quan trọng ở bảng Item-Total Statistics giúp ta biết có nên xóa biến hay không."
+            },
+            {
+                q: "7. Giả sử thang đo 'Thái độ phục vụ' (TD) có hệ số Alpha = 0.820. Biến TD3 có hệ số tương quan biến tổng là 0.45. Cột 'Alpha if Item Deleted' của TD3 là 0.810. Quyết định đúng là:",
+                options: [
+                    "A. Xóa TD3 vì hệ số tương quan 0.45 < 0.820.",
+                    "B. Giữ lại TD3 vì hệ số tương quan > 0.3 và nếu xóa nó đi, Alpha chung bị giảm (từ 0.820 xuống 0.810).",
+                    "C. Xóa TD3 vì Alpha if Item Deleted (0.810) nhỏ hơn Alpha chung (0.820).",
+                    "D. Chạy lại bảng hỏi."
+                ],
+                ans: 1,
+                rationale: "Biến TD3 đang đóng góp tích cực cho thang đo. Nếu xóa nó, Alpha giảm, do đó BẮT BUỘC phải giữ lại."
+            },
+            {
+                q: "8. Thang đo 'Hiệu quả' (HQ) có Alpha = 0.650. Cột 'Alpha if Item Deleted' của biến HQ2 là 0.720. Điều này có nghĩa là gì?",
+                options: [
+                    "A. Biến HQ2 rất tốt, cần giữ lại.",
+                    "B. Nếu bỏ biến HQ2 ra khỏi mô hình, độ tin cậy của thang đo sẽ tăng lên mức Tốt (0.720).",
+                    "C. Biến HQ2 là biến phụ thuộc.",
+                    "D. Dữ liệu bị lỗi nhập liệu."
+                ],
+                ans: 1,
+                rationale: "Con số 0.720 cho biết 'Tương lai' của thang đo nếu loại bỏ biến HQ2. Xóa HQ2 giúp thang đo tốt hơn."
+            },
+            {
+                q: "9. Một biến có hệ số Tương quan biến-tổng (Corrected Item-Total) bằng 0.25 (Nhỏ hơn 0.3). Tuy nhiên, đây là biến đo lường khái niệm quan trọng nhất của lâm sàng. Anh/chị nên:",
+                options: [
+                    "A. Xóa ngay lập tức vì quy định thống kê là bắt buộc.",
+                    "B. Xem xét lại ý nghĩa chuyên môn, kiểm tra lỗi nhập liệu, có thể xem xét GIỮ LẠI thay vì loại cơ học.",
+                    "C. Tự sửa số liệu cho nó tăng lên 0.35.",
+                    "D. Đổi thang đo từ Likert 5 điểm sang 3 điểm."
+                ],
+                ans: 1,
+                rationale: "Nguyên tắc sống còn: Không loại biến cơ học. Ý nghĩa lâm sàng/chuyên môn luôn đứng trên các chỉ số thống kê."
+            },
+            {
+                q: "10. Sau khi quyết định loại biến HQ2 khỏi thang đo HQ (gồm HQ1 đến HQ5). Bước tiếp theo để lấy số liệu viết luận văn là gì?",
+                options: [
+                    "A. Lấy Alpha cũ cộng thêm số 'Alpha if item deleted'.",
+                    "B. Báo cáo bằng số Alpha cũ (lúc chưa xóa).",
+                    "C. Chạy lại lệnh Reliability Analysis cho 4 biến còn lại (HQ1, HQ3, HQ4, HQ5) để lấy kết quả chính thức.",
+                    "D. Mang luôn 4 biến vào chạy Hồi quy."
+                ],
+                ans: 2,
+                rationale: "Khi cấu trúc thang đo thay đổi (xóa biến), phải chạy lại SPSS để lấy kết quả Alpha và Tương quan biến-tổng mới nhất để báo cáo."
+            },
+            {
+                q: "11. 'Tương quan biến - tổng hiệu chỉnh' (Corrected Item-Total Correlation) thực chất là phép toán nào trên Excel?",
+                options: [
+                    "A. Hàm SUM().",
+                    "B. Hàm AVERAGE() giữa các biến.",
+                    "C. Hàm CORREL() tương quan giữa biến đó và TỔNG điểm của các biến còn lại trong cùng thang đo.",
+                    "D. Hàm VLOOKUP()."
+                ],
+                ans: 2,
+                rationale: "Nó đo lường xem sự biến thiên của 1 câu hỏi có đi cùng hướng với TỔNG sự biến thiên của các câu hỏi còn lại trong thang đo hay không."
+            },
+            {
+                q: "12. Nếu Cronbach's Alpha của anh chị ra kết quả âm (VD: -0.125), nguyên nhân khả dĩ nhất là gì?",
+                options: [
+                    "A. Mẫu nghiên cứu quá nhỏ.",
+                    "B. Có câu hỏi bị mã hóa ngược chiều nhưng anh chị quên đảo mã (Recode) trên SPSS trước khi chạy.",
+                    "C. Không cài đặt đủ Add-ons trong SPSS.",
+                    "D. SPSS hết bản quyền."
+                ],
+                ans: 1,
+                rationale: "Câu hỏi ngược chiều (Ví dụ: 1-Rất hài lòng... nhưng câu khác lại 1-Rất thất vọng) sẽ làm hệ số tương quan bị âm, kéo Alpha xuống âm."
+            },
+            {
+                q: "13. Khi đọc kết quả cho hội đồng bảo vệ, cách nói nào sau đây là CHUẨN XÁC NHẤT?",
+                options: [
+                    "A. 'Mô hình nghiên cứu của em có độ tin cậy 0.850'.",
+                    "B. 'Thang đo Sự hài lòng đạt độ tin cậy Cronbach's Alpha là 0.850, nhỏ nhất của tương quan biến tổng là 0.42 > 0.3'.",
+                    "C. 'Cronbach Alpha của toàn bộ 30 câu hỏi là 0.850'.",
+                    "D. 'Em giữ lại biến vì p-value < 0.05'."
+                ],
+                ans: 1,
+                rationale: "Phải nói rõ Alpha của 'Thang đo' nào cụ thể, và cung cấp chứng cứ 'Tương quan biến tổng' (Corrected item-total correlation) để bảo vệ việc giữ biến."
+            },
+            {
+                q: "14. Một thang đo chỉ có 2 biến quan sát (Ví dụ CP1 và CP2). Khi chạy Cronbach's Alpha thì điều gì xảy ra?",
+                options: [
+                    "A. SPSS không cho chạy.",
+                    "B. Vẫn chạy được, nhưng Cronbach's Alpha thường không ổn định, nên dùng hệ số tương quan Pearson giữa 2 biến.",
+                    "C. Kết quả luôn bằng 1.",
+                    "D. Alpha luôn nhỏ hơn 0.3."
+                ],
+                ans: 1,
+                rationale: "Alpha nhạy cảm với số lượng biến. Chỉ có 2 biến thì đo lường bằng tương quan Pearson (Bivariate Correlation) thường hợp lý hơn."
+            },
+            {
+                q: "15. Nếu giá trị 'Cronbach's Alpha if Item Deleted' của một biến tăng RẤT ÍT so với Alpha chung (Ví dụ: Từ 0.850 lên 0.852). Anh chị nên:",
+                options: [
+                    "A. Xóa ngay để tối ưu hóa con số.",
+                    "B. Giữ lại, vì việc tăng 0.002 là quá nhỏ, không đáng để đánh đổi việc mất đi một thông tin nghiên cứu.",
+                    "C. Thêm vào một biến giả.",
+                    "D. Xóa biến phụ thuộc."
+                ],
+                ans: 1,
+                rationale: "Việc hy sinh dữ liệu thực tế chỉ để đổi lấy 0.00x phần trăm độ tin cậy là không đáng. Chỉ xóa khi nó thực sự cải thiện rõ rệt mô hình."
+            },
+            {
+                q: "16. Trong cửa sổ Reliability Analysis, tùy chọn 'Model' mặc định là Alpha. Ngoài ra SPSS còn các mô hình nào (dù ít dùng ở CK1)?",
+                options: [
+                    "A. T-test, ANOVA.",
+                    "B. Split-half, Guttman, Parallel.",
+                    "C. Logistic Regression.",
+                    "D. K-means."
+                ],
+                ans: 1,
+                rationale: "Các mô hình như Split-half (chia đôi thang đo) cũng dùng để đo độ tin cậy nhưng Cronbach's Alpha là chuẩn mực phổ biến nhất."
+            },
+            {
+                q: "17. Bước phân tích Cronbach's Alpha nằm ở đâu trong quy trình xử lý số liệu chuẩn?",
+                options: [
+                    "A. Sau Hồi quy tuyến tính.",
+                    "B. Trước khi làm sạch số liệu.",
+                    "C. Sau khi làm sạch số liệu (Lọc Missing, Outlier) và TRƯỚC phân tích nhân tố EFA.",
+                    "D. Là bước cuối cùng của luận văn."
+                ],
+                ans: 2,
+                rationale: "Quy trình chuẩn: Làm sạch data -> Cronbach's Alpha -> EFA -> Tương quan Pearson -> Hồi quy."
+            },
+            {
+                q: "18. Sự khác biệt giữa Cronbach's Alpha và Phân tích nhân tố khám phá (EFA) là gì?",
+                options: [
+                    "A. Alpha kiểm tra độ nhất quán (cùng nhóm), EFA kiểm tra xem chúng có thực sự tạo thành các nhóm nhân tố (giá trị hội tụ/phân biệt) hay không.",
+                    "B. Alpha dùng cho biến định lượng, EFA dùng cho biến định danh.",
+                    "C. Không có sự khác biệt, dùng cái nào cũng được.",
+                    "D. EFA đo lường p-value còn Alpha thì không."
+                ],
+                ans: 0,
+                rationale: "Alpha đo Reliability (Độ tin cậy). EFA đo Validity (Giá trị). Hai công cụ này bổ trợ cho nhau."
+            },
+            {
+                q: "19. Bệnh nhân đánh giá 1 thang đo 'Thời gian chờ' rất thấp (toàn 1 và 2 điểm). Hệ số Cronbach's Alpha có bị thấp theo không?",
+                options: [
+                    "A. Có, vì điểm thấp thì Alpha thấp.",
+                    "B. Không. Alpha chỉ đo 'sự biến thiên cùng chiều' (nhất quán). Nếu bệnh nhân nào cũng đánh giá 1, 2 điểm giống nhau ở các câu, Alpha vẫn cao.",
+                    "C. Bị lỗi phần mềm.",
+                    "D. Alpha sẽ biến thành số âm."
+                ],
+                ans: 1,
+                rationale: "Rất nhiều người nhầm lẫn! Điểm trung bình thấp (thực trạng kém) KHÔNG liên quan đến độ tin cậy. Nhất quán đánh giá điểm kém thì Alpha vẫn rất cao."
+            },
+            {
+                q: "20. Lời khuyên cuối cùng: Nếu một bảng hỏi được thiết kế sơ sài, copy chắp vá, câu hỏi tối nghĩa. Công cụ Cronbach's Alpha sẽ xử lý thế nào?",
+                options: [
+                    "A. SPSS sẽ tự động sửa lỗi câu từ.",
+                    "B. Alpha sẽ chỉ ra câu hỏi đó thấp, nhưng không thể 'phục hồi' dữ liệu. Garbage in, garbage out.",
+                    "C. SPSS sẽ báo bảng hỏi copy.",
+                    "D. Alpha sẽ luôn ra kết quả > 0.8."
+                ],
+                ans: 1,
+                rationale: "Thống kê không có phép thuật. Thiết kế biến/bảng hỏi tồi từ đầu (Garbage in) thì kết quả chạy ra cũng vô nghĩa (Garbage out)."
+            }
+        ];
+
+        let currentAnswers = new Array(quizData.length).fill(null);
+        let quizSubmitted = false;
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'mb-8 border-b border-slate-200 pb-6 last:border-0';
+                
+                let html = `<h4 class="text-lg font-bold text-slate-800 mb-4">${q.q}</h4><div class="space-y-2">`;
+                
+                q.options.forEach((opt, optIndex) => {
+                    html += `
+                        <div class="quiz-option p-3 border border-slate-300 rounded-lg bg-slate-50" 
+                             onclick="selectOption(${index}, ${optIndex})" 
+                             id="opt-${index}-${optIndex}">
+                            ${opt}
+                        </div>
+                    `;
+                });
+                
+                html += `</div>
+                        <div id="rationale-${index}" class="mt-4 p-4 rounded-lg hidden text-sm font-medium"></div>`;
+                
+                qDiv.innerHTML = html;
+                container.appendChild(qDiv);
+            });
+
+            const submitBtn = document.createElement('button');
+            submitBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition mt-4";
+            submitBtn.innerHTML = "<i class='fas fa-check-circle mr-2'></i> Nộp Bài & Xem Kết Quả";
+            submitBtn.onclick = evaluateQuiz;
+            container.appendChild(submitBtn);
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if(quizSubmitted) return;
+            currentAnswers[qIndex] = optIndex;
+            
+            // Reset styles for this question
+            for(let i=0; i<quizData[qIndex].options.length; i++) {
+                document.getElementById(`opt-${qIndex}-${i}`).classList.remove('selected');
+            }
+            // Add selected style
+            document.getElementById(`opt-${qIndex}-${optIndex}`).classList.add('selected');
+        }
+
+        function evaluateQuiz() {
+            if(currentAnswers.includes(null)) {
+                alert("Anh/chị vui lòng trả lời đầy đủ 20 câu hỏi trước khi nộp bài!");
+                return;
+            }
+
+            quizSubmitted = true;
+            let score = 0;
+
+            quizData.forEach((q, index) => {
+                const userAns = currentAnswers[index];
+                const correctAns = q.ans;
+                
+                // Disable all options
+                for(let i=0; i<q.options.length; i++) {
+                    const optEl = document.getElementById(`opt-${index}-${i}`);
+                    optEl.classList.add('disabled');
+                    
+                    if(i === correctAns) {
+                        optEl.classList.add('correct');
+                    } else if (i === userAns && userAns !== correctAns) {
+                        optEl.classList.add('incorrect');
+                    } else {
+                        optEl.classList.remove('selected');
+                    }
+                }
+
+                // Show rationale
+                const rationaleEl = document.getElementById(`rationale-${index}`);
+                rationaleEl.classList.remove('hidden');
+                if(userAns === correctAns) {
+                    score++;
+                    rationaleEl.classList.add('bg-green-100', 'text-green-800');
+                    rationaleEl.innerHTML = `<i class="fas fa-check-circle mr-1"></i> <strong>Chính xác!</strong> ${q.rationale}`;
+                } else {
+                    rationaleEl.classList.add('bg-red-100', 'text-red-800');
+                    rationaleEl.innerHTML = `<i class="fas fa-times-circle mr-1"></i> <strong>Chưa đúng.</strong> ${q.rationale}`;
+                }
+            });
+
+            // Show Results panel
+            document.getElementById('quiz-results').classList.remove('hidden');
+            document.getElementById('score-display').innerText = `${score}/20`;
+            
+            let message = "";
+            if(score >= 18) message = "Xuất sắc! Anh/chị đã hoàn toàn làm chủ kỹ thuật đánh giá Cronbach's Alpha và sẵn sàng cho luận văn CK1.";
+            else if(score >= 14) message = "Khá tốt! Anh/chị đã nắm được các nguyên tắc cơ bản, hãy xem lại các câu sai ở phần giải thích.";
+            else message = "Anh/chị nên đọc lại kỹ Module 4 (Đọc Output & Quyết định) để nắm vững kiến thức hơn nhé.";
+            document.getElementById('score-message').innerText = message;
+            
+            // Scroll to results
+            document.getElementById('quiz-results').scrollIntoView({behavior: "smooth"});
+        }
+
+        function resetQuiz() {
+            quizSubmitted = false;
+            currentAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('quiz-results').classList.add('hidden');
+            renderQuiz();
+            document.querySelector('#quiz > div').scrollIntoView({behavior: "smooth"});
+        }
+
+        // Initialize Quiz on load
+        window.onload = renderQuiz;
+    </script>
+</body>
+</html>

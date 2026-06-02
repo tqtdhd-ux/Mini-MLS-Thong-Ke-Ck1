@@ -1,0 +1,45 @@
+﻿Variable,Label,Measure,Format,ValueLabels
+GioiTinh,Giới tính của bệnh nhân/người trả lời,nominal,F8.0,1=Nam; 2=Nữ
+NhomTuoi,Nhóm tuổi,ordinal,F8.0,1=18–25; 2=26–35; 3=36–45; 4=Trên 45
+TrinhDo,Trình độ học vấn,ordinal,F8.0,1=THPT/Trung cấp; 2=Cao đẳng; 3=Đại học; 4=Sau đại học
+PhacDo,Nhóm phác đồ điều trị,nominal,F8.0,1=Đơn trị liệu; 2=Phối hợp 2 thuốc; 3=Phối hợp từ 3 thuốc trở lên; 4=Khác
+ThoiGianBenh,Thời gian mắc bệnh/sử dụng dịch vụ,ordinal,F8.0,1=Dưới 1 năm; 2=1–3 năm; 3=3–5 năm; 4=Trên 5 năm
+KhaNangChiTra,Khả năng chi trả điều trị,ordinal,F8.0,1=Rất khó khăn khi chi trả; 2=Khó khăn một phần; 3=Tương đối đáp ứng được; 4=Không gặp khó khăn đáng kể
+HQ1,HQ1 - Biến quan sát Likert thuộc thang đo Hiệu quả điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+HQ2,HQ2 - Biến quan sát Likert thuộc thang đo Hiệu quả điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+HQ3,HQ3 - Biến quan sát Likert thuộc thang đo Hiệu quả điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+HQ4,HQ4 - Biến quan sát Likert thuộc thang đo Hiệu quả điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+HQ5,HQ5 - Biến quan sát Likert thuộc thang đo Hiệu quả điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TD1,TD1 - Biến quan sát Likert thuộc thang đo Thái độ phục vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TD2,TD2 - Biến quan sát Likert thuộc thang đo Thái độ phục vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TD3,TD3 - Biến quan sát Likert thuộc thang đo Thái độ phục vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TD4,TD4 - Biến quan sát Likert thuộc thang đo Thái độ phục vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+QL1,QL1 - Biến quan sát Likert thuộc thang đo Năng lực quản lý/quy trình dịch vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+QL2,QL2 - Biến quan sát Likert thuộc thang đo Năng lực quản lý/quy trình dịch vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+QL3,QL3 - Biến quan sát Likert thuộc thang đo Năng lực quản lý/quy trình dịch vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+QL4,QL4 - Biến quan sát Likert thuộc thang đo Năng lực quản lý/quy trình dịch vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+QL5,QL5 - Biến quan sát Likert thuộc thang đo Năng lực quản lý/quy trình dịch vụ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TT1,TT1 - Biến quan sát Likert thuộc thang đo Thông tin thuốc/bệnh,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TT2,TT2 - Biến quan sát Likert thuộc thang đo Thông tin thuốc/bệnh,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TT3,TT3 - Biến quan sát Likert thuộc thang đo Thông tin thuốc/bệnh,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+TT4,TT4 - Biến quan sát Likert thuộc thang đo Thông tin thuốc/bệnh,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+DV1,DV1 - Biến quan sát Likert thuộc thang đo Dịch vụ hỗ trợ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+DV2,DV2 - Biến quan sát Likert thuộc thang đo Dịch vụ hỗ trợ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+DV3,DV3 - Biến quan sát Likert thuộc thang đo Dịch vụ hỗ trợ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+DV4,DV4 - Biến quan sát Likert thuộc thang đo Dịch vụ hỗ trợ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+DV5,DV5 - Biến quan sát Likert thuộc thang đo Dịch vụ hỗ trợ,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+CP1,CP1 - Biến quan sát Likert thuộc thang đo Chi phí điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+CP2,CP2 - Biến quan sát Likert thuộc thang đo Chi phí điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+CP3,CP3 - Biến quan sát Likert thuộc thang đo Chi phí điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+CP4,CP4 - Biến quan sát Likert thuộc thang đo Chi phí điều trị,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+SHL1,SHL1 - Biến quan sát Likert thuộc thang đo Sự hài lòng chung,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+SHL2,SHL2 - Biến quan sát Likert thuộc thang đo Sự hài lòng chung,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+SHL3,SHL3 - Biến quan sát Likert thuộc thang đo Sự hài lòng chung,scale,F8.0,1=Rất không đồng ý; 2=Không đồng ý; 3=Bình thường/Trung lập; 4=Đồng ý; 5=Rất đồng ý
+HQ,Hiệu quả điều trị - điểm đại diện Mean(HQ1-HQ5),scale,F8.2,
+TD,Thái độ phục vụ - điểm đại diện Mean(TD1-TD4),scale,F8.2,
+QL,"Năng lực quản lý/quy trình dịch vụ - Mean(QL1-QL4), không dùng QL5",scale,F8.2,
+TT,"Thông tin thuốc/bệnh - Mean(TT1-TT3), không dùng TT4",scale,F8.2,
+DV,Dịch vụ hỗ trợ - điểm đại diện Mean(DV1-DV5),scale,F8.2,
+CP,"Chi phí điều trị - Mean(CP2-CP4), không dùng CP1",scale,F8.2,
+SHL,Sự hài lòng chung - điểm đại diện Mean(SHL1-SHL3),scale,F8.2,
+SHL_NhiPhan,"Biến nhị phân sự hài lòng chung: 1 nếu SHL >= 4, 0 nếu SHL < 4",nominal,F8.0,0=Chưa đạt ngưỡng hài lòng chung (SHL < 4); 1=Đạt ngưỡng hài lòng chung (SHL ≥ 4)

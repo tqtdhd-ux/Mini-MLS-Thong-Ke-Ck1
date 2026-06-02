@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 5: Thống kê mô tả trong Nghiên cứu Y Dược</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- KaTeX CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200">
+
+    <!-- App Shell Layout -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <!-- Sidebar Header -->
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-medical-500 text-white rounded-lg">
+                        <i data-lucide="activity" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-sm text-slate-900 dark:text-white leading-tight">THỐNG KÊ Y DƯỢC</h1>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Chuyên khoa 1 (CK1)</span>
+                    </div>
+                </div>
+                <button class="lg:hidden text-slate-500 hover:text-slate-700" onclick="toggleSidebar()">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Sidebar Menu Modules -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Bài học: Chương 5</p>
+                
+                <button onclick="switchTab('hook')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors bg-medical-50 dark:bg-slate-700 text-medical-700 dark:text-medical-200" data-target="hook">
+                    <i data-lucide="compass" class="w-4 h-4"></i>
+                    <span>Khởi động & Mục tiêu</span>
+                </button>
+
+                <button onclick="switchTab('module1')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="module1">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>M1. Mô tả Biến Định Tính</span>
+                </button>
+
+                <button onclick="switchTab('module2')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="module2">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                    <span>M2. Mô tả Biến Định Lượng</span>
+                </button>
+
+                <button onclick="switchTab('module3')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="module3">
+                    <i data-lucide="grid" class="w-4 h-4"></i>
+                    <span>M3. Đọc Hiểu Thang Đo Likert</span>
+                </button>
+
+                <button onclick="switchTab('module4')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="module4">
+                    <i data-lucide="table-properties" class="w-4 h-4"></i>
+                    <span>M4. Bảng Kết Hợp Crosstabs</span>
+                </button>
+
+                <button onclick="switchTab('module5')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="module5">
+                    <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                    <span>M5. Nghệ Thuật Chọn Biểu Đồ</span>
+                </button>
+
+                <button onclick="switchTab('spss')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="spss">
+                    <i data-lucide="terminal" class="w-4 h-4"></i>
+                    <span>Thao Tác SPSS Thực Hành</span>
+                </button>
+
+                <button onclick="switchTab('excel')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="excel">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                    <span>Thao Tác Excel Thực Hành</span>
+                </button>
+
+                <button onclick="switchTab('rules')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="rules">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                    <span>Nguyên Tắc "Vàng"</span>
+                </button>
+
+                <button onclick="switchTab('quiz')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium transition-colors text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700" data-target="quiz">
+                    <i data-lucide="award" class="w-4 h-4 text-emerald-500"></i>
+                    <span>Lượng Giá (20 Câu Hỏi)</span>
+                </button>
+
+                <!-- NEW TAB: AI ASSISTANT -->
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-700 mt-4">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Trợ lý Nghiên cứu AI</p>
+                    <button onclick="switchTab('ai-assistant')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-bold transition-all text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50" data-target="ai-assistant">
+                        <i data-lucide="sparkles" class="w-4 h-4 animate-pulse"></i>
+                        <span>✨ Trợ lý Thống kê AI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <span>Phiên bản E-learning v2.6</span>
+                    <button id="theme-toggle" class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700" onclick="toggleDarkMode()">
+                        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full lg:ml-72 overflow-hidden">
+            
+            <!-- Navbar Header -->
+            <header class="h-16 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between px-4 lg:px-8 shrink-0">
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg" onclick="toggleSidebar()">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 id="current-tab-title" class="text-lg font-bold text-slate-900 dark:text-white">Khởi động & Mục tiêu học tập</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="completion-badge" class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                        Hoàn thành <span id="completion-percentage">0</span>%
+                    </span>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Window -->
+            <div id="content-container" class="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar">
+                
+                <!-- HOOK & OBJECTIVES SECTION -->
+                <section id="hook-content" class="tab-panel space-y-6">
+                    <div class="bg-gradient-to-r from-medical-600 to-primary-600 rounded-2xl p-6 lg:p-8 text-white shadow-lg">
+                        <div class="max-w-3xl">
+                            <span class="text-xs font-bold uppercase tracking-widest text-primary-100">Tình huống thực tế đầu giờ</span>
+                            <h3 class="text-2xl lg:text-3xl font-extrabold mt-2 leading-tight">Cơn Ác Mộng Của Hội Đồng Nghiệm Thu Luận Văn CK1</h3>
+                            <p class="mt-4 text-medical-50 text-sm lg:text-base leading-relaxed">
+                                Bác sĩ/Dược sĩ Nguyễn Văn A vừa trình bày xong mô hình hồi quy logistic cực kỳ phức tạp chứng minh các nhân tố tác động đến sự hài lòng chung của người bệnh với trị số \(p < 0.01\) rất đẹp mắt. Tuy nhiên, một Giáo sư trong hội đồng hỏi một câu đơn giản:
+                                <br><br>
+                                <strong class="text-white">"Trong mẫu nghiên cứu 200 bệnh nhân của anh, có bao nhiêu người thực tế có tham gia BHYT? Điểm trung bình của nhóm nghèo có khả năng chi trả là bao nhiêu? Và tại sao thang đo Chi phí (CP) anh lại đi tính điểm trung bình (Mean) khi nó đang được phân loại thành nhóm?"</strong>
+                                <br><br>
+                                Anh A toát mồ hôi hột. Anh mải mê chạy các mô hình đa biến phức tạp mà quên mất việc vẽ bức tranh chân dung tổng quát cho mẫu nghiên cứu của mình. Hội đồng đánh giá luận văn yếu do **thiếu sót nền tảng nghiêm trọng trong Thống kê mô tả**.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Learning Objectives Card -->
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+                            <i data-lucide="target" class="text-medical-500"></i> Mục tiêu sau bài học này
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                                <div class="text-medical-500 font-bold text-lg">01</div>
+                                <p class="text-sm">Hiểu và phân biệt chính xác cách xử lý biến <strong>Định tính</strong> (Tần số, tỷ lệ, Valid Percent) và <strong>Định lượng</strong> (Mean, SD, Median, Min, Max).</p>
+                            </div>
+                            <div class="flex gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                                <div class="text-medical-500 font-bold text-lg">02</div>
+                                <p class="text-sm">Đọc và diễn giải chuẩn xác các bảng thống kê tần số, bảng mô tả thang đo sự hài lòng bệnh nhân (Likert 1-5).</p>
+                            </div>
+                            <div class="flex gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                                <div class="text-medical-500 font-bold text-lg">03</div>
+                                <p class="text-sm">Lập bảng kết hợp (Crosstabs / Custom Tables) để so sánh sơ bộ sự hài lòng giữa các nhóm bệnh nhân.</p>
+                            </div>
+                            <div class="flex gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                                <div class="text-medical-500 font-bold text-lg">04</div>
+                                <p class="text-sm">Thao tác thành thạo các lệnh mô tả trên cả <strong>SPSS</strong> và <strong>Excel</strong> trên bộ dữ liệu khảo sát thực tế.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow of the day -->
+                    <div class="border-l-4 border-medical-500 pl-4 py-2">
+                        <h4 class="font-bold text-slate-900 dark:text-white">Tại sao học viên CK1 cần đặc biệt lưu ý chương này?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                            Thống kê mô tả là bước **bắt buộc đầu tiên** trong mọi đề tài luận văn. Nó không chỉ giúp bạn làm sạch dữ liệu lần cuối mà còn giúp định hướng cho toàn bộ các phép kiểm định suy luận (T-test, ANOVA, Hồi quy) về sau.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- MODULE 1: QUALITATIVE VARIABLES -->
+                <section id="module1-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Mô tả biến định tính (Qualitative / Categorical Variables)</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Biến định tính là biến thể hiện các đặc tính, thuộc tính phân loại của đối tượng (ví dụ: Giới tính, Trình độ, Nhóm tuổi, Phác đồ điều trị). Đối với loại biến này, chúng ta **tuyệt đối không được tính trị số Trung bình (Mean)**. Thay vào đó, ta sử dụng:
+                        </p>
+                        
+                        <!-- Core stats cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">TẦN SỐ (Frequency)</span>
+                                <span class="text-2xl font-black text-medical-600 mt-1 block">N</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Số ca thực tế quan sát được trong từng nhóm.</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">TỶ LỆ % (Percent)</span>
+                                <span class="text-2xl font-black text-medical-600 mt-1 block">%</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Tính trên tổng mẫu (bao gồm cả các ca bị thiếu/missing).</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">VALID PERCENT</span>
+                                <span class="text-2xl font-black text-emerald-600 mt-1 block">Valid %</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Tỷ lệ % thực tế đã loại bỏ các trường hợp trống (Missing data).</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">CUMULATIVE PERCENT</span>
+                                <span class="text-2xl font-black text-amber-600 mt-1 block">Cum %</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Tỷ lệ phần trăm cộng dồn (chỉ dùng khi biến có tính thứ bậc).</span>
+                            </div>
+                        </div>
+
+                        <!-- Real-life frequency table analysis -->
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                                <i data-lucide="eye" class="text-medical-500"></i> Phân tích bảng tần số thực tế: Phác đồ điều trị
+                            </h4>
+                            <p class="text-xs text-slate-500 mb-4">Dữ liệu mô phỏng từ mẫu 200 bệnh nhân suy tim điều trị ngoại trú:</p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse border border-slate-200 dark:border-slate-700">
+                                    <thead>
+                                        <tr class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700">Giá trị phác đồ</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Tần số (Frequency)</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Tỷ lệ (Percent)</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Valid Percent</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Cộng dồn (Cumulative %)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">1.0 (Đơn trị liệu)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">45</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">22.5%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">23.1%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">23.1%</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">2.0 (Phối hợp 2 thuốc)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">110</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">55.0%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">56.4%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">79.5%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 font-medium">3.0 (Phối hợp 3 thuốc)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">40</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">20.0%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">20.5%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">100.0%</td>
+                                        </tr>
+                                        <tr class="text-amber-600 font-medium">
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700">Missing (Không khai báo)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">5</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">2.5%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">System</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">-</td>
+                                        </tr>
+                                        <tr class="bg-emerald-50 dark:bg-emerald-950/20 font-bold text-slate-900 dark:text-white">
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700">Tổng mẫu (Total)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">200</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">100.0%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">100.0%</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                                <strong>💡 Khắc cốt ghi tâm cho Luận văn:</strong> Nhìn vào dòng phác đồ 2 thuốc: Tỷ lệ <strong>Percent</strong> là 55.0% nhưng <strong>Valid Percent</strong> là 56.4%. Khi viết luận văn, bạn BẮT BUỘC phải dùng chỉ số <strong>Valid Percent (56.4%)</strong> để viết nhận xét vì đó là tỷ lệ thực tế trên số bệnh nhân có dữ liệu phác đồ điều trị rõ ràng.
+                            </div>
+                        </div>
+
+                        <!-- Pedagogical Box: M1 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-200">
+                                <h5 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ghi nhớ nhanh
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Percent tính trên toàn bộ cỡ mẫu. Valid Percent loại bỏ Missing. Luôn dùng Valid Percent trong báo cáo để phản ánh đúng thực tế lâm sàng.
+                                </p>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200">
+                                <h5 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i> Lỗi thường gặp
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Tính Mean (Trị số trung bình) cho các biến định danh kiểu Giới tính hay Phác đồ điều trị. SPSS vẫn sẽ ra kết quả vô nghĩa (ví dụ: Giới tính trung bình là 1.52).
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Áp dụng luận văn CK1
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    "Trong số 195 bệnh nhân được xác định phác đồ điều trị, phác đồ phối hợp 2 thuốc chiếm đa số với tỷ lệ 56,4%, tiếp theo là đơn trị liệu chiếm 23,1%..."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 2: QUANTITATIVE VARIABLES -->
+                <section id="module2-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Mô tả biến định lượng (Quantitative / Scale Variables)</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Biến định lượng đại diện cho các giá trị đo lường có thể cộng, trừ, nhân, chia một cách logic (ví dụ: Tuổi, Thời gian điều trị, Điểm hài lòng trung bình). Các chỉ số mô tả cốt lõi bao gồm:
+                        </p>
+
+                        <!-- Scale Stats Cards -->
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 my-6">
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">MEAN</span>
+                                <span class="text-2xl font-black text-medical-600 mt-1 block">\(\bar{X}\)</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Trị số trung bình cộng của toàn bộ mẫu.</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">MEDIAN</span>
+                                <span class="text-2xl font-black text-medical-600 mt-1 block">Med</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Trung vị. Chia đôi phân phối mẫu thành hai nửa bằng nhau.</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">MODE</span>
+                                <span class="text-2xl font-black text-medical-600 mt-1 block">Mod</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Yếu vị. Giá trị xuất hiện với tần số nhiều nhất.</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">STANDARD DEV</span>
+                                <span class="text-2xl font-black text-emerald-600 mt-1 block">SD</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Độ lệch chuẩn. Đo lường sự biến thiên phân tán quanh Mean.</span>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
+                                <span class="text-xs text-slate-400 font-semibold block">MIN / MAX</span>
+                                <span class="text-2xl font-black text-amber-600 mt-1 block">Min-Max</span>
+                                <span class="text-xs text-slate-500 mt-1 block">Giá trị nhỏ nhất và lớn nhất trong chuỗi số liệu.</span>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Formulas Box -->
+                        <div class="bg-slate-100 dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">Công thức Thống kê mô tả (Sử dụng trong phân tích)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <span class="font-semibold block text-slate-700 dark:text-slate-300">Trị số Trung bình (Mean):</span>
+                                    <div class="my-2 bg-white dark:bg-slate-900 p-3 rounded text-center text-lg font-serif">
+                                        $$\bar{X} = \frac{\sum_{i=1}^{n} X_i}{n}$$
+                                    </div>
+                                    <span class="text-xs text-slate-500">Tổng toàn bộ các giá trị quan sát chia cho tổng cỡ mẫu thực tế.</span>
+                                </div>
+                                <div>
+                                    <span class="font-semibold block text-slate-700 dark:text-slate-300">Độ lệch chuẩn (Standard Deviation):</span>
+                                    <div class="my-2 bg-white dark:bg-slate-900 p-3 rounded text-center text-lg font-serif">
+                                        $$SD = \sqrt{\frac{\sum_{i=1}^{n} (X_i - \bar{X})^2}{n-1}}$$
+                                    </div>
+                                    <span class="text-xs text-slate-500">Đo lường mức độ phân tán của các điểm số quanh giá trị trung bình.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Important Clinical Connection -->
+                        <div class="mt-4 p-4 bg-medical-50 dark:bg-slate-800 border-l-4 border-medical-500 rounded-r-xl">
+                            <h5 class="font-bold text-medical-800 dark:text-medical-300 text-sm">💡 Tư duy phản biện thống kê lâm sàng:</h5>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                                Trong báo cáo y học, <strong>Mean luôn phải đi kèm với SD</strong>. Nếu bạn chỉ viết "Thời gian nằm viện trung bình là 7.2 ngày" mà không chỉ rõ \(SD = 4.1\) ngày hay \(SD = 0.5\) ngày, người đọc sẽ không thể đánh giá được tính đồng nhất của dữ liệu điều trị trong cơ sở y tế của bạn.
+                            </p>
+                        </div>
+
+                        <!-- Pedagogical Box: M2 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-200">
+                                <h5 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ghi nhớ nhanh
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Mean nhạy cảm với các điểm dị biệt (Outliers). Nếu phân phối bị lệch nặng (ví dụ: Thu nhập hoặc chi phí cực lớn), hãy dùng Median thay vì Mean để đại diện cho xu hướng trung tâm.
+                                </p>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200">
+                                <h5 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i> Lỗi thường gặp
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Trình bày Mean đơn độc không kèm Standard Deviation (SD), hoặc trình bày quá nhiều chữ số sau dấu phẩy thập phân (ví dụ: \(Mean = 12.357891\)). Nên làm tròn từ 1-2 chữ số thập phân.
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Áp dụng luận văn CK1
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    "Tuổi trung bình của các bệnh nhân tham gia khảo sát là \(54.8 \pm 11.2\) tuổi, trong đó bệnh nhân nhỏ tuổi nhất là 21 tuổi và bệnh nhân lớn tuổi nhất là 85 tuổi."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 3: LIKERT SCALES -->
+                <section id="module3-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Đọc hiểu bảng mô tả thang đo Likert trong khảo sát Sự Hài Lòng (SHL)</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Trong nghiên cứu quản lý dược và sự hài lòng bệnh nhân, thang đo Likert 5 điểm (1 = Rất không đồng ý/Rất kém, 5 = Rất đồng ý/Rất tốt) được sử dụng để xây dựng các nhân tố mẹ như:
+                        </p>
+
+                        <!-- Likert categories -->
+                        <div class="grid grid-cols-2 md:grid-cols-7 gap-3 my-4">
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">HQ</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Hiệu Quả</span>
+                            </div>
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">TD</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Thái Độ</span>
+                            </div>
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">QL</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Quản Lý</span>
+                            </div>
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">TT</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Thông Tin</span>
+                            </div>
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">DV</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Dịch Vụ</span>
+                            </div>
+                            <div class="p-2.5 bg-sky-50 dark:bg-sky-950/30 rounded-lg text-center border border-sky-100 dark:border-sky-900">
+                                <span class="text-xs font-bold text-sky-600 block">CP</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Chi Phí</span>
+                            </div>
+                            <div class="p-2.5 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center border border-amber-100 dark:border-amber-900">
+                                <span class="text-xs font-bold text-amber-600 block">SHL</span>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Hài Lòng</span>
+                            </div>
+                        </div>
+
+                        <!-- Real data evaluation of scale factors -->
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-3">Bảng phân tích điểm trung bình các thang đo trong khảo sát Dược phẩm:</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse border border-slate-200 dark:border-slate-700">
+                                        <thead>
+                                            <tr class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700">Nhân tố/Biến đo lường</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">N</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Min</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Max</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">Mean (ĐTB)</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700 text-center">SD (Độ lệch chuẩn)</th>
+                                                <th class="p-3 border border-slate-200 dark:border-slate-700">Đánh giá chung (Khung tham chiếu)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Hiệu quả điều trị (HQ)</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">200</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">1.20</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">5.00</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold text-emerald-600">4.15</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">0.64</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-xs">Mức độ đồng ý cao. Bệnh nhân cảm nhận hiệu quả điều trị tốt.</td>
+                                            </tr>
+                                            <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Thái độ phục vụ (TD)</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">200</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">2.00</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">5.00</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold">3.95</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">0.58</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-xs">Mức độ đồng ý Khá. Thái độ nhân viên y tế cần cải thiện nhẹ.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Sự minh bạch chi phí (CP)</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">200</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">1.00</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">4.50</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold text-red-600">2.84</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">0.82</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-xs">Mức độ đồng ý trung bình/thấp. Người bệnh cảm nhận chi phí chưa minh bạch, hợp lý.</td>
+                                            </tr>
+                                            <tr class="bg-amber-50 dark:bg-amber-950/20 font-semibold">
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-amber-800 dark:text-amber-200">Sự hài lòng chung (SHL)</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">200</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">1.67</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">5.00</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold text-amber-600">3.88</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">0.61</td>
+                                                <td class="p-3 border border-slate-200 dark:border-slate-700 text-xs">Hài lòng ở mức độ Khá. Thang đo kết cục có xu hướng tích cực.</td>
+                                            </tr>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Interval division formula -->
+                        <div class="bg-sky-50 dark:bg-slate-800 p-5 rounded-xl border border-sky-100 dark:border-slate-700">
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-2">Cách tính khoảng chia (Interval) đánh giá Likert 5 điểm:</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
+                                Để phân khoảng đánh giá trị số trung bình của Likert 5 mức độ thành các cấp độ (Rất thấp, Thấp, Trung bình, Cao, Rất cao), các nghiên cứu thường áp dụng công thức khoảng rộng:
+                            </p>
+                            <div class="my-3 bg-white dark:bg-slate-950 p-3 rounded text-center font-mono text-sm">
+                                Khoảng chia = (Max - Min) / n_levels = (5 - 1) / 5 = 0.80
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs text-center">
+                                <div class="bg-red-100 text-red-800 p-2 rounded">1.00 - 1.80<br><strong>Rất thấp</strong></div>
+                                <div class="bg-orange-100 text-orange-800 p-2 rounded">1.81 - 2.60<br><strong>Thấp</strong></div>
+                                <div class="bg-yellow-100 text-yellow-800 p-2 rounded">2.61 - 3.40<br><strong>Trung bình</strong></div>
+                                <div class="bg-blue-100 text-blue-800 p-2 rounded">3.41 - 4.20<br><strong>Cao</strong></div>
+                                <div class="bg-emerald-100 text-emerald-800 p-2 rounded">4.21 - 5.00<br><strong>Rất cao</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Pedagogical Box: M3 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-200">
+                                <h5 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ghi nhớ nhanh
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Thang đo Likert được tính điểm bằng cách lấy trung bình cộng các biến quan sát thành phần. Phân khoảng rộng 0.8 giúp nhận xét chính xác cấp độ hài lòng.
+                                </p>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200">
+                                <h5 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i> Lỗi thường gặp
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Đánh giá phiến diện nhân tố mẹ chỉ qua một câu Likert đơn lẻ thay vì tính điểm trung bình đại diện từ toàn bộ các biến đo lường cấu thành.
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Áp dụng luận văn CK1
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    "Nhân tố Hiệu quả điều trị (HQ) đạt điểm trung bình cao nhất là \(4.15 \pm 0.64\), thuộc mức độ đánh giá 'Cao'. Trong khi đó, tính hợp lý và minh bạch chi phí (CP) chỉ đạt mức 'Trung bình' (\(2.84 \pm 0.82\))."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 4: CROSSTABS & CUSTOM TABLES -->
+                <section id="module4-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Lập bảng kết hợp (Crosstabs / Custom Tables)</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Crosstabs (Bảng chéo) giúp chúng ta mô tả mối tương tác giữa hai hoặc nhiều biến định tính bằng cách đan xen các tần số và tỷ lệ phần trăm theo dòng hoặc cột.
+                        </p>
+
+                        <!-- Crosstabs analysis sample -->
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-3">Ví dụ bảng kết hợp: Sự hài lòng phân nhóm theo Giới tính</h4>
+                            <p class="text-xs text-slate-500 mb-4">Mô phỏng từ mẫu 195 bệnh nhân (loại trừ 5 ca missing):</p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left border-collapse border border-slate-200 dark:border-slate-700">
+                                    <thead>
+                                        <tr class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700" rowspan="2">Giới tính</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center" colspan="2">Trạng thái Hài lòng chung (SHL_NhiPhan)</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center" rowspan="2">Tổng cộng</th>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center text-red-600">0.0 (Chưa hài lòng)</th>
+                                            <th class="p-3 border border-slate-200 dark:border-slate-700 text-center text-emerald-600">1.0 (Hài lòng)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Nam (1.0)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">
+                                                <span>25 ca</span><br>
+                                                <span class="text-xs text-slate-500">% trong dòng: 27.8%</span>
+                                            </td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">
+                                                <span>65 ca</span><br>
+                                                <span class="text-xs text-slate-500">% trong dòng: 72.2%</span>
+                                            </td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold">90 ca</td>
+                                        </tr>
+                                        <tr class="bg-slate-50 dark:bg-slate-800/50">
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Nữ (2.0)</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">
+                                                <span>15 ca</span><br>
+                                                <span class="text-xs text-slate-500">% trong dòng: 14.3%</span>
+                                            </td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">
+                                                <span>90 ca</span><br>
+                                                <span class="text-xs text-slate-500">% trong dòng: 85.7%</span>
+                                            </td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center font-bold">105 ca</td>
+                                        </tr>
+                                        <tr class="bg-slate-100 dark:bg-slate-700 font-bold">
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700">Tổng cộng</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">40 ca</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">155 ca</td>
+                                            <td class="p-3 border border-slate-200 dark:border-slate-700 text-center">195 ca</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                                <strong>⚠️ CẢNH BÁO TƯ DUY PHẢN BIỆN:</strong> 
+                                Bảng Crosstabs này cho thấy tỷ lệ hài lòng ở nhóm Nữ (85.7%) có vẻ cao hơn nhóm Nam (72.2%). Tuy nhiên, Crosstabs chỉ đơn thuần là <strong>bước mô tả sơ bộ xu hướng phân bố mẫu</strong>. Bạn tuyệt đối KHÔNG ĐƯỢC tự kết luận "có sự khác biệt có ý nghĩa thống kê giữa Nam và Nữ về tỷ lệ hài lòng" nếu chưa chạy phép kiểm định suy luận <strong>Chi-Square (\(\chi^2\))</strong>.
+                            </div>
+                        </div>
+
+                        <!-- Pedagogical Box: M4 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-200">
+                                <h5 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ghi nhớ nhanh
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Khi lập bảng chéo, tỷ lệ phần trăm theo dòng (Row %) giúp so sánh cơ cấu phân bố giữa các nhóm phân loại hiệu quả nhất.
+                                </p>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200">
+                                <h5 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i> Lỗi thường gặp
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Tự ý khẳng định sự khác biệt có ý nghĩa thống kê dựa trên chênh lệch con số thô trong Crosstabs mà chưa tiến hành kiểm định Chi-Square hoặc Fisher's Exact.
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Áp dụng luận văn CK1
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    "Kết quả khảo sát sơ bộ cho thấy, trong nhóm bệnh nhân nam có 72.2% hài lòng với dịch vụ dược phẩm, trong khi tỷ lệ này ở nhóm nữ là 85.7% (Bảng 3.2)."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 5: CHARTS AND GRAPHS -->
+                <section id="module5-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Nghệ thuật lựa chọn biểu đồ trong Nghiên cứu Y Dược</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Biểu đồ giúp trực quan hóa số liệu một cách sinh động, giúp hội đồng và người đọc nắm bắt xu hướng nhanh chóng. Tuy nhiên, mỗi loại biến số tương thích với một nhóm biểu đồ đặc thù:
+                        </p>
+
+                        <!-- Chart matrix grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center shadow-sm">
+                                <div class="w-12 h-12 bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i data-lucide="pie-chart" class="w-6 h-6"></i>
+                                </div>
+                                <h5 class="font-bold text-sm">Biểu đồ hình quạt (Pie Chart)</h5>
+                                <p class="text-xs text-slate-500 mt-2">Chỉ sử dụng cho <strong>biến định tính</strong> có ít phân nhóm (dưới 4 nhóm, ví dụ: Giới tính, Đơn/Phối hợp thuốc).</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center shadow-sm">
+                                <div class="w-12 h-12 bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                                </div>
+                                <h5 class="font-bold text-sm">Biểu đồ cột (Bar Chart)</h5>
+                                <p class="text-xs text-slate-500 mt-2">Dùng cho <strong>biến định tính</strong> có nhiều nhóm hoặc dùng để so sánh tỷ lệ chéo giữa các biến phân loại.</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center shadow-sm">
+                                <div class="w-12 h-12 bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i data-lucide="trending-up" class="w-6 h-6"></i>
+                                </div>
+                                <h5 class="font-bold text-sm">Biểu đồ tần suất (Histogram)</h5>
+                                <p class="text-xs text-slate-500 mt-2">Chuyên dụng cho <strong>biến định lượng liên tục</strong> (như tuổi, cân nặng) nhằm đánh giá quy luật phân phối chuẩn.</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center shadow-sm">
+                                <div class="w-12 h-12 bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i data-lucide="box" class="w-6 h-6"></i>
+                                </div>
+                                <h5 class="font-bold text-sm">Biểu đồ hộp & râu (Boxplot)</h5>
+                                <p class="text-xs text-slate-500 mt-2">Cực tốt để mô tả phân bố biến định lượng, nhận diện trung vị, khoảng tỷ phân vị và các <strong>Outliers (điểm dị biệt)</strong>.</p>
+                            </div>
+                        </div>
+
+                        <!-- Graphical Note -->
+                        <div class="p-4 bg-amber-50 dark:bg-slate-800 border-l-4 border-amber-500 rounded-r-xl">
+                            <h5 class="font-bold text-amber-800 dark:text-amber-300 text-sm">💡 Nguyên tắc vàng trong trình bày đồ họa y học:</h5>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                                Biểu đồ chỉ đóng vai trò **minh họa trực quan** cho xu hướng, tuyệt đối không thay thế được các chỉ số và phép kiểm định thống kê. Tránh lạm dụng vẽ cả bảng số liệu lẫn biểu đồ cho cùng một thông số gây loãng luận văn.
+                            </p>
+                        </div>
+
+                        <!-- Pedagogical Box: M5 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-200">
+                                <h5 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ghi nhớ nhanh
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Histogram dùng xem phân phối chuẩn. Boxplot dùng nhận diện cực trị lỗi nhập liệu. Pie Chart chỉ dành cho cơ cấu ít phân nhóm.
+                                </p>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200">
+                                <h5 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i> Lỗi thường gặp
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Dựng biểu đồ Pie Chart cho một biến có quá nhiều nhóm phân loại (ví dụ: tỉnh thành cư trú của bệnh nhân có 20 nhóm), dẫn đến việc biểu đồ bị nát và không đọc được thông tin.
+                                </p>
+                            </div>
+                            <div class="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200">
+                                <h5 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Áp dụng luận văn CK1
+                                </h5>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                                    Sử dụng Boxplot trong phần làm sạch dữ liệu để thuyết minh với Hội đồng rằng các điểm Outliers do sinh lý đặc biệt của bệnh nhân đã được xử lý hoặc giữ lại một cách khoa học.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SPSS PRACTICAL GUIDE -->
+                <section id="spss-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Hướng dẫn thao tác SPSS từng bước (Step-by-Step)</h3>
+                        
+                        <!-- SPSS command list -->
+                        <div class="space-y-4 my-6">
+                            
+                            <!-- Step 1: Frequencies -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <span class="bg-medical-100 text-medical-800 text-xs px-2.5 py-1 rounded-full font-bold">LỆNH 1</span>
+                                <h4 class="font-bold text-slate-900 dark:text-white mt-2">Thống kê tần số với lệnh Frequencies (Biến định tính)</h4>
+                                <ol class="text-xs text-slate-600 dark:text-slate-400 space-y-2 mt-3 list-decimal pl-4">
+                                    <li>Trên thanh menu chính, chọn: <strong class="text-slate-800 dark:text-white">Analyze &rarr; Descriptive Statistics &rarr; Frequencies...</strong></li>
+                                    <li>Chuyển các biến định tính cần mô tả (ví dụ: <code class="bg-slate-100 p-1 rounded">GioiTinh</code>, <code class="bg-slate-100 p-1 rounded">PhacDo</code>) từ ô bên trái sang ô <strong class="text-slate-800 dark:text-white">Variable(s)</strong> bên phải.</li>
+                                    <li>Nhấp vào nút <strong class="text-slate-800 dark:text-white">Charts...</strong> nếu bạn muốn tạo biểu đồ đi kèm (chọn Bar chart hoặc Pie chart), sau đó bấm <strong class="text-slate-800 dark:text-white">Continue</strong>.</li>
+                                    <li>Đảm bảo ô <strong class="text-slate-800 dark:text-white">Display frequency tables</strong> đã được tích chọn.</li>
+                                    <li>Bấm <strong class="text-slate-800 dark:text-white">OK</strong> để chạy lệnh. Đọc bảng kết quả tại cửa sổ SPSS Output (.spv).</li>
+                                </ol>
+                            </div>
+
+                            <!-- Step 2: Descriptives -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">LỆNH 2</span>
+                                <h4 class="font-bold text-slate-900 dark:text-white mt-2">Thống kê mô tả trị số trung bình với Descriptives (Biến định lượng)</h4>
+                                <ol class="text-xs text-slate-600 dark:text-slate-400 space-y-2 mt-3 list-decimal pl-4">
+                                    <li>Chọn: <strong class="text-slate-800 dark:text-white">Analyze &rarr; Descriptive Statistics &rarr; Descriptives...</strong></li>
+                                    <li>Đưa các biến định lượng cần tính Mean/SD (ví dụ: <code class="bg-slate-100 p-1 rounded">Tuoi</code>, điểm trung bình các thang đo <code class="bg-slate-100 p-1 rounded">HQ</code>, <code class="bg-slate-100 p-1 rounded">SHL</code>) vào ô <strong class="text-slate-800 dark:text-white">Variable(s)</strong>.</li>
+                                    <li>Bấm vào nút <strong class="text-slate-800 dark:text-white">Options...</strong> để tích chọn các tham số cần thiết: Mean, Std. deviation, Minimum, Maximum.</li>
+                                    <li>Bấm <strong class="text-slate-800 dark:text-white">Continue</strong> và bấm <strong class="text-slate-800 dark:text-white">OK</strong> để hiển thị kết quả.</li>
+                                </ol>
+                            </div>
+
+                            <!-- Step 3: Explore -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">LỆNH 3</span>
+                                <h4 class="font-bold text-slate-900 dark:text-white mt-2">Thiết lập bảng kết hợp bằng Crosstabs</h4>
+                                <ol class="text-xs text-slate-600 dark:text-slate-400 space-y-2 mt-3 list-decimal pl-4">
+                                    <li>Chọn: <strong class="text-slate-800 dark:text-white">Analyze &rarr; Descriptive Statistics &rarr; Crosstabs...</strong></li>
+                                    <li>Đưa biến phân nhóm vào ô <strong class="text-slate-800 dark:text-white">Row(s)</strong> (Dòng - ví dụ: <code class="bg-slate-100 p-1 rounded">GioiTinh</code>).</li>
+                                    <li>Đưa biến kết cục vào ô <strong class="text-slate-800 dark:text-white">Column(s)</strong> (Cột - ví dụ: <code class="bg-slate-100 p-1 rounded">SHL_NhiPhan</code>).</li>
+                                    <li>Bấm chọn nút <strong class="text-slate-800 dark:text-white">Cells...</strong>. Tại khu vực <strong class="text-slate-800 dark:text-white">Percentages</strong>, hãy tích chọn <strong class="text-slate-800 dark:text-white">Row</strong> để tính phần trăm theo dòng.</li>
+                                    <li>Bấm <strong class="text-slate-800 dark:text-white">Continue</strong> và bấm <strong class="text-slate-800 dark:text-white">OK</strong>.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- EXCEL PRACTICAL GUIDE -->
+                <section id="excel-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Hướng dẫn thực hành bổ trợ bằng Microsoft Excel</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Trong trường hợp máy tính chưa cài đặt SPSS hoặc muốn xử lý dữ liệu khảo sát thô ban đầu một cách nhanh chóng, Excel là một công cụ hỗ trợ thống kê mô tả cực kỳ mạnh mẽ.
+                        </p>
+
+                        <!-- Excel function cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                            
+                            <!-- PivotTable -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <div class="flex items-center gap-2 text-emerald-600 mb-3">
+                                    <i data-lucide="grid" class="w-5 h-5"></i>
+                                    <h4 class="font-bold text-sm text-slate-900 dark:text-white m-0">PivotTable (Lập bảng chéo)</h4>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Bôi đen toàn bộ bảng dữ liệu &rarr; Chọn thẻ <strong class="text-slate-700 dark:text-white">Insert &rarr; PivotTable</strong>. Kéo biến phân nhóm vào hàng (Rows), kéo biến kết quả vào cột (Columns), và kéo biến định danh vào giá trị (Values) để đếm tần số.
+                                </p>
+                            </div>
+
+                            <!-- COUNTIF -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <div class="flex items-center gap-2 text-emerald-600 mb-3">
+                                    <i data-lucide="calculator" class="w-5 h-5"></i>
+                                    <h4 class="font-bold text-sm text-slate-900 dark:text-white m-0">Hàm COUNTIF / COUNTIFS</h4>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Sử dụng công thức để đếm tần số có điều kiện thô:
+                                    <code class="block bg-slate-100 p-1.5 rounded mt-2 font-mono text-[10px] text-slate-700">=COUNTIF(A2:A201, 1)</code>
+                                    (Đếm số bệnh nhân Nam mã hóa là 1 trong cột A).
+                                </p>
+                            </div>
+
+                            <!-- Data Analysis Tool -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 shadow-sm">
+                                <div class="flex items-center gap-2 text-emerald-600 mb-3">
+                                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                                    <h4 class="font-bold text-sm text-slate-900 dark:text-white m-0">Descriptive Statistics</h4>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Vào thẻ <strong class="text-slate-700 dark:text-white">Data &rarr; Data Analysis &rarr; Descriptive Statistics</strong>. Chọn vùng dữ liệu biến định lượng, tích vào ô <strong class="text-slate-700 dark:text-white">Summary Statistics</strong> để xuất ra toàn bộ bảng Mean, Median, SD, Min, Max trong 1 giây.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GOLDEN RULES SECTION -->
+                <section id="rules-content" class="tab-panel hidden space-y-6">
+                    <div class="prose dark:prose-invert max-w-none">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">6 Nguyên Tắc "Sống Còn" Trong Thống Kê Mô Tả Luận Văn CK1</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                            
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-emerald-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="check-square" class="w-4 h-4"></i> Nguyên tắc 1: Thống kê mô tả là bắt buộc
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    Tuyệt đối không được nhảy bổ vào chạy hồi quy hay kiểm định ANOVA ngay lập tức. Bạn bắt buộc phải mô tả đặc điểm mẫu thô để chứng minh mẫu khảo sát có tính đại diện và phân bổ cân bằng.
+                                </p>
+                            </div>
+
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-red-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-red-800 dark:text-red-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="alert-octagon" class="w-4 h-4"></i> Nguyên tắc 2: Không dùng Mean cho biến định danh
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    SPSS chỉ là cái máy tính cơ học. Nó vẫn sẽ tính ra giá trị trung bình cho biến Giới tính (ví dụ: Giới tính trung bình = 1.45) nếu bạn ra lệnh. Đây là lỗi logic chuyên môn y khoa cực kỳ nặng!
+                                </p>
+                            </div>
+
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-blue-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-blue-800 dark:text-blue-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="info" class="w-4 h-4"></i> Nguyên tắc 3: Hiểu rõ Percent và Valid Percent
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    Nếu dữ liệu bị trống (Missing), Valid Percent mới phản ánh đúng tỷ lệ cấu trúc thực tế của mẫu nghiên cứu. Luôn dùng Valid Percent trong báo cáo chính thức.
+                                </p>
+                            </div>
+
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-amber-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-amber-800 dark:text-amber-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i> Nguyên tắc 4: Mean phải luôn đi kèm với SD
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    Viết một trị số trung bình đơn độc mà không có độ lệch chuẩn (Standard Deviation), Min, Max thì con số đó hoàn toàn vô giá trị trong các nhận xét khoa học lâm sàng.
+                                </p>
+                            </div>
+
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-purple-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-purple-800 dark:text-purple-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="image" class="w-4 h-4"></i> Nguyên tắc 5: Biểu đồ chỉ là công cụ minh họa
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    Biểu đồ chỉ giúp trực quan hóa xu hướng chứ không thể dùng để chứng minh sự khác biệt thống kê. Không lạm dụng vẽ biểu đồ chồng chéo lên bảng số liệu.
+                                </p>
+                            </div>
+
+                            <div class="p-5 bg-white dark:bg-slate-800 border-l-4 border-sky-500 rounded-r-xl shadow-sm">
+                                <h4 class="font-bold text-sky-800 dark:text-sky-300 text-sm flex items-center gap-1.5">
+                                    <i data-lucide="brain" class="w-4 h-4"></i> Nguyên tắc 6: SPSS không thay thế được tư duy y dược
+                                </h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                                    Thống kê chỉ là công cụ hỗ trợ đắc lực. Việc quyết định ý nghĩa thực tế của một nhân tố phụ thuộc hoàn toàn vào kiến thức chuyên môn quản lý dược và kinh nghiệm lâm sàng của bạn.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- QUIZ SYSTEM: 20 DETAILED QUESTIONS -->
+                <section id="quiz-content" class="tab-panel hidden space-y-6">
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="award" class="text-amber-500"></i> Bài trắc nghiệm lượng giá kiến thức chuyên sâu
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1">Gồm 20 câu hỏi tình huống thực tế bám sát dữ liệu nghiên cứu y dược của học viên CK1.</p>
+                            </div>
+                            <span id="quiz-score" class="text-sm font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 px-3 py-1.5 rounded-lg">Điểm số: 0/20</span>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mb-6">
+                            <div id="quiz-progress-bar" class="bg-medical-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+
+                        <!-- Quiz Container -->
+                        <div id="quiz-questions-container" class="space-y-8">
+                            <!-- Questions will be dynamically loaded via JS -->
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-end">
+                            <button onclick="gradeQuiz()" class="px-6 py-3 bg-medical-600 hover:bg-medical-700 text-white font-bold rounded-lg shadow-sm transition-colors text-sm flex items-center gap-2">
+                                <i data-lucide="check-circle"></i> Nộp bài và xem giải thích chi tiết
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- NEW TAB PANEL: ✨ AI ASSISTANT -->
+                <section id="ai-assistant-content" class="tab-panel hidden space-y-6">
+                    <div class="bg-gradient-to-r from-purple-700 to-indigo-800 rounded-2xl p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-10 translate-x-12 -translate-y-12">
+                            <i data-lucide="sparkles" class="w-64 h-64"></i>
+                        </div>
+                        <div class="max-w-2xl relative z-10">
+                            <span class="text-xs font-bold uppercase tracking-widest text-purple-200">Gemini 2.5 Flash Integration</span>
+                            <h3 class="text-2xl lg:text-3xl font-extrabold mt-2 leading-tight">✨ Trợ lý Thống kê Y Dược AI</h3>
+                            <p class="mt-3 text-purple-100 text-xs lg:text-sm leading-relaxed">
+                                Được tối ưu hóa bằng chuyên môn thống kê y học lâm sàng và quản lý dược. Trợ lý AI sẵn sàng hỗ trợ anh chị thiết kế đề tài, giải quyết mọi lỗi SPSS, lập trình cú pháp dữ liệu và phân tích kết quả một cách nhanh chóng.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Config Box & Quick Templates -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left Panel: API Key & Templates -->
+                        <div class="space-y-4 lg:col-span-1">
+                            <!-- API Key Input -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-sm">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <i data-lucide="key" class="w-4 h-4 text-purple-500"></i> API Key Gemini
+                                </label>
+                                <input type="password" id="api-key-input" placeholder="Nhập API Key của bạn..." class="w-full text-xs px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
+                                <p class="text-[10px] text-slate-400 mt-2 leading-relaxed">
+                                    Nhập khóa API cá nhân của bạn để tương tác trực tiếp với mô hình Gemini. Dữ liệu được truyền trực tiếp từ trình duyệt và không lưu trữ trên bất kỳ máy chủ trung gian nào.
+                                </p>
+                            </div>
+
+                            <!-- Quick Action Cards -->
+                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-sm space-y-3">
+                                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i> Phím mẫu nhanh
+                                </h4>
+                                <button onclick="fillPromptTemplate('design')" class="w-full text-left text-xs p-2.5 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-200 transition-all block">
+                                    <span class="font-bold block text-slate-800 dark:text-slate-200">✨ Tư vấn Phân tích Thống kê</span>
+                                    <span class="text-[10px] text-slate-400 block mt-1 line-clamp-2">Gợi ý cách thiết kế bảng biểu mô tả và chọn phép kiểm định tối ưu nhất dựa trên mô hình nghiên cứu.</span>
+                                </button>
+                                <button onclick="fillPromptTemplate('debug')" class="w-full text-left text-xs p-2.5 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-200 transition-all block">
+                                    <span class="font-bold block text-slate-800 dark:text-slate-200">✨ Khắc phục Lỗi SPSS</span>
+                                    <span class="text-[10px] text-slate-400 block mt-1 line-clamp-2">Giải quyết triệt để lỗi gán nhãn, mất mát dữ liệu, xung đột định dạng kiểu hoặc cảnh báo hệ thống (như lỗi 1099).</span>
+                                </button>
+                                <button onclick="fillPromptTemplate('code')" class="w-full text-left text-xs p-2.5 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-200 transition-all block">
+                                    <span class="font-bold block text-slate-800 dark:text-slate-200">✨ Tạo SPSS Syntax / Hàm Excel</span>
+                                    <span class="text-[10px] text-slate-400 block mt-1 line-clamp-2">Yêu cầu viết cú pháp SPSS hoặc các hàm Excel dùng để làm sạch và mô tả dữ liệu tự động.</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Interactive Prompt & Terminal Chat -->
+                        <div class="space-y-4 lg:col-span-2 flex flex-col h-[550px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                            <!-- Terminal Header -->
+                            <div class="px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex gap-1">
+                                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                                    </div>
+                                    <span class="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">Gemini LLM terminal.sh</span>
+                                </div>
+                                <button onclick="clearChatLog()" class="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Xóa hội thoại
+                                </button>
+                            </div>
+
+                            <!-- Messages Stream Box -->
+                            <div id="ai-chat-log" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar text-xs">
+                                <div class="flex gap-3 items-start">
+                                    <div class="p-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg shrink-0">
+                                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    </div>
+                                    <div class="space-y-1 bg-purple-50 dark:bg-purple-950/20 p-3 rounded-xl border border-purple-100/30 max-w-[85%]">
+                                        <p class="font-bold text-purple-800 dark:text-purple-300">Trợ Lý Thống Kê Y Dược AI:</p>
+                                        <p class="leading-relaxed text-slate-700 dark:text-slate-300">
+                                            Xin chào các anh chị học viên Chuyên khoa 1! Tôi là Trợ lý AI tích hợp sẵn để đồng hành cùng các anh chị. 
+                                            Hãy lựa chọn các phím mẫu nhanh bên trái hoặc viết yêu cầu cụ thể xuống khung văn bản bên dưới để bắt đầu thảo luận khoa học nhé.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Input Box -->
+                            <div class="p-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 space-y-2">
+                                <textarea id="ai-user-prompt" rows="3" placeholder="Nhập giả thuyết nghiên cứu của đề tài, lỗi SPSS hoặc câu hỏi của bạn tại đây..." class="w-full text-xs px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors resize-none"></textarea>
+                                <div class="flex justify-end items-center gap-3">
+                                    <span id="ai-loading-status" class="hidden text-xs text-purple-500 animate-pulse flex items-center gap-1.5">
+                                        <i class="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-purple-500"></i>
+                                        ✨ Trợ lý AI đang tư duy và phân tích số liệu...
+                                    </span>
+                                    <button onclick="sendPromptToAI()" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-sm transition-colors text-xs flex items-center gap-1.5">
+                                        <i data-lucide="send" class="w-3.5 h-3.5"></i> ✨ Gửi AI tư vấn
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Footer Navigation Bar -->
+            <footer class="h-14 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between px-6 shrink-0">
+                <button id="prev-btn" onclick="navigateTab(-1)" class="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    Quay lại
+                </button>
+                <span id="page-indicator" class="text-xs text-slate-400 font-medium">Trang 1 / 11</span>
+                <button id="next-btn" onclick="navigateTab(1)" class="flex items-center gap-1 text-xs font-bold text-medical-600 hover:text-medical-800 dark:hover:text-medical-300 transition-colors">
+                    Tiếp theo
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Tab system variables
+        const tabsOrder = ['hook', 'module1', 'module2', 'module3', 'module4', 'module5', 'spss', 'excel', 'rules', 'quiz', 'ai-assistant'];
+        let currentTabIndex = 0;
+
+        const tabTitles = {
+            'hook': 'Khởi động & Mục tiêu học tập',
+            'module1': 'M1. Mô tả Biến Định Tính',
+            'module2': 'M2. Mô tả Biến Định Lượng',
+            'module3': 'M3. Đọc Hiểu Thang Đo Likert',
+            'module4': 'M4. Bảng Kết Hợp Crosstabs',
+            'module5': 'M5. Nghệ Thuật Chọn Biểu Đồ',
+            'spss': 'Thao Tác SPSS Thực Hành',
+            'excel': 'Thao Tác Excel Thực Hành',
+            'rules': '6 Nguyên Tắc "Vàng"',
+            'quiz': 'Trắc Nghiệm Lượng Giá (20 Câu)',
+            'ai-assistant': '✨ Trợ lý Thống kê Y Dược AI'
+        };
+
+        // Track completed tabs for completion badge
+        const completedTabs = new Set(['hook']);
+
+        // Dark mode control
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Toggle mobile sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Helper function for rendering Math safely
+        function safeRenderMath() {
+            if (typeof renderMathInElement === 'function' && document.body) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError : false
+                });
+            }
+        }
+
+        // Update E-learning completion percentage
+        function updateCompletionStatus() {
+            const totalTabs = tabsOrder.length;
+            const percentage = Math.round((completedTabs.size / totalTabs) * 100);
+            document.getElementById('completion-percentage').innerText = percentage;
+        }
+
+        // Tab switching logic
+        function switchTab(tabId) {
+            currentTabIndex = tabsOrder.indexOf(tabId);
+            
+            // Mark tab as visited/completed
+            completedTabs.add(tabId);
+            updateCompletionStatus();
+
+            // Hide all panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Show target panel
+            document.getElementById(tabId + '-content').classList.remove('hidden');
+            
+            // Update Tab Title
+            document.getElementById('current-tab-title').innerText = tabTitles[tabId];
+            
+            // Update active state on sidebar buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-medical-50', 'dark:bg-slate-700', 'text-medical-700', 'dark:text-medical-200', 'bg-purple-100', 'dark:bg-purple-900/30', 'text-purple-600', 'dark:text-purple-400');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-700');
+                
+                if(btn.getAttribute('data-target') === tabId) {
+                    btn.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-700');
+                    if (tabId === 'ai-assistant') {
+                        btn.classList.add('bg-purple-100', 'dark:bg-purple-900/30', 'text-purple-600', 'dark:text-purple-400');
+                    } else {
+                        btn.classList.add('bg-medical-50', 'dark:bg-slate-700', 'text-medical-700', 'dark:text-medical-200');
+                    }
+                }
+            });
+
+            // Update footer controls
+            document.getElementById('page-indicator').innerText = `Trang ${currentTabIndex + 1} / ${tabsOrder.length}`;
+            
+            // Enable/disable navigation buttons
+            document.getElementById('prev-btn').disabled = (currentTabIndex === 0);
+            document.getElementById('next-btn').disabled = (currentTabIndex === tabsOrder.length - 1);
+            
+            // Scroll container back to top
+            document.getElementById('content-container').scrollTop = 0;
+
+            // Auto render LaTeX for loaded tab safely
+            safeRenderMath();
+            
+            // Close sidebar on mobile after choosing
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        function navigateTab(direction) {
+            let nextIndex = currentTabIndex + direction;
+            if (nextIndex >= 0 && nextIndex < tabsOrder.length) {
+                switchTab(tabsOrder[nextIndex]);
+            }
+        }
+
+        // Quiz Question Database (20 questions)
+        const quizData = [
+            {
+                id: 1,
+                question: "Học viên đang tiến hành thống kê mô tả biến Giới tính (mã hóa 1.0 = Nam, 2.0 = Nữ). Chỉ số nào sau đây TUYỆT ĐỐI không được phép sử dụng?",
+                options: [
+                    "A. Tần số (N)",
+                    "B. Trị số trung bình (Mean)",
+                    "C. Tỷ lệ phần trăm (Valid Percent)",
+                    "D. Tỷ lệ phần trăm thực tế (Percent)"
+                ],
+                answer: "B",
+                explanation: "Giới tính là biến định danh (Nominal). Việc tính trung bình cộng của mã hóa 1 và 2 là hoàn toàn vô nghĩa về mặt logic y khoa."
+            },
+            {
+                id: 2,
+                question: "Sự khác biệt căn bản giữa hai chỉ số Percent và Valid Percent trong bảng kết quả thống kê tần số (Frequencies) của SPSS là gì?",
+                options: [
+                    "A. Valid Percent luôn lớn hơn Percent trong mọi trường hợp.",
+                    "B. Valid Percent tự động loại trừ các trường hợp khuyết thiếu (Missing data), trong khi Percent tính trên toàn bộ cỡ mẫu.",
+                    "C. Percent loại trừ missing, Valid Percent giữ lại.",
+                    "D. Hai chỉ số này luôn luôn bằng nhau."
+                ],
+                answer: "B",
+                explanation: "Valid Percent chỉ tính trên số mẫu thực tế có nhập liệu câu trả lời (loại bỏ Missing), giúp báo cáo tỷ lệ cấu cấu chính xác hơn."
+            },
+            {
+                id: 3,
+                question: "Khi mô tả một biến định lượng có phân phối chuẩn (ví dụ: Tuổi bệnh nhân), bộ đôi chỉ số nào bắt buộc phải báo cáo đi kèm nhau?",
+                options: [
+                    "A. Mean và Median",
+                    "B. Mean và Standard Deviation (SD)",
+                    "C. Median và Khoảng tứ phân vị (IQR)",
+                    "D. Mode và Range"
+                ],
+                answer: "B",
+                explanation: "Đối với phân phối chuẩn, trị số Trung bình (Mean) và Độ lệch chuẩn (SD) là bộ đôi chuẩn mực để mô tả xu hướng trung tâm và mức độ phân tán."
+            },
+            {
+                id: 4,
+                question: "Nếu dữ liệu biến định lượng bị lệch nặng hoặc có chứa các điểm dị biệt cực lớn (Outliers), chỉ số nào tốt nhất đại diện cho xu hướng trung tâm thay thế cho Mean?",
+                options: [
+                    "A. Mode",
+                    "B. Standard Deviation (SD)",
+                    "C. Median (Trung vị)",
+                    "D. Range"
+                ],
+                answer: "C",
+                explanation: "Median (trung vị) chia đôi mẫu số liệu nên không bị ảnh hưởng bởi các giá trị cực trị lệch nặng."
+            },
+            {
+                id: 5,
+                question: "Để đánh giá nhanh sự phân phối của một biến định lượng liên tục có tuân theo quy luật phân phối chuẩn hay không, loại biểu đồ nào thích hợp nhất?",
+                options: [
+                    "A. Pie chart (Biểu đồ quạt)",
+                    "B. Bar chart (Biểu đồ cột)",
+                    "C. Histogram (Biểu đồ tần suất dạng cột liền kề)",
+                    "D. Line chart"
+                ],
+                answer: "C",
+                explanation: "Histogram giúp quan sát dạng hình chuông úp của dữ liệu để đánh giá sơ bộ giả định phân phối chuẩn."
+            },
+            {
+                id: 6,
+                question: "Trong khảo sát mức độ hài lòng theo Likert 5 điểm, khoảng cách (Interval) để phân chia 5 cấp độ từ 'Rất thấp' đến 'Rất cao' được tính theo công thức nào?",
+                options: [
+                    "A. (5 - 1) / 5 = 0.80",
+                    "B. (5 - 1) / 4 = 1.00",
+                    "C. (5 - 0) / 5 = 1.00",
+                    "D. (5 - 1) / 3 = 1.33"
+                ],
+                answer: "A",
+                explanation: "Công thức chuẩn là (Max - Min) / n = (5 - 1) / 5 = 0.80, tương ứng với các khoảng rộng đều nhau là 0.80."
+            },
+            {
+                id: 7,
+                question: "Nhân tố Thái độ phục vụ (TD) có điểm trung bình Mean = 3.95 và SD = 0.58. Dựa trên khoảng chia 0.80, nhân tố này được xếp vào cấp độ nào?",
+                options: [
+                    "A. Trung bình",
+                    "B. Cao",
+                    "C. Rất cao",
+                    "D. Thấp"
+                ],
+                answer: "B",
+                explanation: "Khoảng đánh giá 'Cao' nằm từ 3.41 đến 4.20. Giá trị 3.95 thuộc khoảng này."
+            },
+            {
+                id: 8,
+                question: "Bảng chéo kết hợp (Crosstabs) trong SPSS có chức năng chính là gì?",
+                options: [
+                    "A. Tính toán điểm trung bình của các biến độc lập.",
+                    "B. Biểu diễn mối liên hệ phân bố tần số và tỷ lệ giữa hai hoặc nhiều biến định tính.",
+                    "C. Kiểm định xem hai biến định lượng có tương quan với nhau không.",
+                    "D. Tìm ra phương trình hồi quy tuyến tính."
+                ],
+                answer: "B",
+                explanation: "Crosstabs chuyên dùng để biểu diễn tương tác tần số chéo giữa các biến phân loại."
+            },
+            {
+                id: 9,
+                question: "Khi phân tích bảng Crosstabs so sánh sự hài lòng giữa Nam và Nữ, bạn thấy tỷ lệ hài lòng ở Nữ là 85.7% và Nam là 72.2%. Kết luận nào sau đây là khoa học nhất?",
+                options: [
+                    "A. Chắc chắn Nữ hài lòng nhiều hơn Nam có ý nghĩa thống kê.",
+                    "B. Tỷ lệ hài lòng ở Nữ có xu hướng cao hơn Nam trong mẫu khảo sát; cần thực hiện thêm phép kiểm Chi-Square để kết luận sự khác biệt này có ý nghĩa thống kê hay không.",
+                    "C. Không có sự khác biệt nào giữa hai nhóm.",
+                    "D. Nam hài lòng nhiều hơn Nữ."
+                ],
+                answer: "B",
+                explanation: "Bảng chéo chỉ mô tả phân bố mẫu, chưa thể tự động kết luận ý nghĩa thống kê của sự khác biệt nếu chưa qua phép kiểm suy luận."
+            },
+            {
+                id: 10,
+                question: "Hàm nào trong Excel giúp bạn đếm số lượng bệnh nhân thỏa mãn đồng thời hai điều kiện: Giới tính là Nữ (mã là 2) và Hài lòng (mã là 1)?",
+                options: [
+                    "A. COUNTIF",
+                    "B. COUNTIFS",
+                    "C. SUMIF",
+                    "D. VLOOKUP"
+                ],
+                answer: "B",
+                explanation: "COUNTIFS cho phép đếm tần số thỏa mãn nhiều điều kiện đồng thời trong Excel."
+            },
+            {
+                id: 11,
+                question: "Để nhận diện nhanh các giá trị ngoại lệ cực đoan (Outliers) có thể do lỗi nhập liệu thô gây ra, biểu đồ trực quan nào sau đây là tối ưu nhất?",
+                options: [
+                    "A. Histogram",
+                    "B. Boxplot (Biểu đồ hộp râu)",
+                    "C. Pie chart",
+                    "D. Scatter plot"
+                ],
+                answer: "B",
+                explanation: "Boxplot biểu diễn rõ các điểm dị biệt (vượt ngoài hàng rào trên/dưới) bằng các ký hiệu vòng tròn hoặc dấu sao."
+            },
+            {
+                id: 12,
+                question: "Học viên muốn so sánh tỷ lệ hài lòng của bệnh nhân theo 5 nhóm trình độ học vấn. Biểu đồ nào trực quan nhất để biểu diễn tỷ lệ này?",
+                options: [
+                    "A. Biểu đồ quạt (Pie chart)",
+                    "B. Biểu đồ cột chồng hoặc nhóm (Grouped/Stacked Bar Chart)",
+                    "C. Biểu đồ đường thẳng (Line Chart)",
+                    "D. Biểu đồ Histogram"
+                ],
+                answer: "B",
+                explanation: "Grouped/Stacked Bar Chart giúp hiển thị và so sánh cấu trúc phần trăm một cách rõ nét qua nhiều phân nhóm trình độ học vấn."
+            },
+            {
+                id: 13,
+                question: "Trước khi thực hiện phân tích thống kê suy luận (như kiểm định T-test hay phân tích hồi quy), bước nào sau đây là BẮT BUỘC?",
+                options: [
+                    "A. Viết phần thảo luận.",
+                    "B. Chạy thống kê mô tả để kiểm tra phân phối, tính chất biến và làm sạch dữ liệu.",
+                    "C. Vẽ biểu đồ 3D phức tạp.",
+                    "D. Loại bỏ cơ học 50% cỡ mẫu."
+                ],
+                answer: "B",
+                explanation: "Thống kê mô tả là nền tảng bắt buộc để định hướng, rà soát lỗi nhập liệu và kiểm tra các giả định thống kê."
+            },
+            {
+                id: 14,
+                question: "Trong phần mềm SPSS, đường dẫn lệnh nào dùng để xuất nhanh bảng chéo Crosstabs có kèm tính phần trăm theo dòng?",
+                options: [
+                    "A. Analyze -> Descriptives -> Frequencies",
+                    "B. Analyze -> Descriptive Statistics -> Crosstabs -> Cells (chọn Row %)",
+                    "C. Analyze -> Compare Means -> One-Way ANOVA",
+                    "D. Graphs -> Chart Builder"
+                ],
+                answer: "B",
+                explanation: "Đây là đường dẫn chuẩn xác để thực hiện bảng chéo và khai báo tùy chọn tỷ lệ % theo dòng."
+            },
+            {
+                id: 15,
+                question: "Lợi ích lớn nhất của việc thiết lập Data Validation (giới hạn nhập liệu từ 1 đến 5) trên file Excel trước khi đưa vào SPSS là gì?",
+                options: [
+                    "A. Giúp SPSS chạy nhanh hơn.",
+                    "B. Ngăn chặn triệt để lỗi nhập liệu vượt quá phạm vi (nhập nhầm số 6, 33...) tránh biến dạng điểm trung bình.",
+                    "C. Tự động mã hóa biến.",
+                    "D. Loại bỏ dữ liệu missing."
+                ],
+                answer: "B",
+                explanation: "Data Validation hoạt động như một màng lọc ngăn chặn các giá trị vô lý nhập sai ngay từ nguồn Excel."
+            },
+            {
+                id: 16,
+                question: "Trong báo cáo luận văn, điểm số trung bình của một thang đo Likert được báo cáo là 3.88. Con số này phản ánh điều gì?",
+                options: [
+                    "A. Bệnh nhân hoàn toàn không đồng ý.",
+                    "B. Mức độ đồng ý/hài lòng chung nằm ở ngưỡng Khá (Cao).",
+                    "C. Dữ liệu bị lỗi nghiêm trọng.",
+                    "D. Phân phối mẫu bị lệch trái hoàn toàn."
+                ],
+                answer: "B",
+                explanation: "3.88 thuộc khoảng từ 3.41 đến 4.20, là mức độ đánh giá cao (Khá) trên thang đo sự hài lòng."
+            },
+            {
+                id: 17,
+                question: "Nếu thang đo Chi Phí (CP) có điểm trung bình rất thấp (Mean = 2.84), nhà quản lý bệnh viện nên tập trung hành động gì?",
+                options: [
+                    "A. Tăng giá thuốc lên cao hơn.",
+                    "B. Cải thiện tính minh bạch, công khai chi phí điều trị và tư vấn rõ ràng khả năng chi trả cho người bệnh.",
+                    "C. Giảm chất lượng dịch vụ điều trị xuống.",
+                    "D. Bỏ qua không cần xử lý."
+                ],
+                answer: "B",
+                explanation: "Ý nghĩa thực tiễn: Điểm CP thấp đồng nghĩa cảm nhận về tính minh bạch và hợp lý chi phí kém, đòi hỏi giải pháp quản lý công khai minh bạch hơn."
+            },
+            {
+                id: 18,
+                question: "Công thức toán học của trị số Trung vị (Median) dựa trên nguyên lý nào sau đây?",
+                options: [
+                    "A. Cộng tất cả các giá trị rồi chia cho cỡ mẫu.",
+                    "B. Là giá trị đứng ở vị trí chính giữa khi chuỗi số liệu đã được sắp xếp tăng dần.",
+                    "C. Là giá trị có tần số xuất hiện cao nhất.",
+                    "D. Là bình phương của độ lệch chuẩn."
+                ],
+                answer: "B",
+                explanation: "Trung vị là giá trị định vị chia đôi tập dữ liệu thành hai phần có số lượng quan sát bằng nhau."
+            },
+            {
+                id: 19,
+                question: "Tại sao trong nghiên cứu khoa học y học, biểu đồ hình quạt (Pie chart) không nên dùng cho biến có quá nhiều nhóm phân loại?",
+                options: [
+                    "A. Do phần mềm SPSS sẽ báo lỗi hệ thống.",
+                    "B. Do các lát cắt quạt quá nhỏ và chồng chéo nhãn, làm người đọc không thể phân biệt và tiếp thu thông tin.",
+                    "C. Do Pie chart không tính được phần trăm.",
+                    "D. Do Pie chart chỉ dùng được cho biến định lượng."
+                ],
+                answer: "B",
+                explanation: "Sự phân mảnh quá mức trong biểu đồ Pie Chart làm mất đi tính trực quan vốn có của biểu đồ."
+            },
+            {
+                id: 20,
+                question: "Một học viên viết trong luận văn: 'Do phần mềm SPSS tính toán ra thời gian điều trị trung bình là 10.5 ngày nên chúng tôi khẳng định phác đồ điều trị này là tối ưu nhất'. Nhận xét này vi phạm nguyên tắc nào?",
+                options: [
+                    "A. Vi phạm quy tắc làm tròn số.",
+                    "B. Quá phụ thuộc vào công cụ tính toán mà bỏ quên tư duy phản biện chuyên môn y học (SPSS chỉ hỗ trợ tính toán, không quyết định thay tư duy biện giải kết quả).",
+                    "C. Sử dụng sai thuật ngữ thống kê.",
+                    "D. Chạy sai thuật toán mô tả."
+                ],
+                answer: "B",
+                explanation: "Excel hay SPSS chỉ là công cụ hỗ trợ tính toán số liệu. Việc biện giải ý nghĩa thực tế và tính tối ưu đòi hỏi kiến thức chuyên môn sâu sắc của người làm nghiên cứu."
+            }
+        ];
+
+        // Load quiz questions
+        function loadQuiz() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+            
+            quizData.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'p-5 bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3';
+                qDiv.innerHTML = `
+                    <p class="font-bold text-sm text-slate-900 dark:text-white">Câu ${q.id}: ${q.question}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                        ${q.options.map((opt, oIdx) => {
+                            const letter = opt.substring(0, 1);
+                            return `
+                                <label class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-xs">
+                                    <input type="radio" name="question-${q.id}" value="${letter}" class="w-4 h-4 text-medical-600 focus:ring-medical-500" onchange="updateQuizProgress()">
+                                    <span>${opt}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="explanation-${q.id}" class="hidden mt-4 p-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 rounded-lg text-xs leading-relaxed">
+                        <strong class="text-emerald-800 dark:text-emerald-300">Đáp án đúng: ${q.answer}</strong><br>
+                        <span class="text-slate-600 dark:text-slate-400 mt-1 block">${q.explanation}</span>
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        // Update progress bar as user answers questions
+        function updateQuizProgress() {
+            let answeredCount = 0;
+            quizData.forEach(q => {
+                const selected = document.querySelector(`input[name="question-${q.id}"]:checked`);
+                if (selected) answeredCount++;
+            });
+            const progressPercent = (answeredCount / quizData.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+        }
+
+        // Grade the entire quiz
+        function gradeQuiz() {
+            let correctCount = 0;
+            quizData.forEach(q => {
+                const selected = document.querySelector(`input[name="question-${q.id}"]:checked`);
+                const explanationDiv = document.getElementById(`explanation-${q.id}`);
+                
+                // Show explanations for all questions
+                explanationDiv.classList.remove('hidden');
+                
+                // Style parent based on correctness
+                const parentLabels = explanationDiv.previousElementSibling.querySelectorAll('label');
+                parentLabels.forEach(lbl => {
+                    const radio = lbl.querySelector('input');
+                    if (radio.value === q.answer) {
+                        lbl.classList.add('bg-emerald-100', 'border-emerald-400', 'dark:bg-emerald-950/30', 'dark:border-emerald-700');
+                    } else if (radio.checked) {
+                        lbl.classList.add('bg-red-100', 'border-red-400', 'dark:bg-red-950/30', 'dark:border-red-700');
+                    }
+                });
+
+                if (selected && selected.value === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            // Update score UI
+            document.getElementById('quiz-score').innerText = `Điểm số: ${correctCount}/${quizData.length}`;
+            
+            // Scroll to quiz header to show results
+            document.getElementById('quiz-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // =================================================================================
+        // ✨ GEMINI LLM API INTEGRATION CODE
+        // =================================================================================
+        
+        // Default API key configuration - blank at start, prioritizes runtime key or user custom input
+        let runtimeApiKey = ""; 
+
+        // Quick prompt template helper
+        function fillPromptTemplate(type) {
+            const promptArea = document.getElementById('ai-user-prompt');
+            if (type === 'design') {
+                promptArea.value = "Tôi đang làm đề tài CK1 Dược về: \"Khảo sát sự hài lòng của người bệnh về dịch vụ cấp phát thuốc ngoại trú BHYT\". Tôi có các nhân tố độc lập là Hiệu quả (HQ - 5 câu), Thái độ phục vụ (TD - 4 câu), Quản lý (QL - 5 câu) và biến phụ thuộc Sự hài lòng chung (SHL - 3 câu). Hãy tư vấn chi tiết cho tôi cách lập bảng biểu mô tả mẫu nghiên cứu thế nào cho chuẩn luận văn y khoa.";
+            } else if (type === 'debug') {
+                promptArea.value = "Tôi import file csv vào SPSS thì các nhãn giá trị bị biến thành số thô vô nghĩa, không thể hiện được nhãn Giới tính (1=Nam, 2=Nữ). Đồng thời, khi tôi chạy thống kê mô tả tần số thì phát hiện biến Phác đồ điều trị xuất hiện giá trị lạ là '99'. Đây có phải là lỗi không và cách xử lý sạch dữ liệu này thế nào?";
+            } else if (type === 'code') {
+                promptArea.value = "Viết cú pháp SPSS Syntax dùng để: \n1. Khai báo gán nhãn giá trị (Value Labels) cho biến GioiTinh (1=Nam, 2=Nữ) và PhacDo (1=Đơn trị liệu, 2=Phối hợp 2 thuốc, 3=Phối hợp 3 thuốc).\n2. Tính điểm trung bình đại diện cho nhân tố Hiệu quả (HQ) từ 5 biến thành phần HQ1 đến HQ5.\nĐồng thời viết hộ tôi hàm Excel tương ứng để tính điểm trung bình này.";
+            }
+            promptArea.focus();
+        }
+
+        // Clear terminal chat logs
+        function clearChatLog() {
+            const chatLog = document.getElementById('ai-chat-log');
+            chatLog.innerHTML = `
+                <div class="flex gap-3 items-start">
+                    <div class="p-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg shrink-0">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1 bg-purple-50 dark:bg-purple-950/20 p-3 rounded-xl border border-purple-100/30 max-w-[85%]">
+                        <p class="font-bold text-purple-800 dark:text-purple-300">Trợ Lý Thống Kê Y Dược AI:</p>
+                        <p class="leading-relaxed text-slate-700 dark:text-slate-300">
+                            Đã làm sạch bộ nhớ đầu cuối terminal. Tôi sẵn sàng nhận yêu cầu mới từ các anh chị!
+                        </p>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Exponential backoff API calling mechanism
+        async function fetchGeminiWithBackoff(url, payload, retries = 5, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.ok) {
+                        return await response.json();
+                    }
+                    
+                    // If rate limited or typical transient server error, back off
+                    if (response.status === 429 || response.status >= 500) {
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2; // Exponential increase
+                        continue;
+                    }
+                    
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || "Lỗi máy chủ API.");
+                } catch (error) {
+                    if (i === retries - 1) throw error; // Re-throw if all retries failed
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // Call Gemini 2.5 Flash API to get study guidelines
+        async function sendPromptToAI() {
+            const userPrompt = document.getElementById('ai-user-prompt').value.trim();
+            const userCustomKey = document.getElementById('api-key-input').value.trim();
+            const loadingStatus = document.getElementById('ai-loading-status');
+            const chatLog = document.getElementById('ai-chat-log');
+
+            if (!userPrompt) {
+                alert("Vui lòng nhập nội dung câu hỏi hoặc chọn một phím mẫu nhanh trước khi gửi!");
+                return;
+            }
+
+            // Determine active API Key
+            const activeApiKey = userCustomKey || runtimeApiKey;
+            if (!activeApiKey) {
+                const requireKeyMsg = `
+                    <div class="flex gap-3 items-start text-red-600">
+                        <div class="p-1.5 bg-red-100 dark:bg-red-950/20 rounded-lg shrink-0">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        </div>
+                        <div class="space-y-1 bg-red-50 dark:bg-red-950/20 p-3 rounded-xl border border-red-100 max-w-[85%]">
+                            <p class="font-bold">Hệ thống yêu cầu API Key:</p>
+                            <p class="leading-relaxed">
+                                Không tìm thấy khóa API tự động. Vui lòng lấy khóa <strong>API Key Gemini</strong> và nhập vào ô "API Key Gemini" ở bảng điều khiển bên trái để kích hoạt tính năng thông minh này!
+                            </p>
+                        </div>
+                    </div>
+                `;
+                chatLog.insertAdjacentHTML('beforeend', requireKeyMsg);
+                chatLog.scrollTop = chatLog.scrollHeight;
+                lucide.createIcons();
+                return;
+            }
+
+            // Append user prompt to log
+            const userMsgHtml = `
+                <div class="flex gap-3 items-start justify-end">
+                    <div class="space-y-1 bg-slate-100 dark:bg-slate-700 p-3 rounded-xl max-w-[85%] text-slate-800 dark:text-slate-200">
+                        <p class="font-bold text-slate-900 dark:text-slate-100">Học viên CK1 Dược:</p>
+                        <p class="leading-relaxed whitespace-pre-line">${escapeHTML(userPrompt)}</p>
+                    </div>
+                    <div class="p-1.5 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg shrink-0">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            `;
+            chatLog.insertAdjacentHTML('beforeend', userMsgHtml);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            document.getElementById('ai-user-prompt').value = ""; // clear text area
+            lucide.createIcons();
+
+            // Show loader
+            loadingStatus.classList.remove('hidden');
+
+            const systemInstruction = `
+                Bạn là một trợ lý thông thái AI tích hợp trong website E-learning Chương 5: Thống kê mô tả trong Nghiên cứu Y Dược dành riêng cho học viên sau đại học Chuyên khoa 1 (CK1) ngành Dược tại Việt Nam.
+                Nhiệm vụ của bạn là giải đáp tất cả thắc mắc khoa học liên quan đến:
+                - Thiết kế nghiên cứu y sinh học, xác định biến số (định tính, định lượng, thang đo Likert).
+                - Cách thiết lập, làm sạch dữ liệu, xử lý mã hóa thô, xử lý missing data và các lỗi trên Excel / SPSS (đặc biệt là lỗi mã hóa 1099, outliers).
+                - Cách khai báo Variable View, chạy các lệnh Frequencies, Descriptives, Crosstabs, Custom Tables, vẽ biểu đồ (Pie, Bar, Histogram, Boxplot).
+                - Cách đọc, diễn giải ý nghĩa khoa học của các bảng biểu thống kê thô, từ đó dẫn dắt sang ý nghĩa quản lý dược học hoặc dược lâm sàng thực tế, bám sát bộ dữ liệu khảo sát sự hài lòng (DATA.csv với các biến HQ, TD, QL, TT, DV, CP, SHL).
+                - Tạo nhanh các cú pháp lập trình thống kê SPSS Syntax hoặc hàm phân tích Excel.
+
+                YÊU CẦU SƯ PHẠM QUAN TRỌNG:
+                - Luôn sử dụng giọng văn khoa học, chuẩn mực, rõ ràng, dễ hiểu đối với cán bộ y tế sau đại học.
+                - Sử dụng ví dụ thực tế liên quan đến ngành y, ngành dược (giá thuốc, hiệu quả lâm sàng, thái độ phục vụ...).
+                - Nếu viết các công thức toán học thống kê, hãy sử dụng chính xác cú pháp LaTeX được bọc trong cặp dấu $...$ đối với inline hoặc $$...$$ đối với display block (ví dụ: $p < 0.05$, $Mean \\pm SD$).
+                - Nếu viết code SPSS Syntax, hãy bọc trong thẻ định dạng mã nguồn để dễ sao chép.
+                - Trả lời trực tiếp bằng tiếng Việt chuẩn khoa học.
+            `;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${activeApiKey}`;
+            const apiPayload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            try {
+                const responseData = await fetchGeminiWithBackoff(apiUrl, apiPayload);
+                const aiRawResponse = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!aiRawResponse) {
+                    throw new Error("Không nhận được phản hồi nội dung từ mô hình AI.");
+                }
+
+                // Append AI Response to log
+                const aiMsgHtml = `
+                    <div class="flex gap-3 items-start">
+                        <div class="p-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg shrink-0">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <div class="space-y-1 bg-purple-50 dark:bg-purple-950/20 p-3 rounded-xl border border-purple-100/30 max-w-[85%] text-slate-800 dark:text-slate-200">
+                            <p class="font-bold text-purple-800 dark:text-purple-300">Trợ Lý Thống Kê Y Dược AI:</p>
+                            <div class="leading-relaxed whitespace-pre-line prose dark:prose-invert max-w-none text-xs" id="latest-ai-reply">${markdownToHTML(aiRawResponse)}</div>
+                        </div>
+                    </div>
+                `;
+                chatLog.insertAdjacentHTML('beforeend', aiMsgHtml);
+                
+                // Trigger KaTeX to render any formula in the newly added block
+                const latestReply = document.getElementById('latest-ai-reply');
+                if (latestReply && typeof renderMathInElement === 'function') {
+                    renderMathInElement(latestReply, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false},
+                            {left: '\\[', right: '\\]', display: true}
+                        ],
+                        throwOnError: false
+                    });
+                    latestReply.removeAttribute('id'); // remove temporary id
+                }
+
+            } catch (error) {
+                console.error("Gemini API Error: ", error);
+                const errorHtml = `
+                    <div class="flex gap-3 items-start text-red-600">
+                        <div class="p-1.5 bg-red-100 dark:bg-red-950/20 rounded-lg shrink-0">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                        </div>
+                        <div class="space-y-1 bg-red-50 dark:bg-red-950/20 p-3 rounded-xl border border-red-100 max-w-[85%]">
+                            <p class="font-bold">Lỗi kết nối AI:</p>
+                            <p class="leading-relaxed text-xs">
+                                Có lỗi xảy ra trong quá trình truy vấn hệ thống thông minh: ${error.message}.
+                                Vui lòng kiểm tra lại kết nối mạng hoặc tính chuẩn xác của API Key.
+                            </p>
+                        </div>
+                    </div>
+                `;
+                chatLog.insertAdjacentHTML('beforeend', errorHtml);
+            } finally {
+                loadingStatus.classList.add('hidden');
+                chatLog.scrollTop = chatLog.scrollHeight;
+                lucide.createIcons();
+            }
+        }
+
+        // Basic escape HTML to prevent chat injection
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Minimalist markdown rendering helper inside chat terminal
+        function markdownToHTML(text) {
+            let html = text;
+            
+            // Format codeblocks
+            html = html.replace(/```([a-zA-Z0-9]*)\n([\s\S]*?)```/gm, (match, lang, code) => {
+                return `<pre class="bg-slate-900 text-slate-100 p-3 rounded-lg font-mono text-[11px] overflow-x-auto my-2 border border-slate-800"><code>${escapeHTML(code)}</code></pre>`;
+            });
+
+            // Format bold text
+            html = html.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
+
+            // Format bullet lists
+            html = html.replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul class="list-disc pl-5 my-2 space-y-1">$1</ul>');
+            // Clean consecutive list envelopes
+            html = html.replace(/<\/ul>\s*<ul class="list-disc pl-5 my-2 space-y-1">/g, '');
+
+            return html;
+        }
+
+        // Initialize application on window load
+        window.onload = function() {
+            lucide.createIcons();
+            loadQuiz();
+            safeRenderMath();
+            switchTab('hook');
+        }
+    </script>
+</body>
+</html>

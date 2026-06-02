@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 7: Phân tích Nhân tố Khám phá (EFA) - Thống kê Y Dược CK1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- MathJax for rendering math formulas beautifully -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .sidebar-link { transition: all 0.3s; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #eff6ff; color: #1d4ed8; border-right: 4px solid #1d4ed8; }
+        .content-section { display: none; animation: fadeIn 0.5s; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom styled blocks */
+        .block-remember { background-color: #ecfdf5; border-left: 4px solid #10b981; }
+        .block-error { background-color: #fef2f2; border-left: 4px solid #ef4444; }
+        .block-thesis { background-color: #eff6ff; border-left: 4px solid #3b82f6; }
+        
+        .quiz-option { transition: all 0.2s; }
+        .quiz-option:hover { background-color: #f3f4f6; }
+        .quiz-option input[type="radio"]:checked + span { font-weight: bold; color: #1d4ed8; }
+        .correct-answer { background-color: #d1fae5; border-color: #10b981; }
+        .wrong-answer { background-color: #fee2e2; border-color: #ef4444; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg h-full flex flex-col z-20 flex-shrink-0 hidden md:flex">
+        <div class="p-4 border-b border-gray-200">
+            <h1 class="text-lg font-bold text-blue-700 flex items-center">
+                <i class="fas fa-stethoscope mr-2"></i> Thống Kê Dược CK1
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">Chương 7: Phân tích EFA</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4">
+            <a href="#" class="sidebar-link active block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-0">
+                <i class="fas fa-bullseye w-5"></i> Mục tiêu & Tổng quan
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-1">
+                <i class="fas fa-balance-scale w-5"></i> 1. Bản chất của EFA
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-2">
+                <i class="fas fa-chart-bar w-5"></i> 2. Các chỉ số "Sống còn"
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-3">
+                <i class="fas fa-laptop-medical w-5"></i> 3. Thực hành EFA Biến Độc lập
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-4">
+                <i class="fas fa-vials w-5"></i> 4. Thực hành EFA Biến Phụ thuộc
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-5">
+                <i class="fas fa-file-excel w-5"></i> 5. Báo cáo bằng Excel
+            </a>
+            <a href="#" class="sidebar-link block py-3 px-4 text-sm font-medium text-gray-700" data-target="module-6">
+                <i class="fas fa-tasks w-5"></i> Lượng giá (20 Câu hỏi)
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <div class="md:hidden fixed bottom-4 right-4 z-50">
+        <button id="mobileMenuBtn" class="bg-blue-600 text-white p-4 rounded-full shadow-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-full overflow-y-auto bg-gray-50 relative">
+        <div class="max-w-4xl mx-auto p-6 md:p-10 pb-24">
+
+            <!-- MODULE 0: TỔNG QUAN -->
+            <section id="module-0" class="content-section active">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6 border-t-4 border-blue-600">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Chương 7: Phân tích Nhân tố Khám phá (EFA)</h2>
+                    <p class="text-gray-600 mb-6 text-lg">Chào các anh chị học viên Chuyên khoa 1. Sau khi đã kiểm định <strong>Độ tin cậy</strong> của thang đo bằng Cronbach's Alpha (để xem các câu hỏi có nhất quán không), bước tiếp theo chúng ta bắt buộc phải đánh giá <strong>Giá trị</strong> của thang đo bằng EFA. Đây là rào chắn cuối cùng trước khi đưa dữ liệu vào Hồi quy.</p>
+                    
+                    <h3 class="text-xl font-bold text-blue-700 mt-6 mb-3"><i class="fas fa-crosshairs mr-2"></i> Mục tiêu học tập</h3>
+                    <ul class="list-none space-y-2">
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> <span>Hiểu được vai trò của EFA và phân biệt được độ tin cậy (Reliability) vs Giá trị (Validity).</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> <span>Đọc và diễn giải chuẩn xác các chỉ số: KMO, Bartlett's, Eigenvalue, Factor Loading.</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> <span>Thao tác thành thạo EFA trên phần mềm SPSS cho biến độc lập và phụ thuộc riêng biệt.</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> <span>Biết cách viết báo cáo EFA chuẩn form luận văn chuyên khoa 1.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- MODULE 1: BẢN CHẤT -->
+            <section id="module-1" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">1. Bản chất của EFA - Vì sao chạy sau Cronbach's Alpha?</h2>
+                    
+                    <p class="mb-4">Hãy tưởng tượng anh chị đang thiết kế một bộ công cụ đánh giá sự hài lòng của bệnh nhân nội trú. Bộ công cụ có 2 nhóm câu hỏi: Nhóm đo lường <strong>"Thái độ y bác sĩ" (TD)</strong> và Nhóm đo lường <strong>"Cơ sở vật chất" (CS)</strong>.</p>
+                    
+                    <ul class="list-disc pl-6 mb-6 space-y-2 text-gray-700">
+                        <li><strong>Cronbach's Alpha (Độ tin cậy):</strong> Kiểm tra xem 4 câu hỏi TD1, TD2, TD3, TD4 có <em>đồng lòng, nhất quán</em> với nhau hay không. (Giống như kiểm tra 4 cầu thủ có mặc cùng màu áo đội tuyển không).</li>
+                        <li><strong>EFA - Phân tích nhân tố (Giá trị thang đo):</strong> Kiểm tra xem 4 câu TD này có <em>thực sự chỉ đo lường chung một khái niệm (Thái độ)</em> và <em>tách biệt hoàn toàn</em> với nhóm câu hỏi CS hay không. (Kiểm tra xem 4 cầu thủ này có đúng là đang đá ở hàng tiền đạo không, hay lại chạy lộn sang hàng hậu vệ).</li>
+                    </ul>
+
+                    <h3 class="text-lg font-bold text-gray-800 mt-6 mb-3">Hai khái niệm cốt lõi trong Y dược:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="border rounded-lg p-4 bg-blue-50">
+                            <h4 class="font-bold text-blue-700"><i class="fas fa-compress-arrows-alt mr-1"></i> Giá trị hội tụ (Convergent Validity)</h4>
+                            <p class="text-sm mt-2">Các biến quan sát (câu hỏi) thuộc <strong>cùng một nhân tố</strong> (ví dụ HQ1, HQ2, HQ3, HQ4) thì phải <strong>hội tụ lại với nhau</strong> thành một cột duy nhất trong kết quả SPSS.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-purple-50">
+                            <h4 class="font-bold text-purple-700"><i class="fas fa-random mr-1"></i> Giá trị phân biệt (Discriminant Validity)</h4>
+                            <p class="text-sm mt-2">Các biến quan sát thuộc <strong>các nhân tố khác nhau</strong> thì phải <strong>tách biệt rõ ràng</strong>. Câu HQ1 không được phép tải trọng (nhầm lẫn) sang cột của nhân tố TD hay QL.</p>
+                        </div>
+                    </div>
+
+                    <!-- Standards Blocks -->
+                    <div class="block-remember p-4 rounded mb-4">
+                        <p class="font-bold text-green-700"><i class="fas fa-lightbulb mr-2"></i>Ghi nhớ nhanh</p>
+                        <p class="mt-1 text-sm text-gray-700">Cronbach’s Alpha đánh giá <strong>độ tin cậy nội tại</strong> (nhất quán); EFA đánh giá <strong>cấu trúc và giá trị thang đo</strong> (hội tụ và phân biệt).</p>
+                    </div>
+
+                    <div class="block-error p-4 rounded mb-4">
+                        <p class="font-bold text-red-700"><i class="fas fa-exclamation-triangle mr-2"></i>Lỗi thường gặp</p>
+                        <p class="mt-1 text-sm text-gray-700">Đưa <strong>cả biến độc lập (HQ, TD...) và biến phụ thuộc (SHL)</strong> vào cùng một lúc để chạy EFA. Đây là lỗi sai phương pháp luận trầm trọng! Phải chạy EFA làm 2 lần riêng biệt cho 2 nhóm này.</p>
+                    </div>
+
+                    <div class="block-thesis p-4 rounded">
+                        <p class="font-bold text-blue-700"><i class="fas fa-book-open mr-2"></i>Áp dụng trong luận văn CK1</p>
+                        <p class="mt-1 text-sm text-gray-700">Sau khi các thang đo đạt Cronbach’s Alpha, nhóm biến độc lập được đưa vào EFA để kiểm tra giá trị hội tụ và phân biệt. Các biến đạt yêu cầu mới được giữ lại tính điểm trung bình (Compute Variable) đưa vào phân tích Hồi quy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 2: CHỈ SỐ -->
+            <section id="module-2" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">2. Các chỉ số "Sống còn" trong bảng Output SPSS</h2>
+                    <p class="mb-4 text-gray-700">Khi SPSS xuất ra kết quả EFA, anh chị học viên chỉ cần tập trung đọc đúng 4 bảng và các chỉ số sau đây:</p>
+
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full bg-white border border-gray-300">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Chỉ số / Bảng output</th>
+                                    <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Ý nghĩa lâm sàng / Thống kê</th>
+                                    <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Điều kiện Đạt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-blue-600">Hệ số KMO<br><span class="font-normal text-xs text-gray-500">(Kaiser-Meyer-Olkin)</span></td>
+                                    <td class="py-3 px-4 border-b text-sm">Xem cỡ mẫu của anh chị có đủ lớn để chạy EFA không. Càng gần 1 càng tốt.</td>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-green-600">\( 0.5 \le KMO \le 1.0 \)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-blue-600">Kiểm định Bartlett's<br><span class="font-normal text-xs text-gray-500">(Sig.)</span></td>
+                                    <td class="py-3 px-4 border-b text-sm">Xem các biến quan sát có tương quan với nhau trong tổng thể hay không.</td>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-green-600">\( Sig. \le 0.05 \)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-blue-600">Eigenvalue<br><span class="font-normal text-xs text-gray-500">(Total Variance Explained)</span></td>
+                                    <td class="py-3 px-4 border-b text-sm">Đại diện cho phần biến thiên giải thích được bởi mỗi nhân tố rút trích.</td>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-green-600">\( Eigenvalue \ge 1.0 \)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-blue-600">Phương sai trích<br><span class="font-normal text-xs text-gray-500">(Cumulative %)</span></td>
+                                    <td class="py-3 px-4 border-b text-sm">Các nhân tố được rút ra đại diện được bao nhiêu % thông tin của dữ liệu gốc.</td>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-green-600">\( \ge 50\% \)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-blue-600">Hệ số Tải nhân tố<br><span class="font-normal text-xs text-gray-500">(Factor Loading)</span></td>
+                                    <td class="py-3 px-4 border-b text-sm">Biểu thị mức độ quan trọng (đóng góp) của một câu hỏi đối với nhân tố mẹ. Nằm trong bảng <em>Rotated Component Matrix</em>.</td>
+                                    <td class="py-3 px-4 border-b text-sm font-bold text-green-600">\( \ge 0.5 \)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="block-error p-4 rounded mb-4">
+                        <p class="font-bold text-red-700"><i class="fas fa-exclamation-triangle mr-2"></i>Lỗi thường gặp: Xóa biến một cách cơ học</p>
+                        <p class="mt-1 text-sm text-gray-700">Trong Y dược, nếu một biến có Factor Loading = 0.48 (hơi thấp hơn 0.5 một chút) nhưng đó là <strong>một chỉ số lâm sàng cực kỳ quan trọng</strong> không thể bỏ, anh chị <strong>không được loại bỏ biến cơ học chỉ vì một chỉ số thống kê</strong>. Hãy thảo luận với thầy cô hướng dẫn để giữ lại với lập luận chuyên môn.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 3: THỰC HÀNH EFA ĐỘC LẬP -->
+            <section id="module-3" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">3. Thực hành SPSS: EFA cho nhóm Biến Độc lập</h2>
+                    <p class="mb-4 text-gray-700">Giả sử anh chị có mô hình với các biến độc lập: <strong>Hiệu quả (HQ1-5), Thái độ (TD1-4), Quản lý (QL1-5), Thông tin (TT1-4), Dịch vụ (DV1-5), Chi phí (CP1-4).</strong></p>
+
+                    <h3 class="font-bold text-lg mb-2">Bước 1: Vào lệnh SPSS</h3>
+                    <div class="bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-4">
+                        Analyze > Dimension Reduction > Factor...
+                    </div>
+
+                    <h3 class="font-bold text-lg mb-2">Bước 2: Chuyển biến & Cài đặt</h3>
+                    <ul class="list-decimal pl-6 space-y-3 mb-6 text-gray-700">
+                        <li>Đưa <strong>TẤT CẢ</strong> các câu hỏi từ HQ1 đến CP4 (tổng 27 biến) vào ô Variables. <em>(Tuyệt đối không đưa SHL vào đây)</em>.</li>
+                        <li>Nút <strong>Descriptives:</strong> Tick chọn <span class="bg-gray-200 px-1 rounded">KMO and Bartlett's test of sphericity</span>.</li>
+                        <li>Nút <strong>Extraction:</strong> Giữ nguyên Method <em>Principal components</em>. Đảm bảo tick <span class="bg-gray-200 px-1 rounded">Based on Eigenvalue greater than 1</span>.</li>
+                        <li>Nút <strong>Rotation:</strong> Tick chọn <span class="bg-gray-200 px-1 rounded">Varimax</span> (Đây là phép xoay vuông góc giúp các biến hội tụ rõ ràng nhất).</li>
+                        <li>Nút <strong>Options:</strong> Tick <span class="bg-gray-200 px-1 rounded">Sorted by size</span> (để dễ nhìn). Rất quan trọng: Tick <span class="bg-gray-200 px-1 rounded">Suppress small coefficients</span> và gõ vào ô kế bên giá trị <strong>0.50</strong> (Để ẩn đi các nhiễu rác nhỏ hơn 0.5).</li>
+                        <li>Bấm OK.</li>
+                    </ul>
+
+                    <h3 class="font-bold text-lg mb-2">Bước 3: Đọc Output "Ma trận nhân tố xoay" (Rotated Component Matrix)</h3>
+                    <p class="text-sm text-gray-700 mb-4">Đây là bảng quan trọng nhất. Nếu dữ liệu đẹp, các biến HQ1-5 sẽ gom thành 1 cột, TD1-4 gom 1 cột... Nếu có hiện tượng <strong>Tải chéo (Cross-loading)</strong>, ví dụ câu HQ1 vừa tải 0.65 ở cột nhân tố 1, lại vừa tải 0.55 ở cột nhân tố 2, ta phải làm gì?</p>
+                    
+                    <div class="block-thesis p-4 rounded mb-4">
+                        <p class="font-bold text-blue-700"><i class="fas fa-book-open mr-2"></i>Áp dụng trong luận văn CK1: Xử lý Tải chéo (Cross-loading)</p>
+                        <p class="mt-1 text-sm text-gray-700">Khi một biến đo lường tải lên 2 nhân tố cùng lúc, ta xét hiệu số: <strong>$\Delta$ = |Tải trọng lớn - Tải trọng nhỏ|</strong>.<br>
+                        - Nếu $\Delta < 0.3$: Nghĩa là câu hỏi này làm bệnh nhân hiểu nhầm sang 2 ý nghĩa. Cần <strong>loại bỏ</strong> biến này và chạy lại EFA.<br>
+                        - Nếu $\Delta \ge 0.3$: Chênh lệch đủ lớn, biến thuộc về nhân tố có tải trọng lớn hơn. Giữ lại.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 4: THỰC HÀNH EFA PHỤ THUỘC -->
+            <section id="module-4" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">4. Thực hành SPSS: EFA cho nhóm Biến Phụ thuộc</h2>
+                    <p class="mb-4 text-gray-700">Biến phụ thuộc của chúng ta là <strong>Sự hài lòng (SHL)</strong> gồm 3 câu: SHL1, SHL2, SHL3.</p>
+
+                    <div class="block-remember p-4 rounded mb-6">
+                        <p class="font-bold text-green-700"><i class="fas fa-lightbulb mr-2"></i>Ghi nhớ nhanh về EFA biến phụ thuộc</p>
+                        <p class="mt-1 text-sm text-gray-700">Làm các thao tác y hệt như Module 3 (đưa SHL1-3 vào chạy), <strong>NHƯNG</strong> vì biến phụ thuộc thường chỉ có 1 khía cạnh (1 nhân tố), SPSS sẽ không thể xoay ma trận được.</p>
+                    </div>
+
+                    <p class="mb-4 text-gray-700">Khi chạy xong, anh chị sẽ thấy dưới cùng của Output SPSS hiện một dòng chữ nhỏ:</p>
+                    <div class="bg-gray-100 p-3 italic border-l-4 border-gray-400 mb-4 text-sm font-serif text-center">
+                        "Only one component was extracted. The solution cannot be rotated."<br>
+                        (Chỉ có 1 nhân tố được trích xuất. Không thể xoay).
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4"><strong>Cách xử lý:</strong> Đây không phải là lỗi! Điều này là hoàn toàn tuyệt vời vì nó chứng tỏ 3 câu SHL1, SHL2, SHL3 cực kỳ hội tụ vào đúng 1 khái niệm duy nhất là "Sự hài lòng". Anh chị không cần đọc bảng Rotated Matrix nữa, mà đọc trực tiếp ở bảng <strong>Component Matrix</strong> (chưa xoay).</p>
+
+                </div>
+            </section>
+
+            <!-- MODULE 5: EXCEL -->
+            <section id="module-5" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">5. Báo cáo EFA bằng Excel chuẩn Luận văn</h2>
+                    <p class="mb-4 text-gray-700">Sau khi hoàn thành trên SPSS, không được copy nguyên bảng SPSS dán vào luận văn (rất xấu và bị trừ điểm hình thức). Anh chị cần đánh lại sang Excel/Word theo mẫu sau:</p>
+
+                    <p class="font-bold text-sm mb-2 text-center">Bảng: Kết quả phân tích nhân tố khám phá EFA cho các biến độc lập</p>
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full bg-white border border-gray-300 text-sm text-center">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="py-2 px-4 border border-gray-300 row-span-2">Biến quan sát</th>
+                                    <th class="py-2 px-4 border border-gray-300 col-span-6 text-center">Nhân tố (Factors)</th>
+                                </tr>
+                                <tr class="bg-gray-100">
+                                    <th class="py-1 px-4 border border-gray-300">1 (HQ)</th>
+                                    <th class="py-1 px-4 border border-gray-300">2 (QL)</th>
+                                    <th class="py-1 px-4 border border-gray-300">3 (TD)</th>
+                                    <th class="py-1 px-4 border border-gray-300">4 (DV)</th>
+                                    <th class="py-1 px-4 border border-gray-300">5 (TT)</th>
+                                    <th class="py-1 px-4 border border-gray-300">6 (CP)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="py-1 px-4 border text-left">HQ3</td><td class="py-1 px-4 border font-bold text-blue-600">0.865</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td></tr>
+                                <tr><td class="py-1 px-4 border text-left">HQ1</td><td class="py-1 px-4 border font-bold text-blue-600">0.842</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td></tr>
+                                <tr><td class="py-1 px-4 border text-left">...</td><td class="py-1 px-4 border">...</td><td class="py-1 px-4 border">...</td><td class="py-1 px-4 border">...</td><td class="py-1 px-4 border">...</td><td class="py-1 px-4 border">...</td><td class="py-1 px-4 border">...</td></tr>
+                                <tr><td class="py-1 px-4 border text-left">QL2</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border font-bold text-blue-600">0.812</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td><td class="py-1 px-4 border text-gray-300">-</td></tr>
+                                <tr class="bg-gray-50"><td class="py-2 px-4 border text-left font-bold" colspan="7">Hệ số KMO: 0.850 ; Kiểm định Bartlett (Sig.): < 0.001</td></tr>
+                                <tr class="bg-gray-50"><td class="py-2 px-4 border text-left font-bold" colspan="7">Tổng phương sai trích (Total Variance Explained): 68.4% ; Eigenvalue nhỏ nhất: 1.25</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="block-thesis p-4 rounded">
+                        <p class="font-bold text-blue-700"><i class="fas fa-pen-nib mr-2"></i>Văn mẫu nhận xét (Copy vào luận văn)</p>
+                        <p class="mt-1 text-sm text-gray-700 italic">"Kết quả phân tích nhân tố khám phá EFA cho nhóm biến độc lập cho thấy hệ số KMO = 0.850 (> 0.5) và kiểm định Bartlett có ý nghĩa thống kê (p < 0.001), chứng tỏ dữ liệu hoàn toàn phù hợp để phân tích nhân tố. Tại mức Eigenvalue > 1, phân tích đã trích xuất được 6 nhân tố với tổng phương sai trích đạt 68.4% (> 50%). Tất cả các biến quan sát đều có hệ số tải nhân tố (Factor Loading) > 0.5 và hội tụ đúng vào các nhân tố lý thuyết, đảm bảo giá trị hội tụ và phân biệt của thang đo. Dữ liệu đủ điều kiện để tính điểm nhân tố và chạy hồi quy tuyến tính."</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- MODULE 6: LƯỢNG GIÁ -->
+            <section id="module-6" class="content-section">
+                <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Lượng giá học phần (20 Câu hỏi)</h2>
+                    <p class="mb-6 text-gray-600">Đánh giá khả năng đọc hiểu SPSS và xử lý tình huống thực tế của học viên CK1.</p>
+
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Quiz questions will be injected here by JS -->
+                    </div>
+
+                    <div class="mt-8 flex justify-between items-center border-t pt-4">
+                        <button id="submitQuizBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition">
+                            <i class="fas fa-check-circle mr-2"></i>Chấm điểm
+                        </button>
+                        <div id="quizResult" class="text-xl font-bold text-blue-700 hidden">
+                            Điểm của bạn: <span id="scoreText">0</span>/20
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Update active link
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('data-target');
+                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+
+                // Close mobile menu if open
+                if (window.innerWidth < 768) {
+                    document.querySelector('aside').classList.add('hidden');
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const sidebar = document.querySelector('aside');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('z-40');
+        });
+
+        // --- Quiz Logic & Data ---
+        const quizData = [
+            {
+                q: "Mục đích chính của phân tích EFA sau khi chạy Cronbach's Alpha là gì?",
+                options: [
+                    "Kiểm tra xem bệnh nhân có đánh dấu bừa vào bảng hỏi không.",
+                    "Kiểm tra độ tin cậy (nhất quán) của thang đo.",
+                    "Kiểm tra giá trị (hội tụ và phân biệt) cấu trúc của thang đo.",
+                    "Kiểm tra xem biến độc lập có tác động đến biến phụ thuộc không."
+                ],
+                correct: 2,
+                rationale: "Cronbach's Alpha đo lường độ tin cậy. EFA đo lường Giá trị (Validity) để xem các biến có thực sự đo lường đúng cấu trúc lý thuyết (hội tụ/phân biệt) hay không."
+            },
+            {
+                q: "Chỉ số KMO trong EFA cho biết điều gì và điều kiện đạt là bao nhiêu?",
+                options: [
+                    "Độ phù hợp của mô hình hồi quy, KMO > 0.05",
+                    "Sự tương quan giữa các biến, KMO < 0.05",
+                    "Độ thích hợp của cỡ mẫu để chạy nhân tố, 0.5 ≤ KMO ≤ 1",
+                    "Phương sai giải thích được, KMO > 50%"
+                ],
+                correct: 2,
+                rationale: "KMO (Kaiser-Meyer-Olkin) đo lường sự đầy đủ của cỡ mẫu. Giá trị chuẩn trong nghiên cứu Y dược là từ 0.5 trở lên."
+            },
+            {
+                q: "Vì sao phải chạy EFA riêng biệt cho nhóm biến Độc lập và nhóm biến Phụ thuộc?",
+                options: [
+                    "Vì SPSS giới hạn số lượng biến tối đa trong một lần chạy.",
+                    "Vì biến phụ thuộc và độc lập khác nhau về bản chất lý thuyết, đưa chung sẽ gây nhiễu và tải chéo sai lệch.",
+                    "Vì biến phụ thuộc luôn có thang đo khác với biến độc lập.",
+                    "Chỉ là thói quen trình bày, chạy chung hay riêng đều ra kết quả giống nhau."
+                ],
+                correct: 1,
+                rationale: "Biến độc lập (nguyên nhân) và biến phụ thuộc (kết quả) là 2 cấu trúc khái niệm hoàn toàn tách biệt. Đưa chung vào EFA sẽ phá vỡ giá trị phân biệt của nghiên cứu."
+            },
+            {
+                q: "Giá trị Eigenvalue ≥ 1 mang ý nghĩa gì trong bảng kết quả EFA?",
+                options: [
+                    "Mức độ tin cậy của nhân tố đó lớn hơn 100%.",
+                    "Nhân tố được giữ lại giải thích được nhiều thông tin hơn một biến quan sát đơn lẻ.",
+                    "Tương quan giữa nhân tố và biến phụ thuộc là thuận chiều.",
+                    "Cỡ mẫu đã vượt quá 100 người."
+                ],
+                correct: 1,
+                rationale: "Eigenvalue đại diện cho phần phương sai mà nhân tố giải thích. Một biến đơn lẻ có phương sai chuẩn hóa = 1. Do đó nhân tố phải có Eigenvalue ≥ 1 mới có giá trị giữ lại."
+            },
+            {
+                q: "Tổng phương sai trích (Total Variance Explained) trong luận văn CK1 thường được yêu cầu đạt tối thiểu bao nhiêu?",
+                options: ["30%", "50%", "75%", "95%"],
+                correct: 1,
+                rationale: "Trong nhóm ngành khoa học xã hội và y dược cộng đồng, tổng phương sai trích ≥ 50% được coi là đạt yêu cầu thực tiễn."
+            },
+            {
+                q: "Tại mục Options của EFA trong SPSS, tại sao chúng ta nên nhập giá trị '0.50' vào ô 'Suppress small coefficients'?",
+                options: [
+                    "Để xóa luôn các biến có giá trị nhỏ hơn 0.5 khỏi bộ dữ liệu.",
+                    "Để hệ thống tự động làm tròn các số lên 0.5.",
+                    "Để ẩn đi các hệ số tải (Factor Loading) < 0.5, giúp bảng Rotated Matrix gọn gàng, dễ nhìn giá trị hội tụ hơn.",
+                    "Để bắt SPSS ép các biến phải có hệ số lớn hơn 0.5."
+                ],
+                correct: 2,
+                rationale: "Lệnh Suppress chỉ có tác dụng 'ẩn' (không hiển thị) các con số nhỏ để mắt người đọc dễ dàng nhìn ra các cột hội tụ, nó không xóa biến hay làm tròn dữ liệu gốc."
+            },
+            {
+                q: "Trong bảng Rotated Component Matrix, câu hỏi HQ1 có hệ số tải (Factor loading) ở nhân tố 1 là 0.752, ở nhân tố 2 là 0.680. Anh/chị quyết định thế nào?",
+                options: [
+                    "Giữ lại vì 0.752 > 0.5.",
+                    "Loại bỏ câu HQ1 vì xảy ra hiện tượng Tải chéo (Cross-loading) với mức chênh lệch Δ < 0.3.",
+                    "Tính trung bình cộng 2 hệ số này.",
+                    "Kéo câu HQ1 sang nhóm của nhân tố 2."
+                ],
+                correct: 1,
+                rationale: "Δ = |0.752 - 0.680| = 0.072 (nhỏ hơn rất nhiều so với 0.3). Bệnh nhân đang hiểu nhầm câu hỏi này sang cả 2 khía cạnh. Cần loại bỏ để đảm bảo Giá trị phân biệt."
+            },
+            {
+                q: "Khi chạy EFA cho 3 câu hỏi Sự hài lòng (SHL1, SHL2, SHL3), SPSS báo 'Only one component was extracted. The solution cannot be rotated.' Anh chị sẽ giải thích thế nào trong luận văn?",
+                options: [
+                    "Thang đo bị lỗi, cần thiết kế lại bảng hỏi.",
+                    "Dữ liệu có nhiều Outlier (ngoại lệ), cần làm sạch lại.",
+                    "Đây là kết quả tốt, chứng tỏ 3 câu hội tụ hoàn toàn thành 1 nhân tố duy nhất, không cần xoay ma trận.",
+                    "SPSS bị lỗi bản quyền (Lỗi 1099), cần cài đặt lại."
+                ],
+                correct: 2,
+                rationale: "Khi các biến thực sự đo lường cùng một khái niệm duy nhất, phần mềm chỉ rút ra 1 nhân tố, do đó về mặt toán học không cần (và không thể) xoay trục (Rotate)."
+            },
+            {
+                q: "Để sử dụng kết quả EFA cho bước Hồi quy tuyến tính phía sau, chúng ta phải dùng chức năng gì trong SPSS?",
+                options: [
+                    "Analyze > Descriptive Statistics",
+                    "Transform > Compute Variable (tính điểm trung bình nhân tố)",
+                    "Transform > Recode into Same Variables",
+                    "Data > Select Cases"
+                ],
+                correct: 1,
+                rationale: "Sau khi EFA khẳng định các biến hội tụ tốt, ta dùng Compute Variable để tính trung bình (Ví dụ: MEAN(HQ1, HQ2, HQ3)) tạo thành biến đại diện để chạy Hồi quy."
+            },
+            {
+                q: "Một nguyên tắc 'sống còn' khi loại bỏ biến quan sát do Factor Loading < 0.5 trong nghiên cứu y dược lâm sàng là gì?",
+                options: [
+                    "Luôn luôn xóa ngay lập tức không cần suy nghĩ.",
+                    "Chỉ xóa nếu p-value > 0.05.",
+                    "Không được xóa cơ học; phải xem xét ý nghĩa lâm sàng của biến đó, có thể giữ lại nếu thầy cô hướng dẫn đồng ý vì lý do chuyên môn.",
+                    "Nhân đôi giá trị của biến đó trong Excel rồi import lại SPSS."
+                ],
+                correct: 2,
+                rationale: "Thống kê chỉ là công cụ hỗ trợ. Ý nghĩa thực tiễn lâm sàng luôn phải được đặt lên hàng đầu. Không bỏ biến cơ học chỉ vì một chỉ số hơi thiếu một chút."
+            },
+            {
+                q: "Phép xoay Varimax trong EFA thuộc loại phép xoay nào?",
+                options: [
+                    "Xoay xiên (Oblique), giả định các nhân tố có tương quan.",
+                    "Xoay vuông góc (Orthogonal), giả định các nhân tố độc lập (không tương quan).",
+                    "Xoay đồng tâm.",
+                    "Xoay ngẫu nhiên."
+                ],
+                correct: 1,
+                rationale: "Varimax là phép xoay vuông góc (Orthogonal), nó tối đa hóa sự phân tán của hệ số tải, giúp phân định rõ ràng ranh giới giữa các nhân tố độc lập với nhau."
+            },
+            {
+                q: "Khi đọc kiểm định Bartlett's Test of Sphericity, giả thuyết Ho (Null hypothesis) của kiểm định này là gì?",
+                options: [
+                    "Các biến quan sát không có tương quan với nhau trong tổng thể (Ma trận tương quan là ma trận đơn vị).",
+                    "Các biến quan sát có tương quan hoàn hảo.",
+                    "Cỡ mẫu phân phối chuẩn.",
+                    "Phương sai của các biến là đồng nhất."
+                ],
+                correct: 0,
+                rationale: "Bartlett's Test kiểm tra giả thuyết Ho: 'Ma trận tương quan là ma trận đơn vị' (các biến rời rạc, không liên quan). Ta mong muốn bác bỏ Ho (Sig < 0.05) để chứng tỏ các biến có tương quan, đủ điều kiện gom nhóm."
+            },
+            {
+                q: "Nếu hệ số KMO trong output EFA của anh/chị là 0.450. Hành động đúng nhất là:",
+                options: [
+                    "Tiếp tục chạy hồi quy vì KMO không quan trọng.",
+                    "Kết luận mô hình hồi quy không phù hợp.",
+                    "Tìm cách tăng cỡ mẫu, hoặc loại bỏ các biến có tương quan quá yếu với phần còn lại để xem KMO có cải thiện không.",
+                    "Thay đổi phương pháp xoay sang Promax."
+                ],
+                correct: 2,
+                rationale: "KMO < 0.5 báo hiệu cỡ mẫu hoặc sự tương quan trong tập dữ liệu không đủ tốt để phân tích nhân tố. Tăng cỡ mẫu hoặc loại biến nhiễu là giải pháp."
+            },
+            {
+                q: "Trong bảng Communalities (Phương sai trích của từng biến), chỉ số Extraction biểu thị điều gì?",
+                options: [
+                    "Tỷ lệ % bệnh nhân trả lời câu hỏi đó.",
+                    "Phần trăm phương sai của biến đó được giải thích bởi các nhân tố đã trích xuất.",
+                    "Số lỗi nhập liệu của biến đó.",
+                    "Hệ số tin cậy của biến đó."
+                ],
+                correct: 1,
+                rationale: "Communalities (Extraction) cho biết các nhân tố chung giải thích được bao nhiêu % sự biến thiên của chính biến quan sát đó. Càng gần 1 càng tốt."
+            },
+            {
+                q: "Câu hỏi 'Chi phí điều trị hợp lý' (CP1) nằm trong nhóm biến phụ thuộc hay độc lập đối với mô hình đánh giá Sự hài lòng (SHL)?",
+                options: [
+                    "Biến phụ thuộc, vì chi phí phụ thuộc vào bệnh viện.",
+                    "Biến độc lập (yếu tố tác động/dự báo sự hài lòng).",
+                    "Biến nền.",
+                    "Biến nhiễu."
+                ],
+                correct: 1,
+                rationale: "Trong mô hình này, Chi phí (CP) là một trong những nguyên nhân (Độc lập) dẫn đến kết quả là Sự hài lòng (Phụ thuộc)."
+            },
+            {
+                q: "Anh chị chạy EFA lần 1, biến TD3 bị tải chéo (Cross-loading) với $\\Delta = 0.1$. Bước tiếp theo trên SPSS là:",
+                options: [
+                    "Để nguyên và copy kết quả vào Word.",
+                    "Sửa số liệu trong SPSS Data View cho đến khi không bị tải chéo.",
+                    "Quay lại hộp thoại EFA, bỏ biến TD3 ra khỏi ô Variables, chạy lại lần 2.",
+                    "Xóa toàn bộ nhóm biến Thái độ (TD)."
+                ],
+                correct: 2,
+                rationale: "Quy trình chuẩn khi gặp tải chéo vi phạm là: Loại biến vi phạm khỏi mô hình EFA hiện tại và thực hiện chạy lại EFA cho các biến còn lại."
+            },
+            {
+                q: "Sự khác biệt lớn nhất về mặt hình thức trình bày Bảng EFA trong luận văn so với xuất trực tiếp từ SPSS là gì?",
+                options: [
+                    "Chỉ việc copy paste, không có gì khác biệt.",
+                    "Phải tự đánh lại bảng, đổi dấu phẩy thập phân theo chuẩn tiếng Việt, gom các biến thành nhóm hội tụ rõ ràng để hội đồng dễ nhìn.",
+                    "Phải dịch toàn bộ sang tiếng Anh.",
+                    "Đổi màu bảng thành màu xanh y tế."
+                ],
+                correct: 1,
+                rationale: "Output của SPSS (Rotated Matrix) hiển thị rất thô. Trong luận văn học thuật, phải thiết kế lại bảng (như Module 5), định dạng số liệu, loại bỏ giá trị rỗng để làm nổi bật tính hội tụ."
+            },
+            {
+                q: "Khi một biến 'bay' (tách) ra đứng một mình thành một nhân tố mới (chỉ có duy nhất 1 câu hỏi trong nhân tố đó), theo lý thuyết y sinh học, ta nên làm gì?",
+                options: [
+                    "Đổi tên nhân tố đó cho thật hay và giữ lại phân tích Hồi quy.",
+                    "Xem xét loại bỏ, vì một khái niệm lý thuyết thường cần ít nhất 3 (hoặc 2) biến quan sát để đo lường độ tin cậy.",
+                    "Ép nó vào nhân tố kế bên bằng Excel.",
+                    "Nhân bản biến đó lên làm 3 lần."
+                ],
+                correct: 1,
+                rationale: "Một nhân tố chỉ có 1 biến đo lường thì không thể đánh giá độ tin cậy nội tại và thường không đại diện đủ sâu cho một cấu trúc khái niệm. Thường xem xét loại bỏ."
+            },
+            {
+                q: "Phân tích nhân tố khám phá (EFA) khác biệt với Phân tích nhân tố khẳng định (CFA) ở điểm nào cơ bản nhất?",
+                options: [
+                    "EFA dùng cho biến liên tục, CFA dùng cho biến định tính.",
+                    "EFA tìm kiếm số lượng nhân tố tự do từ dữ liệu, CFA yêu cầu khai báo cấu trúc nhân tố từ trước để kiểm định.",
+                    "EFA dùng SPSS, CFA tuyệt đối không thể dùng phần mềm máy tính.",
+                    "Không có sự khác biệt."
+                ],
+                correct: 1,
+                rationale: "EFA (Exploratory - Khám phá) để dữ liệu tự nhóm lại. CFA (Confirmatory - Khẳng định, thường chạy trên AMOS/SmartPLS) yêu cầu nhà nghiên cứu chỉ định biến nào thuộc nhân tố nào trước khi chạy để kiểm tra độ phù hợp."
+            },
+            {
+                q: "Bạn chuẩn bị báo cáo luận văn, thầy phản biện hỏi: 'Tại sao anh không đưa Sự Hài Lòng (SHL) vào chạy EFA cùng với nhóm Thái độ, Chi phí, Hiệu quả?'. Bạn trả lời dựa trên chuyên môn phương pháp luận:",
+                options: [
+                    "Dạ vì SPSS máy em bị lỗi 1099 ạ.",
+                    "Dạ em quên mất ạ.",
+                    "Dạ, vì theo nguyên tắc đo lường, nhóm biến độc lập và biến phụ thuộc có bản chất khái niệm khác nhau. Đưa chung vào EFA sẽ phá vỡ cấu trúc mô hình gốc và gây nhiễu, tải chéo vô lý ạ.",
+                    "Dạ vì sách thầy viết thế nên em làm theo."
+                ],
+                correct: 2,
+                rationale: "Đây là câu hỏi kinh điển bảo vệ luận văn. Phải nắm vững lý do là bảo vệ 'Cấu trúc lý thuyết' của mô hình (Độc lập phân biệt với Phụ thuộc)."
+            }
+        ];
+
+        // Render Quiz
+        const quizContainer = document.getElementById('quiz-container');
+        quizData.forEach((q, index) => {
+            let optionsHTML = '';
+            q.options.forEach((opt, optIndex) => {
+                optionsHTML += `
+                    <label class="quiz-option flex items-start p-3 border rounded cursor-pointer mb-2">
+                        <input type="radio" name="q${index}" value="${optIndex}" class="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500">
+                        <span class="text-gray-700 text-sm">${opt}</span>
+                    </label>
+                `;
+            });
+
+            const questionHTML = `
+                <div class="mb-6 question-block" data-index="${index}">
+                    <p class="font-bold text-gray-800 mb-3"><span class="text-blue-600">Câu ${index + 1}:</span> ${q.q}</p>
+                    <div class="options-container">
+                        ${optionsHTML}
+                    </div>
+                    <div class="rationale-box hidden mt-3 p-3 bg-gray-100 rounded text-sm text-gray-700 italic border-l-4 border-gray-400">
+                        <strong>Giải thích:</strong> ${q.rationale}
+                    </div>
+                </div>
+            `;
+            quizContainer.innerHTML += questionHTML;
+        });
+
+        // Evaluate Quiz
+        document.getElementById('submitQuizBtn').addEventListener('click', function() {
+            let score = 0;
+            const allBlocks = document.querySelectorAll('.question-block');
+            let allAnswered = true;
+
+            // Check if all questions are answered
+            allBlocks.forEach(block => {
+                const index = block.getAttribute('data-index');
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (!selected) allAnswered = false;
+            });
+
+            if (!allAnswered && !confirm("Bạn chưa trả lời hết các câu hỏi. Vẫn muốn nộp bài?")) {
+                return;
+            }
+
+            allBlocks.forEach(block => {
+                const index = block.getAttribute('data-index');
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const correctIndex = quizData[index].correct;
+                
+                const labels = block.querySelectorAll('label');
+                
+                // Disable all inputs
+                block.querySelectorAll('input').forEach(inp => inp.disabled = true);
+
+                if (selected) {
+                    const selectedVal = parseInt(selected.value);
+                    if (selectedVal === correctIndex) {
+                        score++;
+                        labels[selectedVal].classList.add('correct-answer');
+                    } else {
+                        labels[selectedVal].classList.add('wrong-answer');
+                        labels[correctIndex].classList.add('correct-answer');
+                    }
+                } else {
+                    labels[correctIndex].classList.add('correct-answer');
+                }
+
+                // Show rationale
+                block.querySelector('.rationale-box').classList.remove('hidden');
+            });
+
+            document.getElementById('scoreText').innerText = score;
+            document.getElementById('quizResult').classList.remove('hidden');
+            this.style.display = 'none'; // Hide submit button after evaluation
+            
+            // Scroll to top of quiz to see results smoothly
+            document.getElementById('module-6').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

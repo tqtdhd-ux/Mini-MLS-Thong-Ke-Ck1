@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chương 11: Hồi quy Logistic nhị phân trong Y Dược | SPSS CK1 E-learning</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- KaTeX for Beautiful Mathematics rendering (Sử dụng defer để tối ưu hóa thứ tự tải) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      scroll-behavior: smooth;
+    }
+    .medical-gradient {
+      background: linear-gradient(135deg, #0284c7 0%, #10b981 100%);
+    }
+    .custom-shadow {
+      box-shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.15);
+    }
+    /* Scroll Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 5px;
+      background: linear-gradient(to right, #0ea5e9, #10b981);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease;
+    }
+    /* Simple smooth reveal animation classes */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Header Section with Brand -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl medical-gradient flex items-center justify-center text-white font-bold text-lg shadow-md">
+          <i class="fa-solid fa-calculator-combined"></i>
+        </div>
+        <div>
+          <span class="text-sm font-semibold text-sky-600 block leading-none tracking-wide">SPSS CK1 DƯỢC</span>
+          <span class="text-xs text-slate-500 font-medium">BÀI GIẢNG E-LEARNING</span>
+        </div>
+      </div>
+      <nav class="hidden md:flex space-x-1">
+        <a href="#overview" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 rounded-lg transition">Tổng quan</a>
+        <a href="#module1" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 rounded-lg transition">Cơ sở Thống kê</a>
+        <a href="#module2" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 rounded-lg transition">Mã hoá biến</a>
+        <a href="#practice" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 rounded-lg transition">Thực hành</a>
+        <a href="#quiz-container" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 rounded-lg transition">Đánh giá</a>
+      </nav>
+      <div class="flex items-center">
+        <a href="#quiz-container" class="medical-gradient text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:opacity-95 transition flex items-center space-x-2">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Làm Quiz 20 Câu</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative bg-slate-900 text-white overflow-hidden py-16 sm:py-24">
+    <!-- Background Overlay Design -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-72 h-72 rounded-full bg-sky-500 blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-emerald-500 blur-3xl"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30 mb-6">
+        <i class="fa-solid fa-heart-pulse mr-2"></i> CHƯƠNG 11 • HỒI QUY LOGISTIC NHỊ PHÂN
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+        Hồi quy Logistic Nhị phân trong Nghiên cứu<br class="hidden sm:inline"> Sự hài lòng của Bệnh nhân
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-8 font-light">
+        Từ điểm số hài lòng chung (SHL) liên tục đến dự báo chính xác xác suất bệnh nhân thuộc nhóm hài lòng trong các đề tài Quản lý Dược và Lâm sàng.
+      </p>
+      
+      <div class="flex flex-wrap justify-center gap-4 mb-16">
+        <a href="#overview" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl shadow-lg hover:bg-slate-100 transition flex items-center space-x-2">
+          <span>Bắt đầu học</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="#quiz-container" class="px-6 py-3 bg-slate-800 text-slate-200 border border-slate-700 font-semibold rounded-xl hover:bg-slate-700 transition flex items-center space-x-2">
+          <i class="fa-solid fa-circle-question"></i>
+          <span>Trắc nghiệm Lượng giá</span>
+        </a>
+      </div>
+
+      <!-- Outcomes Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+        <div class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-5 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          </div>
+          <h3 class="font-bold text-slate-100 mb-1 text-sm">Phân biệt Mô hình</h3>
+          <p class="text-xs text-slate-400">Nắm rõ sự khác nhau bản chất giữa Linear và Logistic Regression.</p>
+        </div>
+        <div class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-5 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-toggle-on"></i>
+          </div>
+          <h3 class="font-bold text-slate-100 mb-1 text-sm">Mã hoá biến số</h3>
+          <p class="text-xs text-slate-400">Biết cách Recode điểm SHL liên tục thành biến nhị phân 0/1 trong SPSS.</p>
+        </div>
+        <div class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-5 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="font-bold text-slate-100 mb-1 text-sm">Diễn giải Odds Ratio</h3>
+          <p class="text-xs text-slate-400">Đọc hiểu chuẩn xác chỉ số Exp(B), Wald, Sig. và khoảng tin cậy 95% CI.</p>
+        </div>
+        <div class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-5 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-pen-nib"></i>
+          </div>
+          <h3 class="font-bold text-slate-100 mb-1 text-sm">Viết nhận xét Luận văn</h3>
+          <p class="text-xs text-slate-400">Trình bày nhận xét 3 tầng chuẩn quy chuẩn hội đồng chấm luận văn CK1.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Layout -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- Sticky Sidebar Navigation -->
+      <aside class="lg:col-span-1">
+        <div class="sticky top-24 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-1">
+          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Mục lục bài học</h2>
+          
+          <a href="#overview" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-compass w-5 text-slate-400"></i>
+            <span>Tổng quan & Quy trình</span>
+          </a>
+          <a href="#module1" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-circle-nodes w-5 text-slate-400"></i>
+            <span>Module 1: Cơ sở thống kê</span>
+          </a>
+          <a href="#module2" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-calculator w-5 text-slate-400"></i>
+            <span>Module 2: Tạo biến nhị phân</span>
+          </a>
+          <a href="#module3" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-laptop-code w-5 text-slate-400"></i>
+            <span>Module 3: Quy trình SPSS</span>
+          </a>
+          <a href="#module4" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-sliders w-5 text-slate-400"></i>
+            <span>Module 4: Chạy mô hình</span>
+          </a>
+          <a href="#module5" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-file-invoice-dollar w-5 text-slate-400"></i>
+            <span>Module 5: Đọc Output SPSS</span>
+          </a>
+          <a href="#module6" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-scale-balanced w-5 text-slate-400"></i>
+            <span>Module 6: Diễn giải Odds</span>
+          </a>
+          <a href="#module7" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-feather-pointed w-5 text-slate-400"></i>
+            <span>Module 7: Viết nhận xét mẫu</span>
+          </a>
+          <a href="#practice" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition">
+            <i class="fa-solid fa-vial w-5 text-slate-400"></i>
+            <span>Phòng Thực hành SPSS & Excel</span>
+          </a>
+          <a href="#quiz-container" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-bold text-sky-600 bg-sky-50 transition">
+            <i class="fa-solid fa-ranking-star w-5 text-sky-500"></i>
+            <span>Quiz 20 Câu Hỏi</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Learning Content -->
+      <div class="lg:col-span-3 space-y-12">
+        
+        <!-- SECTION: OVERVIEW -->
+        <section id="overview" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal active space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-compass"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Tổng quan &amp; Quy trình Nghiên cứu</h2>
+              <p class="text-xs text-slate-500">Bản chất của Hồi quy Logistic nhị phân trong nghiên cứu Cắt ngang sự hài lòng bệnh nhân</p>
+            </div>
+          </div>
+
+          <div class="prose max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+            <p>
+              Hồi quy Logistic nhị phân là một phương pháp thống kê cực kỳ phổ biến trong các đề tài nghiên cứu Y Dược tại Việt Nam. Không giống như hồi quy tuyến tính bội (yêu cầu biến phụ thuộc phải có dạng liên tục/Scale), hồi quy Logistic nhị phân giải quyết triệt để bài toán khi biến kết cuộc (biến phụ thuộc) ở dạng **Nhị phân (Binary - chỉ nhận hai giá trị 0 hoặc 1)**.
+            </p>
+            <p>
+              Trong ngữ cảnh nghiên cứu sự hài lòng của bệnh nhân khi sử dụng dịch vụ cung ứng thuốc và chăm sóc y tế tại bệnh viện, mô hình không dự báo trực tiếp điểm số hài lòng thô \(SHL\) của bệnh nhân, mà dự báo **xác suất \(p\) một bệnh nhân thuộc nhóm "Hài lòng" (\(SHL\_NhiPhan = 1\))**.
+            </p>
+          </div>
+
+          <!-- Interactive Learning Tool: Linear vs Logistic Selector -->
+          <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center">
+              <i class="fa-solid fa-circle-question text-sky-600 mr-2"></i>
+              HỌC CỤ TƯƠNG TÁC: Lựa chọn Mô hình Thống kê phù hợp
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">Hãy nhấp chọn loại biến phụ thuộc để hệ thống phân tích phép kiểm cần dùng:</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button onclick="selectRegModel('linear')" class="flex items-start text-left p-4 bg-white hover:bg-sky-50/50 border border-slate-200 hover:border-sky-300 rounded-xl transition duration-200">
+                <div class="p-2 rounded-lg bg-sky-100 text-sky-600 mr-3 text-sm">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-xs">Biến phụ thuộc dạng điểm trung bình liên tục</h4>
+                  <p class="text-[11px] text-slate-500 mt-1">Ví dụ: Điểm hài lòng chung trung bình từ 1.00 đến 5.00 điểm.</p>
+                </div>
+              </button>
+
+              <button onclick="selectRegModel('logistic')" class="flex items-start text-left p-4 bg-white hover:bg-emerald-50/50 border border-slate-200 hover:border-emerald-300 rounded-xl transition duration-200">
+                <div class="p-2 rounded-lg bg-emerald-100 text-emerald-600 mr-3 text-sm">
+                  <i class="fa-solid fa-toggle-on"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-xs">Biến phụ thuộc nhị phân chỉ có 2 trạng thái 0/1</h4>
+                  <p class="text-[11px] text-slate-500 mt-1">Ví dụ: 0 = Chưa hài lòng, 1 = Hài lòng sau khi được phân nhóm.</p>
+                </div>
+              </button>
+            </div>
+
+            <!-- Feedback Area -->
+            <div id="reg-model-feedback" class="mt-4 p-4 bg-white rounded-xl border border-slate-200 hidden text-xs"></div>
+          </div>
+
+          <!-- Sơ đồ quy trình 6 bước -->
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm mb-4">Sơ đồ Quy trình Nghiên cứu Hồi quy Logistic</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs font-semibold">
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-sky-600 font-bold block mb-1">Bước 1</span>
+                <span class="text-slate-700 block text-[11px]">Đo lường điểm SHL gốc</span>
+              </div>
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-sky-600 font-bold block mb-1">Bước 2</span>
+                <span class="text-slate-700 block text-[11px]">Mã hoá (Recode) thành 0/1</span>
+              </div>
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-sky-600 font-bold block mb-1">Bước 3</span>
+                <span class="text-slate-700 block text-[11px]">Quét tần số mẫu nhị phân</span>
+              </div>
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-sky-600 font-bold block mb-1">Bước 4</span>
+                <span class="text-slate-700 block text-[11px]">Chạy Logistic trên SPSS</span>
+              </div>
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-sky-600 font-bold block mb-1">Bước 5</span>
+                <span class="text-slate-700 block text-[11px]">Đọc và giải nghĩa Output</span>
+              </div>
+              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <span class="text-emerald-600 font-bold block mb-1">Bước 6</span>
+                <span class="text-emerald-700 block text-[11px]">Viết nhận xét luận văn</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Reminder Box -->
+          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+            <h4 class="font-bold text-amber-900 text-xs flex items-center mb-1">
+              <i class="fa-solid fa-circle-exclamation mr-2"></i>
+              GHI NHỚ NHANH
+            </h4>
+            <p class="text-amber-800 text-xs leading-relaxed">
+              Hồi quy Logistic nhị phân **không dự báo trực tiếp điểm hài lòng**, mà dự báo xác suất một đối tượng lọt vào nhóm được mã hóa là 1 (Hài lòng). Chỉ số Exp(B) cho biết sự thay đổi tỷ số Odds (Odds Ratio) chứ không phản ánh mức độ tăng điểm trực tiếp của biến gốc.
+            </p>
+          </div>
+        </section>
+
+        <!-- MODULE 1: CƠ SỞ THỐNG KÊ -->
+        <section id="module1" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-circle-nodes"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 1: Cơ sở Thống kê &amp; Phương trình nền tảng</h2>
+              <p class="text-xs text-slate-500">Mô hình hóa toán học các yếu tố dịch vụ dược liên quan đến sự hài lòng</p>
+            </div>
+          </div>
+
+          <div class="prose max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+            <p>
+              Phương trình Logistic mô tả mối liên hệ giữa các biến độc lập (HQ, TD, QL, TT, DV, CP) và hàm logit của xác suất hài lòng. Do xác suất \(p\) bị giới hạn nghiêm ngặt trong khoảng \([0, 1]\), ta không thể sử dụng phương trình hồi quy tuyến tính thông thường vì nó có thể cho ra các giá trị dự báo vượt ra ngoài khoảng này. Do đó, toán học sử dụng hàm Logit:
+            </p>
+            
+            <div class="my-6 p-4 bg-slate-900 text-slate-200 rounded-xl text-center font-mono text-base sm:text-lg overflow-x-auto">
+              $$logit(p) = \ln\left(\frac{p}{1-p}\right) = B_0 + B_1HQ + B_2TD + B_3QL + B_4TT + B_5DV + B_6CP$$
+            </div>
+
+            <p class="text-xs text-slate-500 italic">
+              Trong đó: \(p\) là xác suất bệnh nhân hài lòng. Tỷ số \(\frac{p}{1-p}\) chính là **Odds (Tỷ số cơ may)** của sự kiện hài lòng. Hàm tự nhiên của Odds là logit. Trị số \(Exp(B)\) chính là số mũ của hệ số B, đại diện cho **Odds Ratio (Tỷ số số chênh)**.
+            </p>
+          </div>
+
+          <!-- Conceptual Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                  <th class="p-3">Khái niệm Thống kê</th>
+                  <th class="p-3">Ý nghĩa bản chất</th>
+                  <th class="p-3">Ví dụ thực tế Y Dược</th>
+                  <th class="p-3 text-red-600">Lỗi thường gặp</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-600">
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Biến nhị phân</td>
+                  <td class="p-3">Chỉ nhận hai trạng thái đối nghịch.</td>
+                  <td class="p-3">Trạng thái bệnh nhân: 0 = Chưa hài lòng; 1 = Hài lòng.</td>
+                  <td class="p-3">Để nguyên điểm trung bình SHL dạng liên tục để chạy.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Xác suất p</td>
+                  <td class="p-3">Khả năng sự kiện xảy ra (0 đến 1).</td>
+                  <td class="p-3">Một bệnh nhân có 85% cơ hội hài lòng với quầy thuốc bệnh viện.</td>
+                  <td class="p-3">Hiểu nhầm p là điểm hài lòng trung bình tăng thêm.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Odds (Cơ may)</td>
+                  <td class="p-3">Tỷ lệ giữa xác suất xảy ra và không xảy ra.</td>
+                  <td class="p-3">Nếu có 4 người hài lòng, 1 người chưa hài lòng thì Odds = 4.</td>
+                  <td class="p-3">Nhầm lẫn giữa Odds (Cơ may) và Probability (Xác suất).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Exp(B) - Odds Ratio</td>
+                  <td class="p-3">Tỷ số Odds khi biến độc lập thay đổi 1 đơn vị.</td>
+                  <td class="p-3">Exp(B) = 3.49 nghĩa là Odds hài lòng tăng gấp 3.49 lần khi điểm QL tăng 1.</td>
+                  <td class="p-3">Diễn giải Exp(B) giống hệ số hồi quy Beta tuyến tính.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Hosmer-Lemeshow</td>
+                  <td class="p-3">Kiểm định độ phù hợp tổng thể mô hình.</td>
+                  <td class="p-3">Sig. > 0.05 chỉ ra mô hình khớp tốt với dữ liệu thu thập thực tế.</td>
+                  <td class="p-3">Mong muốn Sig. < 0.05 (hiểu lầm là kiểm định biến độc lập).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Warning Box -->
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+            <h4 class="font-bold text-red-900 text-xs flex items-center mb-1">
+              <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+              CẢNH BÁO PHƯƠNG PHÁP LUẬN
+            </h4>
+            <p class="text-red-800 text-xs leading-relaxed">
+              **Tuyệt đối không diễn giải Exp(B) như là hệ số Beta.** Exp(B) là số lần thay đổi về Odds (tỷ số cơ may), không phải là mức tăng điểm hài lòng trung bình và cũng không phải là mức tăng xác suất phần trăm trực tiếp.
+            </p>
+          </div>
+        </section>
+
+        <!-- MODULE 2: TẠO BIẾN SHL_NHIPHAN -->
+        <section id="module2" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 2: Chuyển đổi Biến số &amp; Thiết lập Ngưỡng Nhị phân</h2>
+              <p class="text-xs text-slate-500">Mã hóa biến số SHL gốc thành biến nhị phân SHL_NhiPhan</p>
+            </div>
+          </div>
+
+          <div class="prose max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+            <p>
+              Sự hài lòng chung (SHL) ban đầu được tính bằng trung bình cộng của 3 biến quan sát Likert (SHL1 đến SHL3) tạo ra một điểm số liên tục từ 1.00 đến 5.00 điểm. Để áp dụng mô hình Logistic, nhà nghiên cứu cần thiết lập một **ngưỡng khoa học** để phân đôi dữ liệu.
+            </p>
+            <p>
+              Theo thực tiễn Y khoa và Quản lý Dược tại Việt Nam, mức điểm trung bình từ **4.00 điểm trở lên (Đồng ý đến Rất đồng ý)** được quy ước là ngưỡng đạt sự hài lòng rõ ràng. Tất cả các mức điểm dưới 4.00 được xếp vào nhóm chưa đạt sự hài lòng rõ ràng.
+            </p>
+          </div>
+
+          <!-- Threshold Table -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <h4 class="font-bold text-slate-900 text-xs mb-3">Quy tắc phân cắt biến (Thresholding Rule)</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Điều kiện điểm SHL</span>
+                <span class="font-bold text-slate-800">Lowest through 3.99</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Mã hóa (Value)</span>
+                <span class="font-bold text-red-600">0</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Nhãn giá trị (Value Label)</span>
+                <span class="font-bold text-red-600">Chưa hài lòng</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Ý nghĩa Y học</span>
+                <span class="text-slate-600">Bệnh nhân chưa đạt ngưỡng trải nghiệm tốt rõ ràng.</span>
+              </div>
+
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Điều kiện điểm SHL</span>
+                <span class="font-bold text-slate-800">4.00 through Highest</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Mã hóa (Value)</span>
+                <span class="font-bold text-emerald-600">1</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Nhãn giá trị (Value Label)</span>
+                <span class="font-bold text-emerald-600">Hài lòng</span>
+              </div>
+              <div class="bg-white p-3 rounded-lg border border-slate-200">
+                <span class="text-slate-400 block mb-1">Ý nghĩa Y học</span>
+                <span class="text-slate-600">Bệnh nhân đạt mức trải nghiệm tốt rõ rệt.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Learning Tool: Recode Simulator -->
+          <div class="bg-white rounded-xl p-5 border-2 border-dashed border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center">
+              <i class="fa-solid fa-calculator text-emerald-600 mr-2"></i>
+              HỌC CỤ TƯƠNG TÁC: Bộ giả lập Mã hóa biến (Recode Simulator)
+            </h3>
+            <p class="text-xs text-slate-500">Nhập điểm hài lòng thô để xem mô phỏng cách SPSS chia nhóm:</p>
+            
+            <div class="flex items-center space-x-4 max-w-sm">
+              <input type="number" id="shl-input" placeholder="Ví dụ: 3.75" step="0.01" min="1" max="5" class="px-4 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none w-32" />
+              <button onclick="runRecodeSimulator()" class="px-4 py-2 text-sm font-bold text-white bg-sky-600 rounded-xl hover:bg-sky-700 transition">
+                Phân lớp biến
+              </button>
+            </div>
+
+            <!-- Result Box -->
+            <div id="recode-result" class="p-4 rounded-xl hidden text-xs"></div>
+          </div>
+
+          <!-- Conceptual Frequency Table of SHL_NhiPhan -->
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm mb-3">Bảng phân bố tần số kỳ vọng sau khi Recode (N = 220)</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-xs text-left border border-slate-200 rounded-xl">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <th class="p-3">SHL_NhiPhan</th>
+                    <th class="p-3 text-center">Frequency (Tần số)</th>
+                    <th class="p-3 text-center">Percent (Tỷ lệ %)</th>
+                    <th class="p-3">Diễn giải chuyên ngành</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-600">
+                  <tr>
+                    <td class="p-3 font-bold text-red-600">0 = Chưa hài lòng</td>
+                    <td class="p-3 text-center">84</td>
+                    <td class="p-3 text-center">38.2%</td>
+                    <td class="p-3">Bệnh nhân chưa hài lòng thực sự hoặc cảm xúc trung lập.</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold text-emerald-600">1 = Hài lòng</td>
+                    <td class="p-3 text-center">136</td>
+                    <td class="p-3 text-center">61.8%</td>
+                    <td class="p-3">Bệnh nhân hài lòng rõ nét với chất lượng phục vụ của khoa Dược.</td>
+                  </tr>
+                  <tr class="bg-slate-50 font-bold text-slate-900">
+                    <td class="p-3">Total</td>
+                    <td class="p-3 text-center">220</td>
+                    <td class="p-3 text-center">100.0%</td>
+                    <td class="p-3">Toàn bộ cỡ mẫu nghiên cứu hợp lệ.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Common Errors -->
+          <div class="bg-slate-100 rounded-xl p-4 border border-slate-200 text-xs">
+            <h4 class="font-bold text-slate-900 mb-2">🚫 LỖI THƯỜNG GẶP KHI THIẾT LẬP BIẾN</h4>
+            <ul class="list-disc pl-5 space-y-1 text-slate-600">
+              <li>**Ghi đè trực tiếp:** Recode trực tiếp lên biến SHL gốc làm mất sạch dữ liệu liên tục ban đầu. (Phải chọn **Recode into Different Variables**).</li>
+              <li>**Quên gán nhãn:** Không khai báo Value Labels cho biến mới (0, 1), dẫn đến bảng kết quả SPSS chỉ hiện con số khô khan, dễ gây nhầm lẫn khi viết báo cáo.</li>
+              <li>**Để sai định dạng:** Quên chuyển Measure trong SPSS từ **Scale** về **Nominal** (Biến định danh).</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- MODULE 3: QUY TRÌNH SPSS TẠO BIẾN -->
+        <section id="module3" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 3: Quy trình SPSS Chi tiết từng bước</h2>
+              <p class="text-xs text-slate-500">Hướng dẫn "cầm tay chỉ việc" thao tác trên phần mềm SPSS</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Trên thanh menu chính của SPSS, truy cập tuyến lệnh: **Transform** &rarr; **Recode into Different Variables...**
+              </p>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Tìm và đưa biến nguồn **Sự hài lòng chung (SHL)** vào ô *Input Variable -> Output Variable*.
+              </p>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Tại ô *Output Variable* ở góc phải, điền thông tin biến mới:
+                <br />&bull; Name: **SHL_NhiPhan**
+                <br />&bull; Label: **Sự hài lòng chung nhị phân**
+                <br />Bấm **Change** để cập nhật tên biến.
+              </p>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Bấm nút **Old and New Values...** bên dưới để mở cửa sổ khai báo ngưỡng:
+                <br />&bull; Chọn **System- or user-missing** &rarr; gán thành **System-missing** ở cột New Value (bảo toàn dữ liệu khuyết).
+                <br />&bull; Chọn **Range, LOWEST through value** và điền **3.99** &rarr; Nhập ô Value mới bằng **0** &rarr; Bấm **Add**.
+                <br />&bull; Chọn **Range, value through HIGHEST** và điền **4** &rarr; Nhập ô Value mới bằng **1** &rarr; Bấm **Add**.
+                <br />Bấm **Continue** để quay lại.
+              </p>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">5</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Bấm **OK** tại cửa sổ chính. SPSS sẽ tự động tính toán và hiển thị cột biến mới ở cuối màn hình Data View.
+              </p>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">6</div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                **Bước kiểm soát chất lượng bắt buộc (Variable View):**
+                <br />&bull; Tìm dòng biến **SHL_NhiPhan**, click vào ô **Values** gán nhãn: **0 = Chưa hài lòng**, **1 = Hài lòng**.
+                <br />&bull; Tại ô **Measure**, chuyển từ Scale sang **Nominal** (bắt buộc).
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODULE 4: CHẠY MÔ HÌNH HỒI QUY LOGISTIC -->
+        <section id="module4" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 4: Thiết lập Binary Logistic Regression trong SPSS</h2>
+              <p class="text-xs text-slate-500">Các bước cấu hình tùy chọn thống kê chuẩn chỉ trong SPSS</p>
+            </div>
+          </div>
+
+          <div class="prose max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+            <p>
+              Mô hình hồi quy chính trong bài học này có cấu trúc thiết lập như sau:
+            </p>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-center text-xs">
+              SHL_NhiPhan = f(HQ, TD, QL, TT, DV, CP)
+            </div>
+            <p>Các bước thao tác chuẩn hóa trên phần mềm SPSS:</p>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-600">
+            <p><strong>Bước 1:</strong> Chọn **Analyze** &rarr; **Regression** &rarr; **Binary Logistic...**</p>
+            <p><strong>Bước 2:</strong> Đưa biến **SHL_NhiPhan** vừa tạo vào ô **Dependent** (Biến phụ thuộc).</p>
+            <p><strong>Bước 3:</strong> Đưa toàn bộ các nhân tố độc lập (HQ, TD, QL, TT, DV, CP) vào ô **Covariates**.</p>
+            <p><strong>Bước 4:</strong> Giữ nguyên tùy chọn Method: **Enter** để phân tích tất cả các biến đồng thời.</p>
+            <p><strong>Bước 5: Thiết lập nếu có biến phân nhóm (Ví dụ: GioiTinh, KhaNangChiTra):</strong> Click vào nút **Categorical...** &rarr; Đưa biến nhóm vào ô Categorical Covariates &rarr; Chọn Reference Category (Nhóm tham chiếu) phù hợp &rarr; Bấm **Change** &rarr; Bấm **Continue**.</p>
+            <p><strong>Bước 6: Khai báo Options thống kê (Quan trọng):</strong> Bấm vào nút **Options...** ở góc phải màn hình:</p>
+            
+            <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 grid grid-cols-1 sm:grid-cols-2 gap-3 pl-8">
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" checked disabled class="rounded text-emerald-600" />
+                <span>Hosmer-Lemeshow goodness-of-fit (Đánh giá độ tương thích)</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" checked disabled class="rounded text-emerald-600" />
+                <span>CI for Exp(B): 95% (Khoảng tin cậy tỷ số chênh)</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" checked disabled class="rounded text-emerald-600" />
+                <span>Classification plots (Xem đồ thị phân loại nếu cần)</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" checked disabled class="rounded text-emerald-600" />
+                <span>Iteration history (Lịch sử lặp)</span>
+              </label>
+            </div>
+            <p><strong>Bước 7:</strong> Bấm **Continue** và cuối cùng bấm **OK** để chạy phân tích.</p>
+          </div>
+        </section>
+
+        <!-- MODULE 5: ĐỌC OUTPUT LOGISTIC REGRESSION -->
+        <section id="module5" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 5: Đọc và Diễn giải Học thuật Output SPSS</h2>
+              <p class="text-xs text-slate-500 font-medium">Bấm vào từng bảng output bên dưới để xem định nghĩa và bản dịch học thuật</p>
+            </div>
+          </div>
+
+          <!-- Output Interactive Reader Tools -->
+          <div class="space-y-4">
+            
+            <!-- TABLE 1 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out1')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 1: Dependent Variable Encoding</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out1" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <table class="min-w-full text-xs text-left border border-slate-100">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2">Original Value</th>
+                      <th class="p-2">Internal Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="p-2">0 = Chưa hài lòng</td>
+                      <td class="p-2">0</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2">1 = Hài lòng</td>
+                      <td class="p-2">1</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 leading-relaxed">
+                  <strong>Ý nghĩa:</strong> Bảng này cực kỳ quan trọng để kiểm tra xem SPSS có nhận định đúng nhóm quan tâm hay không. Tại đây, nhóm "1 = Hài lòng" có mã nội bộ là 1. Nghĩa là, các chỉ số tỷ số chênh Exp(B) trong bảng cuối cùng sẽ phản ánh khả năng bệnh nhân **Hài lòng**. Nếu bị ngược, toàn bộ nhận xét sẽ bị đảo chiều hoàn toàn!
+                </div>
+              </div>
+            </div>
+
+            <!-- TABLE 2 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out2')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 2: Omnibus Tests of Model Coefficients</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out2" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <table class="min-w-full text-xs text-left border border-slate-100">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2">Chi-square</th>
+                      <th class="p-2">df</th>
+                      <th class="p-2">Sig.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="p-2">120.450</td>
+                      <td class="p-2">6</td>
+                      <td class="p-2 font-bold text-emerald-600">0.000</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 leading-relaxed">
+                  <strong>Ý nghĩa:</strong> Kiểm định này tương đương với kiểm định F trong ANOVA của hồi quy tuyến tính. Chỉ số **Sig. = 0.000 < 0.05** cho thấy mô hình khi đưa các biến độc lập vào hoạt động có ý nghĩa thống kê tốt, có sự cải thiện rõ rệt so với mô hình rỗng ban đầu.
+                </div>
+              </div>
+            </div>
+
+            <!-- TABLE 3 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out3')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 3: Model Summary</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out3" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <table class="min-w-full text-xs text-left border border-slate-100">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2">-2 Log Likelihood</th>
+                      <th class="p-2">Cox &amp; Snell R Square</th>
+                      <th class="p-2">Nagelkerke R Square</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="p-2">165.320</td>
+                      <td class="p-2">0.421</td>
+                      <td class="p-2 font-bold text-slate-800">0.573</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 leading-relaxed">
+                  <strong>Ý nghĩa:</strong> Chỉ số **Nagelkerke R Square (0.573)** là một dạng R² giả (Pseudo R-square). Chỉ số này cho thấy mô hình hồi quy giải thích được khoảng 57.3% sự biến thiên của khả năng hài lòng của bệnh nhân. Tránh nhận xét cứng nhắc rằng "giải thích chính xác 57.3% phương sai" như trong hồi quy tuyến tính.
+                </div>
+              </div>
+            </div>
+
+            <!-- TABLE 4 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out4')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 4: Hosmer and Lemeshow Test</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out4" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <table class="min-w-full text-xs text-left border border-slate-100">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2">Chi-square</th>
+                      <th class="p-2">df</th>
+                      <th class="p-2">Sig.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="p-2">6.214</td>
+                      <td class="p-2">8</td>
+                      <td class="p-2 font-bold text-emerald-600">0.624</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 leading-relaxed">
+                  <strong>Ý nghĩa cực kỳ quan trọng:</strong> Đây là kiểm định độ phù hợp mô hình. Do giả thuyết \(H_0\) của kiểm định này phát biểu rằng: "Mô hình phù hợp với dữ liệu thực tế", nên nhà nghiên cứu **mong muốn giá trị Sig. đạt mức lớn hơn 0.05**. Trị số mẫu có **Sig. = 0.624 > 0.05**, chứng minh mô hình hoạt động tương thích và phù hợp rất tốt với tập dữ liệu khảo sát.
+                </div>
+              </div>
+            </div>
+
+            <!-- TABLE 5 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out5')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 5: Classification Table (Bảng phân loại dự báo)</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out5" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <table class="min-w-full text-xs text-left border border-slate-100">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2" rowspan="2">Observed</th>
+                      <th class="p-2 text-center" colspan="2">Predicted SHL_NhiPhan</th>
+                      <th class="p-2 text-center" rowspan="2">Percentage Correct</th>
+                    </tr>
+                    <tr class="bg-slate-50 text-slate-700">
+                      <th class="p-2 text-center">Chưa hài lòng (0)</th>
+                      <th class="p-2 text-center">Hài lòng (1)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="p-2 font-bold">Chưa hài lòng (0)</td>
+                      <td class="p-2 text-center">65</td>
+                      <td class="p-2 text-center">19</td>
+                      <td class="p-2 text-center font-bold text-red-600">77.4%</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2 font-bold">Hài lòng (1)</td>
+                      <td class="p-2 text-center">18</td>
+                      <td class="p-2 text-center">118</td>
+                      <td class="p-2 text-center font-bold text-emerald-600">86.8%</td>
+                    </tr>
+                    <tr class="bg-slate-50 font-bold">
+                      <td class="p-2">Overall Percentage</td>
+                      <td class="p-2"></td>
+                      <td class="p-2"></td>
+                      <td class="p-2 text-center text-sky-600 text-sm">83.2%</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 leading-relaxed">
+                  <strong>Ý nghĩa:</strong> Bảng phân loại dự báo này chỉ ra khả năng nhận diện của mô hình. Mô hình dự báo chính xác **83.2%** tổng số trường hợp trên thực tế. Trong đó, mô hình phân biệt đúng 77.4% số ca chưa hài lòng và 86.8% số ca đạt hài lòng. Đây là tỷ lệ phân loại cực kỳ cao và ổn định.
+                </div>
+              </div>
+            </div>
+
+            <!-- TABLE 6 -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button onclick="toggleOutputDetail('out6')" class="w-full text-left bg-slate-50 p-4 font-bold text-slate-800 hover:bg-slate-100 transition flex justify-between items-center text-sm">
+                <span>Bảng 6: Variables in the Equation (Bảng hệ số quan trọng nhất)</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </button>
+              <div id="out6" class="p-4 border-t border-slate-200 hidden space-y-4 text-xs">
+                <div class="overflow-x-auto">
+                  <table class="min-w-full text-[11px] text-left border border-slate-100">
+                    <thead>
+                      <tr class="bg-slate-50 text-slate-700">
+                        <th class="p-2">Biến số</th>
+                        <th class="p-2 text-center">B</th>
+                        <th class="p-2 text-center">S.E.</th>
+                        <th class="p-2 text-center">Wald</th>
+                        <th class="p-2 text-center">Sig.</th>
+                        <th class="p-2 text-center">Exp(B)</th>
+                        <th class="p-2 text-center">95% CI for Exp(B)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      <tr>
+                        <td class="p-2 font-bold text-sky-600">HQ (Hiệu quả điều trị)</td>
+                        <td class="p-2 text-center">1.120</td>
+                        <td class="p-2 text-center">0.290</td>
+                        <td class="p-2 text-center">14.920</td>
+                        <td class="p-2 text-center font-bold text-emerald-600">0.000</td>
+                        <td class="p-2 text-center font-bold">3.065</td>
+                        <td class="p-2 text-center">1.736–5.412</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-bold text-sky-600">TD (Thái độ phục vụ)</td>
+                        <td class="p-2 text-center">0.980</td>
+                        <td class="p-2 text-center">0.270</td>
+                        <td class="p-2 text-center">13.180</td>
+                        <td class="p-2 text-center font-bold text-emerald-600">0.000</td>
+                        <td class="p-2 text-center font-bold">2.664</td>
+                        <td class="p-2 text-center">1.570–4.520</td>
+                      </tr>
+                      <tr class="bg-slate-50">
+                        <td class="p-2 font-bold text-emerald-600">QL (Năng lực quản lý)</td>
+                        <td class="p-2 text-center">1.250</td>
+                        <td class="p-2 text-center">0.310</td>
+                        <td class="p-2 text-center">16.250</td>
+                        <td class="p-2 text-center font-bold text-emerald-600">0.000</td>
+                        <td class="p-2 text-center font-bold text-emerald-600">3.490</td>
+                        <td class="p-2 text-center text-emerald-700">1.901–6.410</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-bold text-slate-400">TT (Thông tin thuốc)</td>
+                        <td class="p-2 text-center">0.080</td>
+                        <td class="p-2 text-center">0.180</td>
+                        <td class="p-2 text-center">0.198</td>
+                        <td class="p-2 text-center text-slate-400">0.657</td>
+                        <td class="p-2 text-center text-slate-400">1.083</td>
+                        <td class="p-2 text-center text-slate-400">0.761–1.542</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-bold text-sky-600">DV (Dịch vụ hỗ trợ)</td>
+                        <td class="p-2 text-center">0.760</td>
+                        <td class="p-2 text-center">0.240</td>
+                        <td class="p-2 text-center">10.030</td>
+                        <td class="p-2 text-center font-bold text-emerald-600">0.002</td>
+                        <td class="p-2 text-center font-bold">2.138</td>
+                        <td class="p-2 text-center">1.336–3.421</td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-bold text-amber-600">CP (Chi phí điều trị)</td>
+                        <td class="p-2 text-center">0.260</td>
+                        <td class="p-2 text-center">0.140</td>
+                        <td class="p-2 text-center">3.449</td>
+                        <td class="p-2 text-center text-amber-600">0.063</td>
+                        <td class="p-2 text-center font-bold text-amber-700">1.297</td>
+                        <td class="p-2 text-center text-amber-700">0.986–1.707</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="bg-sky-50 p-3 rounded-lg text-sky-800 space-y-2">
+                  <p><strong>Phiên giải chi tiết học thuật cho luận văn CK1:</strong></p>
+                  <p>&bull; **QL (Năng lực quản lý)** có \(Exp(B) = 3.490\) và \(Sig. = 0.000\). Điều này có nghĩa là khi điểm năng lực quản lý/quy trình bệnh viện tăng thêm 1 điểm, cơ may (Odds) bệnh nhân đạt sự hài lòng chung tăng gấp **3.49 lần**, với điều kiện các yếu tố khác được giữ không đổi.</p>
+                  <p>&bull; **TT (Thông tin thuốc)** có \(Sig. = 0.657 > 0.05\). Chưa có bằng chứng thống kê cho thấy yếu tố thông tin thuốc liên quan có ý nghĩa đến khả năng hài lòng chung của bệnh nhân trong mô hình này.</p>
+                  <p>&bull; **CP (Chi phí điều trị)** có \(Sig. = 0.063\). Chưa đạt ý nghĩa thống kê ở mức 5% thông thường nhưng tiệm cận sát nút, có thể cân nhắc thảo luận rất thận trọng dựa trên đặc thù quản lý dược tại bệnh viện.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- MODULE 6: DIỄN GIẢI ODDS RATIO -->
+        <section id="module6" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 6: Nguyên lý Diễn giải Odds Ratio (OR) trong Y Dược</h2>
+              <p class="text-xs text-slate-500 font-medium">Làm thế nào để diễn giải đúng trị số Exp(B) và khoảng tin cậy 95%</p>
+            </div>
+          </div>
+
+          <!-- OR Simulator Tool -->
+          <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-900 text-xs flex items-center">
+              <i class="fa-solid fa-scale-unbalanced text-sky-600 mr-2"></i>
+              HỌC CỤ TƯƠNG TÁC: Bộ phân phân tích ý nghĩa tỷ số chênh (OR Analyzer)
+            </h3>
+            <p class="text-[11px] text-slate-500">Nhập Exp(B) và khoảng tin cậy 95% để phân tích chiều hướng tác động:</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] text-slate-500 mb-1">Trị số Exp(B) hoặc OR:</label>
+                <input type="number" id="or-val" placeholder="Ví dụ: 2.66" step="0.01" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-500 mb-1">KTC 95% Cận dưới:</label>
+                <input type="number" id="or-low" placeholder="Ví dụ: 1.57" step="0.01" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-500 mb-1">KTC 95% Cận trên:</label>
+                <input type="number" id="or-high" placeholder="Ví dụ: 4.52" step="0.01" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs" />
+              </div>
+            </div>
+
+            <button onclick="analyzeOddsRatio()" class="px-4 py-2 text-xs font-bold text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition">
+              Phân tích chỉ số
+            </button>
+
+            <!-- Result Box -->
+            <div id="or-analysis-result" class="p-4 rounded-xl hidden text-xs leading-relaxed"></div>
+          </div>
+
+          <!-- Guideline Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                  <th class="p-3">Tình huống OR</th>
+                  <th class="p-3">Ý nghĩa chuyên ngành</th>
+                  <th class="p-3">Mẫu viết báo cáo chuẩn học thuật</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-600">
+                <tr>
+                  <td class="p-3 font-bold text-emerald-600">Exp(B) > 1 (95% CI không chứa 1)</td>
+                  <td class="p-3">Yếu tố liên quan thuận chiều làm tăng Odds hài lòng.</td>
+                  <td class="p-3">"Điểm năng lực quản lý (QL) tăng 1 điểm giúp nâng cơ may hài lòng của người bệnh lên gấp 3.49 lần (p &lt; 0.001)."</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-red-600">Exp(B) < 1 (95% CI không chứa 1)</td>
+                  <td class="p-3">Yếu tố liên quan nghịch chiều làm giảm Odds hài lòng.</td>
+                  <td class="p-3">"Khi thời gian chờ cấp thuốc kéo dài thêm 1 đơn vị, cơ may hài lòng của người bệnh giảm đi 25% (Exp(B) = 0.75; p &lt; 0.05)."</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-500">Exp(B) = 1 hoặc 95% CI chứa 1</td>
+                  <td class="p-3">Không có bằng chứng liên quan có ý nghĩa thống kê ở mức 5%.</td>
+                  <td class="p-3">"Chưa ghi nhận sự liên quan có ý nghĩa thống kê giữa yếu tố thông tin thuốc (TT) và khả năng hài lòng chung của người bệnh."</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- MODULE 7: VIẾT NHẬN XÉT LOGISTIC REGRESSION -->
+        <section id="module7" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-feather-pointed"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Module 7: Cách Viết Nhận xét chuẩn chỉnh cho luận văn CK1</h2>
+              <p class="text-xs text-slate-500">Phương pháp viết nhận xét 3 tầng: Số liệu &rarr; Kết luận &rarr; Ý nghĩa quản lý dược</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center">
+              <i class="fa-solid fa-quote-left text-sky-500 mr-2"></i>
+              MẪU VIẾT NHẬN XÉT HỌC THUẬT CHUẨN LUẬN VĂN CK1
+            </h3>
+            
+            <p class="text-xs text-slate-700 leading-relaxed italic bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+              "Kết quả hồi quy Logistic nhị phân với biến phụ thuộc SHL_NhiPhan cho thấy mô hình có ý nghĩa thống kê rất cao so với mô hình rỗng ban đầu theo Omnibus Test (Sig. < 0.05). Kiểm định Hosmer and Lemeshow đạt Sig. = 0.624 > 0.05, xác nhận mô hình hoàn toàn phù hợp và khớp tốt với tập dữ liệu thu thập thực tế. Bảng phân loại dự báo chỉ ra mô hình có khả năng phân biệt đúng tổng thể lên tới 83.2% các trường hợp. Trong bảng Variables in the Equation, các nhân tố QL, HQ, TD và DV có Sig. < 0.05 và Exp(B) > 1, cho thấy điểm các nhân tố này tăng liên quan thuận chiều có ý nghĩa thống kê đến cơ may (Odds) đạt trạng thái hài lòng chung của người bệnh khi các biến khác giữ nguyên. Cụ thể, QL có Exp(B) = 3.490, nghĩa là khi điểm năng lực quản lý/quy trình tăng thêm 1 điểm, cơ may bệnh nhân hài lòng tăng gấp 3.49 lần. Ngược lại, chưa tìm thấy sự liên quan có ý nghĩa thống kê giữa yếu tố TT và mức độ hài lòng (p = 0.657). Về khía cạnh quản lý dược, kết quả nghiên cứu chỉ ra bệnh viện cần ưu tiên chuẩn hóa quy trình dịch vụ cấp phát, nâng cao năng lực quản lý và hiệu quả điều trị để cải thiện xác suất người bệnh hài lòng một cách tốt nhất."
+            </p>
+          </div>
+
+          <!-- Decision Simulator Mini Game -->
+          <div class="bg-sky-50/50 p-5 rounded-2xl border border-sky-100 space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center text-sky-800">
+              <i class="fa-solid fa-gamepad text-sky-600 mr-2"></i>
+              MINI GAME: Thử tài Ra quyết định Thống kê (Decision Simulator)
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              **Tình huống lâm sàng:** Yếu tố TT có kết quả phân tích trong SPSS: \(Exp(B) = 1.083\), \(Sig. = 0.657\), khoảng tin cậy \(95\%\) của \(Exp(B)\) dao động từ \(0.761\) đến \(1.542\) (chứa giá trị 1). Hãy chọn phương án diễn giải chính xác nhất cho luận văn của bạn:
+            </p>
+
+            <div class="space-y-2 text-xs">
+              <button onclick="checkDecisionGame('A')" class="w-full text-left p-3 bg-white hover:bg-sky-50 border border-slate-200 hover:border-sky-300 rounded-xl transition duration-150">
+                <strong>A.</strong> Thông tin thuốc chắc chắn có làm tăng sự hài lòng của bệnh nhân.
+              </button>
+              <button onclick="checkDecisionGame('B')" class="w-full text-left p-3 bg-white hover:bg-sky-50 border border-slate-200 hover:border-sky-300 rounded-xl transition duration-150">
+                <strong>B.</strong> Điểm số hài lòng chung SHL tăng trực tiếp 1.083 điểm khi thông tin thuốc tăng.
+              </button>
+              <button onclick="checkDecisionGame('C')" class="w-full text-left p-3 bg-white hover:bg-sky-50 border border-slate-200 hover:border-sky-300 rounded-xl transition duration-150">
+                <strong>C.</strong> Chưa có bằng chứng thống kê cho thấy thông tin thuốc có liên quan đến cơ may hài lòng của bệnh nhân trong dữ liệu khảo sát này.
+              </button>
+              <button onclick="checkDecisionGame('D')" class="w-full text-left p-3 bg-white hover:bg-sky-50 border border-slate-200 hover:border-sky-300 rounded-xl transition duration-150">
+                <strong>D.</strong> Bắt buộc phải xóa bỏ ngay lập tức biến TT ra khỏi toàn bộ hệ cơ sở dữ liệu gốc.
+              </button>
+            </div>
+
+            <!-- Feedback Game Area -->
+            <div id="game-feedback" class="p-3 bg-white rounded-xl border border-slate-200 text-xs hidden"></div>
+          </div>
+        </section>
+
+        <!-- LABS & PRACTICES SONG SONG -->
+        <section id="practice" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm reveal space-y-6">
+          <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+            <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-vials"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Phòng Thực hành SPSS &amp; Excel Lab song song</h2>
+              <p class="text-xs text-slate-500">Chuyển đổi linh hoạt giữa các bước thực hành trên SPSS và các hàm hỗ trợ trên Microsoft Excel</p>
+            </div>
+          </div>
+
+          <!-- Labs Tabs -->
+          <div>
+            <div class="flex space-x-2 border-b border-slate-200 overflow-x-auto pb-1 text-xs">
+              <button onclick="switchLabTab('tab1')" id="btn-tab1" class="lab-tab-btn px-4 py-2 font-bold text-sky-600 border-b-2 border-sky-600">SPSS: Tạo SHL_NhiPhan</button>
+              <button onclick="switchLabTab('tab2')" id="btn-tab2" class="lab-tab-btn px-4 py-2 font-medium text-slate-500 hover:text-sky-600">SPSS: Hồi quy Logistic</button>
+              <button onclick="switchLabTab('tab3')" id="btn-tab3" class="lab-tab-btn px-4 py-2 font-medium text-slate-500 hover:text-sky-600">Excel: Hàm IF tạo biến</button>
+              <button onclick="switchLabTab('tab4')" id="btn-tab4" class="lab-tab-btn px-4 py-2 font-medium text-slate-500 hover:text-sky-600">Excel: Tính Odds &amp; OR</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="mt-4 text-xs leading-relaxed space-y-4 text-slate-600">
+              
+              <!-- Tab 1 -->
+              <div id="content-tab1" class="lab-tab-content space-y-3">
+                <h4 class="font-bold text-slate-900 text-sm">SPSS: Tạo biến nhị phân SHL_NhiPhan</h4>
+                <p>Thực hiện chính xác tuyến lệnh: **Transform** &rarr; **Recode into Different Variables...**</p>
+                <p>Khai báo Old and New Values:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                  <li>**Lowest through 3.99** &rarr; New Value = **0**</li>
+                  <li>**4 through Highest** &rarr; New Value = **1**</li>
+                </ul>
+                <p>Trong cửa sổ **Variable View**, khai báo nhãn gán: **0 = Chưa hài lòng, 1 = Hài lòng** và chỉnh định dạng Measure là **Nominal**.</p>
+              </div>
+
+              <!-- Tab 2 -->
+              <div id="content-tab2" class="lab-tab-content hidden space-y-3">
+                <h4 class="font-bold text-slate-900 text-sm">SPSS: Chạy Binary Logistic Regression</h4>
+                <p>Tuyến lệnh: **Analyze** &rarr; **Regression** &rarr; **Binary Logistic...**</p>
+                <ul class="list-disc pl-5 space-y-1">
+                  <li>Biến phụ thuộc: **SHL_NhiPhan** đưa vào ô **Dependent**.</li>
+                  <li>Biến độc lập: **HQ, TD, QL, TT, DV, CP** đưa vào ô **Covariates**.</li>
+                  <li>Nút **Options**: Tích chọn **Hosmer-Lemeshow goodness-of-fit** và **95% CI for Exp(B)**.</li>
+                </ul>
+              </div>
+
+              <!-- Tab 3 -->
+              <div id="content-tab3" class="lab-tab-content hidden space-y-3">
+                <h4 class="font-bold text-slate-900 text-sm">Excel: Sử dụng hàm IF mã hóa biến nhị phân</h4>
+                <p>Giả sử cột điểm **SHL** gốc nằm tại cột **H**, bắt đầu từ ô **H2**:</p>
+                <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 font-mono text-center select-all">
+                  =IF(H2>=4, 1, 0)
+                </div>
+                <p>Nhập công thức vào cột mới (ví dụ cột **I2**), sau đó kéo chuột điền tự động xuống toàn bộ danh sách dữ liệu. Bạn có thể kiểm tra tổng tần suất hài lòng bằng cách dùng hàm **COUNTIF**:</p>
+                <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 font-mono text-center">
+                  =COUNTIF(I2:I221, 1)/COUNTA(I2:I221)
+                </div>
+              </div>
+
+              <!-- Tab 4 -->
+              <div id="content-tab4" class="lab-tab-content hidden space-y-3">
+                <h4 class="font-bold text-slate-900 text-sm">Excel: Tính toán cơ may (Odds) và Odds Ratio (OR) minh họa</h4>
+                <p>Giả sử ta khảo sát bảng chéo mối liên hệ giữa **Giới tính** (Nam/Nữ) và sự **Hài lòng**:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                  <li>Nhóm Nam có **60 hài lòng** và **20 chưa hài lòng** &rarr; Cơ may Nam: \(Odds_{Nam} = \frac{60}{20} = 3\).</li>
+                  <li>Nhóm Nữ có **40 hài lòng** và **40 chưa hài lòng** &rarr; Cơ may Nữ: \(Odds_{Nữ} = \frac{40}{40} = 1\).</li>
+                  <li>Tỷ số chênh (OR): \(OR = \frac{Odds_{Nam}}{Odds_{Nữ}} = \frac{3}{1} = 3\).</li>
+                </ul>
+                <p class="bg-amber-50 p-3 rounded-lg text-amber-800 border-l-2 border-amber-500">
+                  **Ý nghĩa:** Cơ may (Odds) đạt trạng thái hài lòng ở nhóm bệnh nhân Nam cao gấp **3 lần** so với nhóm bệnh nhân Nữ trong tập số liệu thô.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- QUIZ CONTAINER -->
+        <section id="quiz-container" class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl reveal space-y-8">
+          <div class="border-b border-slate-800 pb-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30 mb-4">
+              <i class="fa-solid fa-ranking-star mr-2"></i> LƯỢNG GIÁ CUỐI BÀI HOÀN CHỈNH
+            </span>
+            <h2 class="text-2xl font-bold">Bộ 20 Câu Hỏi Trắc Nghiệm Tương Tác Chuyên Sâu</h2>
+            <p class="text-xs text-slate-400 mt-2">Bám sát lý thuyết nền tảng, thực hành SPSS/Excel và phiên giải học thuật lâm sàng. Hãy chọn đáp án để hệ thống chấm điểm và phản hồi tức thì.</p>
+          </div>
+
+          <!-- Progress and Badge Banner -->
+          <div class="flex flex-wrap justify-between items-center gap-4 bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 text-xs">
+            <div class="flex items-center space-x-3">
+              <span class="font-bold text-slate-300">Tiến độ làm bài:</span>
+              <span id="quiz-progress-text" class="text-sky-400 font-bold">0 / 20 câu</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="font-bold text-slate-300">Điểm số hiện tại:</span>
+              <span id="quiz-score-text" class="text-emerald-400 font-bold">0%</span>
+            </div>
+            <div id="quiz-badge" class="hidden items-center text-emerald-400 bg-emerald-500/20 px-3 py-1 rounded-xl font-bold border border-emerald-500/30">
+              <i class="fa-solid fa-medal mr-2"></i> HOÀN THÀNH XUẤT SẮC
+            </div>
+          </div>
+
+          <!-- Quiz Render Area inside JavaScript -->
+          <div id="quiz-content" class="space-y-8"></div>
+
+          <!-- Reset Button -->
+          <div class="pt-6 flex justify-end">
+            <button onclick="resetQuiz()" class="px-6 py-3 text-xs font-bold bg-slate-800 border border-slate-700 text-slate-200 rounded-xl hover:bg-slate-700 transition flex items-center space-x-2">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Làm lại toàn bộ Quiz</span>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 text-xs py-8 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+      <p class="font-bold text-slate-300">HỆ THỐNG E-LEARNING SPSS CHUYÊN KHOA 1 NGÀNH DƯỢC &amp; Y KHOA</p>
+      <p>Chương 11: Mô hình Hồi quy Logistic nhị phân trong nghiên cứu sự hài lòng của bệnh nhân</p>
+      <p class="text-[10px] text-slate-500">&copy; 2026 SPSS CK1 Dược. Bản quyền đã được bảo lưu.</p>
+    </div>
+  </footer>
+
+  <!-- CORE JAVASCRIPT LOGIC -->
+  <script>
+    // ----------------------------------------------------
+    // Progressive Scrolling Bar
+    // ----------------------------------------------------
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+      
+      // Simple Reveal trigger
+      document.querySelectorAll('.reveal').forEach(el => {
+        const speed = 150;
+        const top = el.getBoundingClientRect().top;
+        if (top < window.innerHeight - speed) {
+          el.classList.add('active');
+        }
+      });
+    });
+
+    // Initialize first scroll check
+    document.addEventListener("DOMContentLoaded", () => {
+      window.dispatchEvent(new Event('scroll'));
+      renderQuiz();
+      
+      // Khởi chạy KaTeX tự động xử lý công thức toán học một cách an toàn
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError : false
+        });
+      }
+    });
+
+    // ----------------------------------------------------
+    // Learning Interaction: Linear vs Logistic Selector
+    // ----------------------------------------------------
+    function selectRegModel(type) {
+      const feedback = document.getElementById('reg-model-feedback');
+      feedback.classList.remove('hidden');
+      
+      if (type === 'linear') {
+        feedback.innerHTML = `
+          <div class="p-3 bg-blue-50 text-blue-800 border-l-4 border-blue-500 rounded-r-lg">
+            <strong>KẾT QUẢ PHÂN TÍCH:</strong> 
+            <br />&bull; **Phép kiểm phù hợp:** Hồi quy tuyến tính bội (Multiple Linear Regression).
+            <br />&bull; **Nguyên lý:** Phép kiểm này phù hợp vì điểm số trung bình (Mean SHL) là biến định lượng liên tục (Scale). 
+            <br />&bull; **Mục tiêu:** Ước lượng điểm trung bình của bệnh nhân thay đổi bao nhiêu điểm khi chất lượng dịch vụ thay đổi.
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="p-3 bg-emerald-50 text-emerald-800 border-l-4 border-emerald-500 rounded-r-lg">
+            <strong>KẾT QUẢ PHÂN TÍCH:</strong> 
+            <br />&bull; **Phép kiểm phù hợp:** Hồi quy Logistic nhị phân (Binary Logistic Regression).
+            <br />&bull; **Nguyên lý:** Phép kiểm bắt buộc vì biến phụ thuộc đã được chia thành hai nhóm đối lập (0 = Chưa hài lòng; 1 = Hài lòng).
+            <br />&bull; **Mục tiêu:** Dự báo cơ hội (Odds Ratio) và xác suất bệnh nhân rơi vào nhóm đạt ngưỡng hài lòng. Đây chính là trọng tâm của chương này!
+          </div>
+        `;
+      }
+    }
+
+    // ----------------------------------------------------
+    // Learning Interaction: Recode Simulator
+    // ----------------------------------------------------
+    function runRecodeSimulator() {
+      const inputVal = parseFloat(document.getElementById('shl-input').value);
+      const resultBox = document.getElementById('recode-result');
+      
+      if (isNaN(inputVal) || inputVal < 1 || inputVal > 5) {
+        resultBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-slate-700');
+        resultBox.classList.add('bg-amber-100', 'text-amber-800');
+        resultBox.innerHTML = '⚠️ Vui lòng nhập giá trị điểm số hợp lệ từ 1.00 đến 5.00 điểm.';
+        return;
+      }
+
+      resultBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-slate-700', 'bg-amber-100', 'text-amber-800');
+      
+      if (inputVal < 4.00) {
+        resultBox.classList.add('bg-red-100', 'text-red-800');
+        resultBox.innerHTML = `
+          <strong>KẾT QUẢ RECODE:</strong>
+          <br />&bull; Giá trị điểm thô: **${inputVal.toFixed(2)}** &rarr; nhỏ hơn 4.00 điểm.
+          <br />&bull; Mã hóa trong SPSS (Value): **0**
+          <br />&bull; Nhãn gán trong SPSS (Value Label): **Chưa hài lòng**
+          <br />&bull; **Phiên giải Y học:** Trải nghiệm của bệnh nhân tại quầy phát thuốc chưa chạm tới ngưỡng tốt rõ rệt.
+        `;
+      } else {
+        resultBox.classList.add('bg-emerald-100', 'text-emerald-800');
+        resultBox.innerHTML = `
+          <strong>KẾT QUẢ RECODE:</strong>
+          <br />&bull; Giá trị điểm thô: **${inputVal.toFixed(2)}** &rarr; từ 4.00 điểm trở lên.
+          <br />&bull; Mã hóa trong SPSS (Value): **1**
+          <br />&bull; Nhãn gán trong SPSS (Value Label): **Hài lòng**
+          <br />&bull; **Phiên giải Y học:** Bệnh nhân đạt sự hài lòng cao rõ rệt, là cái đích hướng đến của quản lý chất lượng bệnh viện.
+        `;
+      }
+    }
+
+    // ----------------------------------------------------
+    // Learning Interaction: Toggle Output detail
+    // ----------------------------------------------------
+    function toggleOutputDetail(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('hidden');
+    }
+
+    // ----------------------------------------------------
+    // Learning Interaction: Odds Ratio Simulator
+    // ----------------------------------------------------
+    function analyzeOddsRatio() {
+      const or = parseFloat(document.getElementById('or-val').value);
+      const low = parseFloat(document.getElementById('or-low').value);
+      const high = parseFloat(document.getElementById('or-high').value);
+      const res = document.getElementById('or-analysis-result');
+
+      res.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800', 'bg-amber-100', 'text-amber-800');
+
+      if (isNaN(or) || isNaN(low) || isNaN(high)) {
+        res.classList.add('bg-amber-100', 'text-amber-800');
+        res.innerHTML = '⚠️ Vui lòng nhập đầy đủ cả ba thông số để hệ thống thực hiện phân tích chính xác nhất.';
+        return;
+      }
+
+      if (low > high || or < low || or > high) {
+        res.classList.add('bg-amber-100', 'text-amber-800');
+        res.innerHTML = '⚠️ Có lỗi logic: Đảm bảo Cận dưới &le; Exp(B) &le; Cận trên.';
+        return;
+      }
+
+      // Check if confidence interval contains 1
+      if (low <= 1 && high >= 1) {
+        res.classList.add('bg-red-100', 'text-red-800');
+        res.innerHTML = `
+          <strong>🚨 CẢNH BÁO: KHOẢNG TIN CẬY 95% CHỨA GIÁ TRỊ 1 (KTC: ${low} - ${high})</strong>
+          <br />&bull; Mặc dù Exp(B) = ${or}, việc khoảng tin cậy chứa giá trị 1 đồng nghĩa mối liên hệ không đạt ý nghĩa thống kê ở mức tin cậy 95% (Sig. chắc chắn &ge; 0.05).
+          <br />&bull; **Cách viết báo cáo:** Chưa đủ cơ sở khoa học để khẳng định yếu tố này làm tăng hay giảm sự hài lòng của bệnh nhân. Tránh đưa ra kết luận nhân quả vội vã.
+        `;
+      } else {
+        if (or > 1) {
+          res.classList.add('bg-emerald-100', 'text-emerald-800');
+          res.innerHTML = `
+            <strong>✅ MỐI LIÊN QUAN THUẬN CHIỀU CÓ Ý NGHĨA THỐNG KÊ (OR = ${or}; KTC 95%: ${low} - ${high})</strong>
+            <br />&bull; Ý nghĩa: Khi yếu tố độc lập tăng thêm 1 đơn vị, cơ may hài lòng của người bệnh **tăng gấp ${or} lần**.
+            <br />&bull; **Bản dịch viết luận văn:** "Yếu tố này liên quan thuận chiều rất rõ rệt đến sự hài lòng chung (p &lt; 0.05)."
+          `;
+        } else if (or < 1) {
+          res.classList.add('bg-red-100', 'text-red-800');
+          res.innerHTML = `
+            <strong>📉 MỐI LIÊN QUAN NGHỊCH CHIỀU CÓ Ý NGHĨA THỐNG KÊ (OR = ${or}; KTC 95%: ${low} - ${high})</strong>
+            <br />&bull; Ý nghĩa: Khi yếu tố độc lập tăng thêm 1 đơn vị, cơ may hài lòng của người bệnh **giảm đi ${(100 - or*100).toFixed(1)}%**.
+            <br />&bull; **Bản dịch viết luận văn:** "Yếu tố này liên quan nghịch chiều có ý nghĩa thống kê đến khả năng hài lòng chung của người bệnh."
+          `;
+        } else {
+          res.classList.add('bg-amber-100', 'text-amber-800');
+          res.innerHTML = 'Odds Ratio bằng 1: Không có sự thay đổi cơ may.';
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // Learning Interaction: Decision Game
+    // ----------------------------------------------------
+    function checkDecisionGame(ans) {
+      const fb = document.getElementById('game-feedback');
+      fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
+      
+      if (ans === 'C') {
+        fb.classList.add('bg-emerald-100', 'text-emerald-800');
+        fb.innerHTML = '🎉 **CHÍNH XÁC!** Do Sig. = 0.657 > 0.05 và khoảng tin cậy chứa 1, ta kết luận chưa có bằng chứng thống kê. Đây chính là cách viết thông thái bảo vệ bạn trước mọi hội đồng chấm luận văn CK1!';
+      } else {
+        fb.classList.add('bg-red-100', 'text-red-800');
+        if (ans === 'A' || ans === 'B') {
+          fb.innerHTML = '❌ **SAI RỒI.** Đọc kỹ: Sig. = 0.657 chỉ ra không có ý nghĩa thống kê. Exp(B) là số chênh, không phải điểm số tăng thêm. Hãy đọc kỹ phần lý thuyết!';
+        } else {
+          fb.innerHTML = '❌ **CHƯA ĐÚNG.** Việc loại bỏ biến cơ học trong E-learning chỉ áp dụng khi học tập thực hành. Trong luận văn thực tế, nếu biến số có vai trò lý thuyết quan trọng thì ta vẫn giữ lại và báo cáo trung thực kết quả "không có ý nghĩa thống kê" đó.';
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // Tab Labs Navigation
+    // ----------------------------------------------------
+    function switchLabTab(tabId) {
+      document.querySelectorAll('.lab-tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById('content-' + tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.lab-tab-btn').forEach(b => {
+        b.classList.remove('text-sky-600', 'border-sky-600', 'font-bold');
+        b.classList.add('text-slate-500', 'font-medium');
+      });
+      const actBtn = document.getElementById('btn-' + tabId);
+      actBtn.classList.remove('text-slate-500', 'font-medium');
+      actBtn.classList.add('text-sky-600', 'border-sky-600', 'font-bold');
+    }
+
+    // ----------------------------------------------------
+    // SYSTEM 20 QUIZZES GENERATION
+    // ----------------------------------------------------
+    const quizData = [
+      {
+        q: "Khi biến phụ thuộc là SHL_NhiPhan gồm 0 = Chưa hài lòng và 1 = Hài lòng, nên dùng phương pháp nào?",
+        a: ["Hồi quy tuyến tính bội", "Hồi quy Logistic nhị phân", "Cronbach’s Alpha", "Phân tích nhân tố khám phá EFA"],
+        correct: 1,
+        explain: "Do biến phụ thuộc là nhị phân (chỉ nhận hai giá trị 0 và 1), hồi quy Logistic nhị phân là phép kiểm tối ưu bắt buộc."
+      },
+      {
+        q: "Quy tắc tạo biến SHL_NhiPhan trong ngữ cảnh bài giảng này là gì?",
+        a: ["SHL ≥ 4 mã hóa 1 = Hài lòng", "SHL ≥ 4 mã hóa 0 = Hài lòng", "SHL < 4 mã hóa 1 = Hài lòng", "SHL luôn luôn mã hóa bằng 1"],
+        correct: 0,
+        explain: "Theo quy ước khoa học Y tế Việt Nam, điểm trung bình từ 4.00 trở lên thể hiện đạt sự hài lòng rõ rệt (mã hóa là 1)."
+      },
+      {
+        q: "Exp(B) trong hồi quy Logistic nhị phân được hiểu chính xác là gì?",
+        a: ["Hệ số Beta chuẩn hóa", "Hệ số xác định R Square", "Tỷ số số chênh (Odds Ratio)", "Giá trị trung bình nhóm"],
+        correct: 2,
+        explain: "Exp(B) là e lũy thừa B, đại diện cho tỷ số số chênh (Odds Ratio) trong hồi quy Logistic."
+      },
+      {
+        q: "Nếu Exp(B) của QL là 3.49 và Sig. < 0.05, diễn giải nào sau đây phù hợp nhất cho luận văn?",
+        a: ["Khi QL tăng 1 điểm, điểm hài lòng chung tăng 3.49 điểm.", "Khi QL tăng 1 điểm, cơ may (Odds) bệnh nhân đạt hài lòng tăng gấp 3.49 lần.", "Xác suất hài lòng chắc chắn tăng chính xác 349% cho mọi bệnh nhân.", "Yếu tố QL gây ra sự hài lòng tuyệt đối cho bệnh nhân."],
+        correct: 1,
+        explain: "Exp(B) > 1 chỉ ra mức tăng cơ may (Odds) của nhóm sự kiện quan tâm khi biến độc lập tăng 1 đơn vị."
+      },
+      {
+        q: "Kiểm định Hosmer and Lemeshow có Sig. = 0.624 (> 0.05) gợi ý điều gì?",
+        a: ["Mô hình bị sai nghiêm trọng.", "Mô hình phù hợp tốt với dữ liệu thực tế thu thập.", "Tất cả các biến độc lập đều không có ý nghĩa.", "Cần phải tăng cỡ mẫu gấp đôi mới kết luận được."],
+        correct: 1,
+        explain: "Hosmer-Lemeshow là kiểm định độ phù hợp mô hình, ta mong muốn Sig. > 0.05 để mô hình khớp dữ liệu."
+      },
+      {
+        q: "Nếu yếu tố TT có Exp(B) = 1.083; Sig. = 0.657 và khoảng tin cậy 95% chứa giá trị 1, nên kết luận như thế nào?",
+        a: ["TT chắc chắn làm tăng hài lòng.", "TT làm tăng điểm SHL lên 1.083 điểm.", "Chưa có bằng chứng thống kê cho thấy TT liên quan đến cơ may hài lòng của bệnh nhân.", "Bắt buộc phải xóa TT khỏi bộ dữ liệu gốc ngay."],
+        correct: 2,
+        explain: "Do Sig. > 0.05 và khoảng tin cậy chứa giá trị 1, ta kết luận chưa có bằng chứng thống kê liên quan."
+      },
+      {
+        q: "Nagelkerke R Square là 0.573 cho biết điều gì?",
+        a: ["Mô hình giải thích chính xác 57.3% biến thiên điểm hài lòng theo nghĩa tuyến tính.", "Mô hình hồi quy Logistic giải thích được khoảng 57.3% sự biến thiên của khả năng hài lòng.", "Mô hình chỉ dự báo đúng 57.3% các trường hợp.", "Mô hình bị nhiễu thông tin 57.3%."],
+        correct: 1,
+        explain: "Nagelkerke R Square là Pseudo R-square phản ánh mức độ giải thích tương đối của mô hình Logistic."
+      },
+      {
+        q: "Tuyến lệnh chuẩn để chạy Binary Logistic Regression trong SPSS là gì?",
+        a: ["Analyze -> Correlate -> Bivariate...", "Analyze -> Regression -> Linear...", "Analyze -> Regression -> Binary Logistic...", "Transform -> Compute Variable..."],
+        correct: 2,
+        explain: "Đường dẫn chính xác là Analyze -> Regression -> Binary Logistic."
+      },
+      {
+        q: "Trong bảng Classification Table, trị số Overall Percentage = 83.2% nghĩa là gì?",
+        a: ["Mô hình bị sai lệch 83.2%.", "Mô hình dự báo và phân loại chính xác 83.2% tổng số trường hợp thực tế.", "83.2% bệnh nhân chắc chắn hài lòng tuyệt đối.", "Mô hình chỉ có ý nghĩa với 83.2% cỡ mẫu khảo sát."],
+        correct: 1,
+        explain: "Classification Table cho biết tỷ lệ phân loại dự báo chính xác tổng thể của mô hình so với thực tế."
+      },
+      {
+        q: "Tương tác nào trong SPSS giúp khai báo biến định tính (như Giới tính, Trình độ) trong hồi quy Logistic?",
+        a: ["Nút Options...", "Nút Categorical...", "Nút Save...", "Nút Define Simple..."],
+        correct: 1,
+        explain: "Nút Categorical... dùng để chuyển đổi và gán nhóm tham chiếu cho các biến định tính đưa vào mô hình."
+      },
+      {
+        q: "Hàm IF nào trong Excel giúp tạo biến nhị phân SHL_NhiPhan từ điểm hài lòng SHL tại ô H2?",
+        a: ["=IF(H2<4, 1, 0)", "=IF(H2>=4, 1, 0)", "=IF(H2>4, 1, 0)", "=SUM(H2:H10)"],
+        correct: 1,
+        explain: "IF(H2>=4, 1, 0) chuyển điểm từ 4.00 trở lên thành 1, ngược lại dưới 4.00 thành 0."
+      },
+      {
+        q: "Khi đọc bảng Dependent Variable Encoding, nhóm '1 = Hài lòng' có mã là 1 nghĩa là gì?",
+        a: ["Mô hình đang dự báo xác suất bệnh nhân chưa hài lòng.", "Mô hình đang dự báo xác suất bệnh nhân thuộc nhóm hài lòng.", "Mô hình bị lỗi gán nhãn mã hóa.", "Mô hình không quan tâm đến nhóm hài lòng."],
+        correct: 1,
+        explain: "Gán mã 1 có nghĩa SPSS đang tính toán xác suất xảy ra sự kiện 1 (Hài lòng)."
+      },
+      {
+        q: "Để phòng tránh lỗi xung đột định dạng biến hoặc lỗi nhập liệu thô, ta nên thực hiện lệnh gì trước khi phân tích hồi quy?",
+        a: ["Compute Variable", "Descriptive Statistics -> Frequencies để quét dọn lỗi", "Linear Regression", "EFA ngay lập tức"],
+        correct: 1,
+        explain: "Chạy Frequencies giúp rà quét phát hiện các giá trị nhập lỗi (ngoài phạm vi 0-1) để kịp thời sửa chữa."
+      },
+      {
+        q: "Nếu một biến độc lập có Sig. = 0.002 và Exp(B) = 2.138, mối liên hệ này là gì?",
+        a: ["Liên quan nghịch chiều có ý nghĩa thống kê.", "Liên quan thuận chiều có ý nghĩa thống kê rất rõ nét.", "Không có mối liên hệ nào đáng chú ý.", "Mối liên quan tuyến tính yếu."],
+        correct: 1,
+        explain: "Do Sig. < 0.05 và Exp(B) > 1, yếu tố liên quan thuận chiều làm tăng cơ may hài lòng."
+      },
+      {
+        q: "Lỗi thiết lập định Measure nào thường gặp khi học viên tạo xong biến SHL_NhiPhan?",
+        a: ["Để nguyên Scale thay vì chuyển về Nominal.", "Để Nominal thay vì chuyển về Scale.", "Để Ordinal.", "Để định dạng chuỗi ký tự String."],
+        correct: 0,
+        explain: "SHL_NhiPhan là biến nhị phân định danh, bắt buộc phải khai báo Measure là Nominal trong SPSS."
+      },
+      {
+        q: "Với thiết kế nghiên cứu cắt ngang, từ ngữ diễn giải nào sau đây là chuẩn mực lâm sàng nhất?",
+        a: ["Yếu tố đó quyết định/gây ra sự hài lòng của bệnh nhân.", "Yếu tố đó có liên quan/có xu hướng ảnh hưởng thuận chiều đến khả năng hài lòng.", "Mô hình chứng minh quan hệ nhân quả tuyệt đối giữa các biến.", "Bệnh viện chắc chắn thay đổi 100% khi áp dụng mô hình."],
+        correct: 1,
+        explain: "Nghiên cứu cắt ngang thu thập số liệu tại 1 thời điểm, chỉ kết luận liên quan hoặc xu hướng ảnh hưởng, tránh khẳng định nhân quả tuyệt đối."
+      },
+      {
+        q: "Trong Excel, làm thế nào để tính tỷ lệ hài lòng (SHL_NhiPhan = 1) của dải ô từ I2 đến I221?",
+        a: ["=COUNTIF(I2:I221, 1)/COUNTA(I2:I221)", "=SUM(I2:I221)", "=AVERAGE(I2:I221)", "=MIN(I2:I221)"],
+        correct: 0,
+        explain: "Công thức đếm số ô bằng 1 chia cho tổng số ô khảo sát cho ra tỷ lệ phần trăm hài lòng chính xác."
+      },
+      {
+        q: "Trị số Wald trong bảng Variables in the Equation có vai trò gì?",
+        a: ["Đo lường mức độ đa cộng tuyến.", "Đánh giá vai trò đóng góp/ý nghĩa của từng biến độc lập trong mô hình.", "Đo lường độ khớp dữ liệu của Hosmer-Lemeshow.", "Dự báo xác suất phần trăm hài lòng."],
+        correct: 1,
+        explain: "Chỉ số Wald bình phương tỷ lệ hệ số B chia sai số chuẩn S.E, dùng để đánh giá ý nghĩa đóng góp của biến."
+      },
+      {
+        q: "Sự khác biệt căn bản nhất giữa hồi quy tuyến tính bội và hồi quy Logistic nhị phân là gì?",
+        a: ["Khác biệt ở số lượng biến độc lập.", "Khác biệt ở bản chất thang đo của biến phụ thuộc (Scale so với Nominal nhị phân).", "Khác biệt ở cách gán nhãn Missing value.", "Hai phương pháp hoàn toàn giống hệt nhau."],
+        correct: 1,
+        explain: "Tuyến tính dùng cho biến phụ thuộc định lượng liên tục (Scale), Logistic dùng cho biến phụ thuộc nhị phân (Nominal 0/1)."
+      },
+      {
+        q: "Nhận xét hồi quy Logistic nhị phân trong luận văn CK1 cần cấu trúc theo mấy tầng?",
+        a: ["1 tầng: chỉ liệt kê số liệu.", "2 tầng: số liệu và kết luận thống kê.", "3 tầng: số liệu, kết luận thống kê và ý nghĩa lâm sàng/quản lý dược.", "Không cần viết nhận xét chỉ cần chụp ảnh bảng biểu."],
+        correct: 2,
+        explain: "Chuẩn học thuật luận văn tốt nghiệp luôn yêu cầu 3 tầng: Số liệu -> Kết luận thống kê -> Ứng dụng thực tiễn Y học/Quản lý dược."
+      }
+    ];
+
+    let userAnswers = Array(quizData.length).fill(null);
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-content');
+      container.innerHTML = '';
+
+      quizData.forEach((qItem, qIdx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-800/40 border border-slate-800 p-5 sm:p-6 rounded-2xl space-y-4";
+        card.id = `quiz-card-${qIdx}`;
+
+        const questionTitle = document.createElement('h3');
+        questionTitle.className = "text-sm sm:text-base font-bold text-slate-100 flex items-start";
+        questionTitle.innerHTML = `
+          <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-xs shrink-0 mr-3 mt-0.5">${qIdx + 1}</span>
+          <span>${qItem.q}</span>
+        `;
+        card.appendChild(questionTitle);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = "grid grid-cols-1 gap-2.5 pl-9";
+
+        qItem.a.forEach((optText, oIdx) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full text-left p-3 rounded-xl border border-slate-700/60 bg-slate-900/40 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition duration-150 flex items-center justify-between";
+          btn.id = `btn-q${qIdx}-o${oIdx}`;
+          btn.onclick = () => selectQuizAnswer(qIdx, oIdx);
+
+          const label = document.createElement('span');
+          label.innerHTML = `<strong>${String.fromCharCode(65 + oIdx)}.</strong> ${optText}`;
+          btn.appendChild(label);
+
+          optionsDiv.appendChild(btn);
+        });
+
+        card.appendChild(optionsDiv);
+
+        // Feedback element
+        const fb = document.createElement('div');
+        fb.id = `quiz-fb-${qIdx}`;
+        fb.className = "hidden p-4 rounded-xl text-xs leading-relaxed pl-9";
+        card.appendChild(fb);
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectQuizAnswer(qIdx, oIdx) {
+      if (userAnswers[qIdx] !== null) return; // Prevent double select
+
+      userAnswers[qIdx] = oIdx;
+      const qItem = quizData[qIdx];
+      const isCorrect = oIdx === qItem.correct;
+
+      // Update UI buttons
+      qItem.a.forEach((_, optIdx) => {
+        const btn = document.getElementById(`btn-q${qIdx}-o${optIdx}`);
+        btn.disabled = true;
+        if (optIdx === qItem.correct) {
+          btn.classList.remove('border-slate-700/60', 'bg-slate-900/40', 'text-slate-300');
+          btn.classList.add('border-emerald-500', 'bg-emerald-500/15', 'text-emerald-400', 'font-semibold');
+          btn.innerHTML += ' <i class="fa-solid fa-circle-check text-emerald-400"></i>';
+        } else if (optIdx === oIdx) {
+          btn.classList.remove('border-slate-700/60', 'bg-slate-900/40', 'text-slate-300');
+          btn.classList.add('border-rose-500', 'bg-rose-500/15', 'text-rose-400');
+          btn.innerHTML += ' <i class="fa-solid fa-circle-xmark text-rose-400"></i>';
+        }
+      });
+
+      // Show Feedback
+      const fb = document.getElementById(`quiz-fb-${qIdx}`);
+      fb.classList.remove('hidden');
+      if (isCorrect) {
+        fb.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+        fb.innerHTML = `<strong>🎉 CHÍNH XÁC:</strong> ${qItem.explain}`;
+      } else {
+        fb.classList.add('bg-rose-500/10', 'text-rose-400', 'border', 'border-rose-500/20');
+        fb.innerHTML = `<strong>❌ CHƯA ĐÚNG:</strong> ${qItem.explain}`;
+      }
+
+      // Update progress & score
+      updateQuizProgress();
+    }
+
+    function updateQuizProgress() {
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      document.getElementById('quiz-progress-text').innerText = `${answeredCount} / ${quizData.length} câu`;
+
+      let correctCount = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans !== null && ans === quizData[idx].correct) {
+          correctCount++;
+        }
+      });
+
+      const scorePercent = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+      document.getElementById('quiz-score-text').innerText = `${scorePercent}%`;
+
+      // Show Honorable badge
+      if (answeredCount === quizData.length) {
+        document.getElementById('quiz-badge').classList.remove('hidden');
+        document.getElementById('quiz-badge').classList.add('flex');
+      }
+    }
+
+    function resetQuiz() {
+      userAnswers = Array(quizData.length).fill(null);
+      document.getElementById('quiz-badge').classList.add('hidden');
+      document.getElementById('quiz-badge').classList.remove('flex');
+      document.getElementById('quiz-progress-text').innerText = `0 / ${quizData.length} câu`;
+      document.getElementById('quiz-score-text').innerText = `0%`;
+      renderQuiz();
+    }
+  </script>
+</body>
+</html>

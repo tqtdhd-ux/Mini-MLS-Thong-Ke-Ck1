@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 3: Làm Sạch Dữ Liệu Trong Nghiên Cứu Y Dược - E-Learning CK1</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        emerald: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- KaTeX for Math Equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Marked.js for parsing Markdown from AI -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Smooth transitions */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Markdown Styles for AI Output */
+        .ai-markdown p { margin-bottom: 0.75rem; }
+        .ai-markdown ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .ai-markdown ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .ai-markdown strong { font-weight: 700; color: inherit; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
+
+    <!-- App Container -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar / Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 lg:static lg:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out">
+            <!-- Sidebar Header -->
+            <div class="flex h-16 items-center justify-between border-b border-slate-200 px-6 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="rounded-lg bg-medical-600 p-2 text-white shadow-sm">
+                        <i data-lucide="shield-check" class="h-5 w-5"></i>
+                    </span>
+                    <div>
+                        <h1 class="text-xs font-bold uppercase tracking-wider text-medical-600 dark:text-medical-100">Thống Kê Y Sinh</h1>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Chuyên khoa 1 Ngành Dược</p>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="rounded p-1 text-slate-500 hover:bg-slate-100 lg:hidden dark:hover:bg-slate-800">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+
+            <!-- Program Info and Backup Reminder widget -->
+            <div class="p-4 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-100 dark:border-amber-900/50">
+                <div class="flex gap-2">
+                    <i data-lucide="alert-triangle" class="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
+                    <div class="text-xs">
+                        <span class="font-bold text-amber-800 dark:text-amber-300">Nguyên Tắc Bắt Buộc:</span>
+                        <p class="text-slate-600 dark:text-slate-400 mt-1">Luôn SAO LƯU (Backup) dữ liệu gốc và ghi NHẬT KÝ xử lý trước khi làm sạch!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
+                <button onclick="switchTab('intro')" id="tab-btn-intro" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 active-tab">
+                    <i data-lucide="home" class="h-4 w-4"></i> Mở Đầu & Mục Tiêu
+                </button>
+                
+                <div class="pt-4 pb-1">
+                    <span class="px-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Nội Dung Bài Học</span>
+                </div>
+
+                <button onclick="switchTab('module1')" id="tab-btn-module1" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="help-circle" class="h-4 w-4"></i> M1: Vì sao phải làm sạch?
+                </button>
+                <button onclick="switchTab('module2')" id="tab-btn-module2" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="search" class="h-4 w-4"></i> M2: Nhận diện lỗi dữ liệu
+                </button>
+                <button onclick="switchTab('module3')" id="tab-btn-module3" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="file-spreadsheet" class="h-4 w-4"></i> M3: Làm sạch bằng Excel
+                </button>
+                <button onclick="switchTab('module4')" id="tab-btn-module4" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="activity" class="h-4 w-4"></i> M4: Làm sạch bằng SPSS
+                </button>
+                <button onclick="switchTab('module5')" id="tab-btn-module5" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="shuffle" class="h-4 w-4"></i> M5: Câu hỏi gài & Đảo Likert
+                </button>
+
+                <div class="pt-4 pb-1">
+                    <span class="px-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Thực Hành & Đánh Giá</span>
+                </div>
+
+                <button onclick="switchTab('playground')" id="tab-btn-playground" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="terminal" class="h-4 w-4"></i> Lab Sandbox <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text text-xs font-bold">AI</span>
+                </button>
+                <button onclick="switchTab('report-guide')" id="tab-btn-report-guide" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="book-open" class="h-4 w-4"></i> Viết Luận Văn <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text text-xs font-bold">AI</span>
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <i data-lucide="check-square" class="h-4 w-4"></i> 20 Câu Hỏi Lượng Giá
+                </button>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="border-t border-slate-200 p-4 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                <div class="flex items-center justify-between">
+                    <div class="text-xs">
+                        <p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                            <i data-lucide="sparkles" class="h-3 w-3 text-indigo-500"></i> Gemini Powered
+                        </p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Phiên bản E-learning 4.0</p>
+                    </div>
+                    <button onclick="toggleDarkMode()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800 transition" title="Chuyển chế độ Sáng/Tối">
+                        <i data-lucide="sun" class="hidden dark:block h-4 w-4"></i>
+                        <i data-lucide="moon" class="block dark:hidden h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-900 relative">
+            <!-- Header bar -->
+            <header class="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 dark:border-slate-800 dark:bg-slate-950/80 sticky top-0 z-10">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="rounded p-1 text-slate-500 hover:bg-slate-100 lg:hidden dark:hover:bg-slate-800">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                    <h2 id="header-title" class="text-lg font-bold text-slate-800 dark:text-white">Chương 3: Làm Sạch Dữ Liệu Trong Nghiên Cứu Y Dược</h2>
+                </div>
+                <div class="flex items-center gap-4 hidden sm:flex">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800/50 dark:text-emerald-400 shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        Đã sẵn sàng học
+                    </span>
+                </div>
+            </header>
+
+            <!-- Scrollable Content View -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                
+                <!-- TAB 0: INTRO & OBJECTIVES -->
+                <section id="tab-intro" class="tab-content active fade-in space-y-6">
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-medical-800 via-medical-700 to-indigo-900 p-8 text-white shadow-xl border border-medical-600/30">
+                        <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-12 -translate-y-12">
+                            <i data-lucide="shield-check" class="h-64 w-64"></i>
+                        </div>
+                        <span class="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">Bài giảng chuyên biệt</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold mt-4 mb-2 tracking-tight">Kiểm Soát & Làm Sạch Dữ Liệu</h2>
+                        <p class="text-indigo-100 max-w-2xl text-sm md:text-base leading-relaxed">
+                            "Rác đầu vào sẽ cho ra rác đầu ra (Garbage In, Garbage Out)". Làm sạch dữ liệu là khâu kiểm soát chất lượng cốt lõi, quyết định độ tin cậy và giá trị khoa học tối thượng của toàn bộ luận văn Chuyên khoa 1 ngành Dược.
+                        </p>
+                        <div class="mt-8 flex flex-wrap gap-3">
+                            <button onclick="switchTab('module1')" class="rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-medical-900 hover:bg-slate-50 transition transform hover:-translate-y-0.5 shadow-md flex items-center gap-2">
+                                Bắt đầu học ngay <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                            </button>
+                            <button onclick="switchTab('playground')" class="rounded-xl bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-medium text-white hover:bg-white/20 transition backdrop-blur-sm flex items-center gap-2">
+                                <i data-lucide="sparkles" class="h-4 w-4 text-indigo-300"></i> Khám phá AI Sandbox
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Learning Objectives -->
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+                            <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-5">
+                                <span class="bg-medical-100 dark:bg-medical-900/50 p-1.5 rounded-lg text-medical-600 dark:text-medical-400">
+                                    <i data-lucide="target" class="h-5 w-5"></i>
+                                </span>
+                                Mục Tiêu Đạt Được
+                            </h3>
+                            <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-0.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-full p-0.5 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                        <i data-lucide="check" class="h-3 w-3"></i>
+                                    </div>
+                                    <span class="leading-relaxed">Hiểu bản chất **Vì sao** làm sạch dữ liệu là bước bắt buộc trước khi thực hiện phân tích thống kê (Cronbach's Alpha, EFA, Hồi Quy...).</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-0.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-full p-0.5 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                        <i data-lucide="check" class="h-3 w-3"></i>
+                                    </div>
+                                    <span class="leading-relaxed">Nhận diện thành thạo các lỗi dữ liệu lâm sàng: giá trị ngoài phạm vi, lỗi logic lâm sàng, khuyết thiếu.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-0.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-full p-0.5 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                        <i data-lucide="check" class="h-3 w-3"></i>
+                                    </div>
+                                    <span class="leading-relaxed">Sử dụng trôi chảy Excel (Filter, Validation, IF, Conditional Formatting) để khóa chặt lỗi nhập liệu thô.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="mt-0.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-full p-0.5 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                        <i data-lucide="check" class="h-3 w-3"></i>
+                                    </div>
+                                    <span class="leading-relaxed">Vận hành thành thạo SPSS (Frequencies, Recode, Select Cases, Crosstabs) để rà soát lỗi logic.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm dark:border-slate-800 dark:bg-slate-950 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+                                    <span class="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded-lg text-indigo-600 dark:text-indigo-400">
+                                        <i data-lucide="lightbulb" class="h-5 w-5"></i>
+                                    </span>
+                                    Khuyến Nghị Sư Phạm
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                                    Học viên nên mở song song phần mềm Excel và SPSS trên máy tính, thực hiện theo từng bước hướng dẫn. Đặc biệt, hãy thử nghiệm công cụ <strong>Trợ lý AI Gemini</strong> tích hợp sẵn trong bài để nâng cao kỹ năng tư duy học thuật.
+                                </p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                                <div class="bg-white dark:bg-slate-800 p-2 rounded-lg shadow-sm border border-slate-100 dark:border-slate-700">
+                                    <i data-lucide="file-spreadsheet" class="h-6 w-6 text-emerald-600"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <p class="font-bold text-slate-700 dark:text-slate-300">File dữ liệu thực hành đi kèm:</p>
+                                    <p class="text-slate-500 mt-0.5">DATA.csv (Mẫu nghiên cứu sự hài lòng khoa Dược)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 1: MODULE 1 -->
+                <section id="tab-module1" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Module 1</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Tầm Quan Trọng Của Làm Sạch Dữ Liệu</h3>
+                        </div>
+
+                        <div class="grid gap-6 md:grid-cols-3 mt-6">
+                            <div class="p-5 rounded-2xl border border-red-200 bg-red-50/50 dark:border-red-900/30 dark:bg-red-950/10 hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-red-600 dark:text-red-400 font-bold text-sm mb-3">
+                                    <i data-lucide="trending-down" class="h-5 w-5"></i> Sai Lệch Kết Quả
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Chỉ một lỗi gõ nhầm điểm Likert từ <code class="font-bold text-red-600">3</code> thành <code class="font-bold text-red-600">33</code> sẽ bóp méo trung bình cộng, biến giá trị này thành một Outlier cực đoan làm hỏng kết quả EFA và hồi quy.
+                                </p>
+                            </div>
+
+                            <div class="p-5 rounded-2xl border border-amber-200 bg-amber-50/50 dark:border-amber-900/30 dark:bg-amber-950/10 hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-sm mb-3">
+                                    <i data-lucide="alert-circle" class="h-5 w-5"></i> Đứt Gãy Logic Lâm Sàng
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Nam giới được ghi nhận có thai hoặc bệnh nhân có tiền sử tiểu đường nhưng chỉ số Glucose máu lúc đói lại cực thấp mà không dùng thuốc là những điểm mâu thuẫn phá hỏng tính thuyết phục.
+                                </p>
+                            </div>
+
+                            <div class="p-5 rounded-2xl border border-indigo-200 bg-indigo-50/50 dark:border-indigo-900/30 dark:bg-indigo-950/10 hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-3">
+                                    <i data-lucide="shield-alert" class="h-5 w-5"></i> Nghi Ngờ Tính Độc Lập
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Khi hội đồng phản biện phát hiện dữ liệu bẩn hoặc thiếu kiểm soát trong bài báo, toàn bộ giá trị khoa học của đề tài sẽ bị nghi ngờ, gây khó khăn cho việc bảo vệ luận văn.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical illustration -->
+                        <div class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                            <h4 class="text-base font-bold text-slate-800 dark:text-white mb-3">Minh họa toán học về tác hại của Outlier (Điểm dị biệt):</h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-5">
+                                Giả sử ta đo nồng độ hoạt chất trong 5 mẫu thử (đơn vị mg). Số liệu thực tế là: 12, 14, 15, 13, 16. Do nhập liệu nhầm, mẫu cuối cùng bị gõ thành 160.
+                            </p>
+                            <div class="grid gap-4 md:grid-cols-2">
+                                <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
+                                    <span class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wide">Nếu dữ liệu SẠCH (12, 14, 15, 13, 16)</span>
+                                    <div class="text-sm mt-3 text-slate-700 dark:text-slate-300">
+                                        $$\bar{X}_{sach} = \frac{12+14+15+13+16}{5} = 14 \text{ mg}$$
+                                        $$\text{Độ lệch chuẩn } S_{sach} = 1.58 \text{ (Thực tế, đồng nhất)}$$
+                                    </div>
+                                </div>
+                                <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-100 dark:border-red-900/30">
+                                    <span class="text-xs font-bold text-red-800 dark:text-red-400 uppercase tracking-wide">Nếu dữ liệu LỖI (12, 14, 15, 13, 160)</span>
+                                    <div class="text-sm mt-3 text-slate-700 dark:text-slate-300">
+                                        $$\bar{X}_{loi} = \frac{12+14+15+13+160}{5} = 42.8 \text{ mg}$$
+                                        $$\text{Độ lệch chuẩn } S_{loi} = 65.5 \text{ (Sai lệch hoàn toàn thực tế)}$$
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pedagogical Check -->
+                        <div class="mt-6 bg-slate-100 dark:bg-slate-800 p-5 rounded-2xl flex items-start gap-4 border border-slate-200 dark:border-slate-700">
+                            <span class="bg-medical-200 dark:bg-medical-900 p-2 rounded-full text-medical-700 dark:text-medical-400 shrink-0"><i data-lucide="info" class="h-5 w-5"></i></span>
+                            <div class="text-sm">
+                                <strong class="text-slate-800 dark:text-white uppercase tracking-wide text-xs">Ghi Nhớ Nhanh:</strong>
+                                <p class="text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Làm sạch dữ liệu là quy trình kiểm soát chất lượng nhằm đạt độ chính xác lâm sàng, tuyệt đối **không phải** là "làm đẹp số liệu" bằng cách tự ý xóa bỏ những kết quả không mong muốn để đạt được p-value < 0.05!</p>
+                            </div>
+                        </div>
+
+                        <!-- Micro Quiz M1 -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 shadow-sm">
+                            <div class="flex items-center gap-2 text-medical-600 dark:text-medical-400 mb-3">
+                                <i data-lucide="zap" class="h-4 w-4"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Kiểm tra nhanh Module 1</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-800 dark:text-white leading-relaxed">Hành vi nào dưới đây được coi là vi phạm đạo đức nghiên cứu khi xử lý dữ liệu?</h4>
+                            <div class="mt-4 space-y-2.5">
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq1" value="A" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">A. Khảo sát lại bệnh nhân khi thấy giá trị huyết áp ghi nhận là 240 mmHg.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq1" value="B" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">B. Tự ý sửa các điểm đánh giá Likert thấp thành cao để tăng hệ số Cronbach's Alpha.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq1" value="C" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">C. Thực hiện phân tích loại trừ các quan sát khuyết thiếu có chủ đích (Listwise).</span>
+                                </label>
+                            </div>
+                            <button onclick="checkMicroQuiz('mq1', 'B', 'Chính xác! Tự ý thay đổi số liệu để có kết quả đẹp là hành vi ngụy tạo số liệu, vi phạm đạo đức khoa học nghiêm trọng. Việc làm sạch chỉ nhằm loại bỏ sai sót kỹ thuật.')" class="mt-4 text-xs bg-medical-600 hover:bg-medical-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">Kiểm tra đáp án</button>
+                            <div id="mq1-feedback" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: MODULE 2 -->
+                <section id="tab-module2" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Module 2</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Nhận Diện 4 Nhóm Lỗi Dữ Liệu Thường Gặp</h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+                            Trong nghiên cứu lâm sàng và quản lý dược, các lỗi nhập liệu thường rơi vào một trong bốn nhóm điển hình dưới đây:
+                        </p>
+
+                        <div class="grid gap-6 md:grid-cols-2 mt-6">
+                            <!-- Loi 1 -->
+                            <div class="p-6 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-rose-500 font-bold text-base mb-3">
+                                    <i data-lucide="target" class="h-5 w-5"></i> 1. Giá Trị Ngoài Phạm Vi
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                                    Biến chỉ cho phép nhập các giá trị mã hóa cố định nhưng lại xuất hiện ký tự lạ hoặc con số nằm ngoài biên quy định.
+                                </p>
+                                <div class="p-3.5 bg-rose-50 dark:bg-rose-950/20 text-xs rounded-xl border border-rose-100 dark:border-rose-900/30">
+                                    <strong class="text-rose-800 dark:text-rose-400 uppercase tracking-wide text-[10px]">Ví dụ thực tế:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1.5 text-slate-600 dark:text-slate-400">
+                                        <li>Biến <code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-rose-600">GioiTinh</code>: 1 = Nam, 2 = Nữ. Dữ liệu xuất hiện: <code class="font-bold">3</code>, <code class="font-bold">0</code>, chữ <code class="font-bold">"N"</code>.</li>
+                                        <li>Điểm Likert 1-5 xuất hiện <code class="font-bold">33</code> hoặc <code class="font-bold">6</code>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Loi 2 -->
+                            <div class="p-6 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-amber-500 font-bold text-base mb-3">
+                                    <i data-lucide="activity" class="h-5 w-5"></i> 2. Lỗi Logic Lâm Sàng
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                                    Các trường dữ liệu mâu thuẫn trực tiếp với các quy luật y sinh hoặc thông tin hành chính liên quan.
+                                </p>
+                                <div class="p-3.5 bg-amber-50 dark:bg-amber-950/20 text-xs rounded-xl border border-amber-100 dark:border-amber-900/30">
+                                    <strong class="text-amber-800 dark:text-amber-400 uppercase tracking-wide text-[10px]">Ví dụ thực tế:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1.5 text-slate-600 dark:text-slate-400">
+                                        <li>Khai báo <code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-amber-600">GioiTinh</code> = Nam nhưng chẩn đoán: <code class="font-bold">"Viêm lộ tuyến CTC"</code>.</li>
+                                        <li><code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-amber-600">Tuoi</code> = 3 tuổi nhưng nghề nghiệp là <code class="font-bold">"Hưu trí"</code>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Loi 3 -->
+                            <div class="p-6 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-indigo-500 font-bold text-base mb-3">
+                                    <i data-lucide="file-warning" class="h-5 w-5"></i> 3. Dữ Liệu Khuyết Thiếu
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                                    Người nhập liệu bỏ sót các trường thông tin quan trọng. Có thể khuyết ngẫu nhiên (MCAR) hoặc khuyết hệ thống (MNAR).
+                                </p>
+                                <div class="p-3.5 bg-indigo-50 dark:bg-indigo-950/20 text-xs rounded-xl border border-indigo-100 dark:border-indigo-900/30">
+                                    <strong class="text-indigo-800 dark:text-indigo-400 uppercase tracking-wide text-[10px]">Ví dụ thực tế:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1.5 text-slate-600 dark:text-slate-400">
+                                        <li>Bệnh nhân từ chối khai báo mức thu nhập do vấn đề nhạy cảm.</li>
+                                        <li>Bỏ sót không đo chỉ số <code class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded text-indigo-600">Glucose</code> sau điều trị.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Loi 4 -->
+                            <div class="p-6 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-2 text-emerald-500 font-bold text-base mb-3">
+                                    <i data-lucide="help-circle" class="h-5 w-5"></i> 4. Phiếu Thiếu Nhất Quán
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                                    Người trả lời điền qua loa, đánh một hàng dọc cùng một mức điểm, hoặc mâu thuẫn với câu hỏi kiểm tra chéo (câu gài).
+                                </p>
+                                <div class="p-3.5 bg-emerald-50 dark:bg-emerald-950/20 text-xs rounded-xl border border-emerald-100 dark:border-emerald-900/30">
+                                    <strong class="text-emerald-800 dark:text-emerald-400 uppercase tracking-wide text-[10px]">Ví dụ thực tế:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1.5 text-slate-600 dark:text-slate-400">
+                                        <li>Trả lời 30 câu Likert đều đánh duy nhất điểm <code class="font-bold">5</code>.</li>
+                                        <li>Câu thuận chọn điểm <code class="font-bold">5</code> (rất tốt), câu nghịch cũng chọn <code class="font-bold">5</code> (rất tệ).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Micro Quiz M2 -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 shadow-sm">
+                            <div class="flex items-center gap-2 text-medical-600 dark:text-medical-400 mb-3">
+                                <i data-lucide="zap" class="h-4 w-4"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Kiểm tra nhanh Module 2</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-800 dark:text-white leading-relaxed">Bệnh nhân nhi 3 tuổi được ghi nhận "Bị tăng huyết áp do tác dụng phụ của Corticoid" có mức thu nhập khai báo là "30 triệu/tháng". Lỗi này thuộc nhóm nào?</h4>
+                            <div class="mt-4 space-y-2.5">
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq2" value="A" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">A. Giá trị ngoài phạm vi</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq2" value="B" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">B. Lỗi logic lâm sàng/hành chính</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq2" value="C" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">C. Thiếu nhất quán trong thang đo Likert</span>
+                                </label>
+                            </div>
+                            <button onclick="checkMicroQuiz('mq2', 'B', 'Chính xác! Trẻ 3 tuổi không thể có thu nhập cá nhân độc lập 30 triệu/tháng. Đây là lỗi mâu thuẫn logic hành chính y sinh học, cần xác minh lại xem đó có phải là thu nhập của phụ huynh hay không.')" class="mt-4 text-xs bg-medical-600 hover:bg-medical-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">Kiểm tra đáp án</button>
+                            <div id="mq2-feedback" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: MODULE 3 -->
+                <section id="tab-module3" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Module 3</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Làm Sạch Dữ Liệu Bằng Microsoft Excel</h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+                            Excel là chốt chặn đầu tiên và cực kỳ mạnh mẽ trước khi nạp dữ liệu vào SPSS. Sử dụng Excel giúp lọc sạch đến 90% lỗi nhập liệu cơ bản một cách trực quan.
+                        </p>
+
+                        <div class="space-y-4 mt-6">
+                            <!-- Step 1: Auto Filter -->
+                            <div class="flex flex-col md:flex-row gap-5 p-5 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                <div class="h-12 w-12 shrink-0 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-bold text-lg">1</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                                        Bộ lọc tự động (AutoFilter) 
+                                        <span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-[10px] text-slate-600 dark:text-slate-400 font-mono tracking-wider">Ctrl + Shift + L</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 mt-2 leading-relaxed">
+                                        Bôi đen dòng tiêu đề -> Vào tab <code class="font-mono text-medical-600">Data > Filter</code>. Click vào mũi tên xổ xuống tại cột cần kiểm tra để xem danh sách toàn bộ các giá trị duy nhất. Nếu thấy ký tự lạ, khoảng trắng hoặc giá trị cực đoan, click chọn duy nhất giá trị đó để lọc ra dòng lỗi và sửa đổi.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Data Validation -->
+                            <div class="flex flex-col md:flex-row gap-5 p-5 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                <div class="h-12 w-12 shrink-0 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-bold text-lg">2</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white">Khóa biên dữ liệu với Data Validation (Chống lỗi chủ động)</h4>
+                                    <p class="text-sm text-slate-500 mt-2 leading-relaxed">
+                                        Chọn vùng nhập liệu Likert -> <code class="font-mono text-medical-600">Data > Data Validation</code>. Tại ô Allow chọn <strong>Whole number</strong> (số nguyên), thiết lập <code class="font-mono">Min = 1</code> và <code class="font-mono">Max = 5</code>. Bất kỳ ai gõ nhầm điểm 33, Excel sẽ lập tức hiện bảng cảnh báo lỗi và chặn không cho nhập tiếp.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Conditional Formatting -->
+                            <div class="flex flex-col md:flex-row gap-5 p-5 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                <div class="h-12 w-12 shrink-0 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-bold text-lg">3</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white">Tự động nhuộm màu dòng lỗi với Conditional Formatting</h4>
+                                    <p class="text-sm text-slate-500 mt-2 leading-relaxed">
+                                        Quét chọn cột dữ liệu -> <code class="font-mono text-medical-600">Home > Conditional Formatting > Highlight Cells Rules</code>. Chọn <strong>Greater Than</strong> và điền <code class="font-mono">5</code> để nhuộm đỏ lập tức tất cả các ô vượt trần Likert. Hoặc chọn <strong>Duplicate Values</strong> để tìm mã bệnh nhân bị trùng lặp.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Logic checking functions -->
+                            <div class="flex flex-col md:flex-row gap-5 p-5 rounded-2xl bg-white border border-slate-200 dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                <div class="h-12 w-12 shrink-0 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-bold text-lg">4</div>
+                                <div class="w-full">
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white">Sử dụng các hàm kiểm tra logic thực tế</h4>
+                                    <div class="text-sm text-slate-500 mt-2">
+                                        <p class="mb-3">Các hàm kiểm tra logic lâm sàng trong Excel thường dùng:</p>
+                                        <div class="space-y-2 font-mono bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs overflow-x-auto">
+                                            <div class="flex flex-col">
+                                                <span class="text-indigo-600 dark:text-indigo-400 font-bold">=IF(AND(A2="Nam", B2="Phụ khoa"), "Lỗi", "OK")</span>
+                                                <span class="text-slate-400 mt-1"># Kiểm tra giới tính và bệnh lý</span>
+                                            </div>
+                                            <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-2"></div>
+                                            <div class="flex flex-col">
+                                                <span class="text-indigo-600 dark:text-indigo-400 font-bold">=COUNTIF(A$2:A$100, A2)</span>
+                                                <span class="text-slate-400 mt-1"># > 1 nghĩa là mã BN bị trùng</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Micro Quiz M3 -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 shadow-sm">
+                            <div class="flex items-center gap-2 text-medical-600 dark:text-medical-400 mb-3">
+                                <i data-lucide="zap" class="h-4 w-4"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Kiểm tra nhanh Module 3</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-800 dark:text-white leading-relaxed">Để đếm xem trong cột Giới tính (Cột B, từ dòng 2 đến 100) có bao nhiêu ô bị nhập lỗi khác với mã 1 (Nam) và 2 (Nữ), công thức nào là phù hợp nhất?</h4>
+                            <div class="mt-4 space-y-2.5">
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq3" value="A" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="font-mono text-xs mt-0.5 group-hover:text-medical-700 dark:group-hover:text-medical-300">A. =COUNTIF(B2:B100, 1) + COUNTIF(B2:B100, 2)</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq3" value="B" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="font-mono text-xs mt-0.5 group-hover:text-medical-700 dark:group-hover:text-medical-300">B. =ROWS(B2:B100) - (COUNTIF(B2:B100, 1) + COUNTIF(B2:B100, 2))</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq3" value="C" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="font-mono text-xs mt-0.5 group-hover:text-medical-700 dark:group-hover:text-medical-300">C. =IF(B2:B100&lt;&gt;1, "Lỗi", "Đúng")</span>
+                                </label>
+                            </div>
+                            <button onclick="checkMicroQuiz('mq3', 'B', 'Chính xác! Lấy tổng số dòng thực tế trừ đi tổng số dòng nhập đúng (được gõ 1 và 2), kết quả dư ra chính là số lượng dòng đang bị lỗi nhập liệu thô.')" class="mt-4 text-xs bg-medical-600 hover:bg-medical-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">Kiểm tra đáp án</button>
+                            <div id="mq3-feedback" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: MODULE 4 -->
+                <section id="tab-module4" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Module 4</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Làm Sạch Sâu Bằng IBM SPSS Statistics</h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+                            SPSS sở hữu các thuật toán rà soát dữ liệu nâng cao dựa trên phân phối tần số và bảng chéo hai chiều (Crosstabs) để bóc tách lỗi logic phức tạp.
+                        </p>
+                        
+                        <!-- SPSS 1099 Error Note -->
+                        <div class="mt-6 p-5 rounded-2xl border border-rose-200 bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/20 flex items-start gap-4">
+                            <div class="bg-rose-200 dark:bg-rose-900/50 p-2 rounded-full text-rose-600 dark:text-rose-400 shrink-0 mt-1">
+                                <i data-lucide="shield-alert" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-rose-800 dark:text-rose-400 mb-1.5 uppercase tracking-wide">Xử Lý Lỗi SPSS 1099</h4>
+                                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                                    Trong quá trình thao tác SPSS, nếu gặp cảnh báo <strong>Error 1099</strong>, học viên cần lưu ý đây <strong>KHÔNG PHẢI là lỗi do bạn nhập sai dữ liệu</strong>. Đây là lỗi hệ thống liên quan đến việc xác thực bản quyền (License/Authorization) hoặc kết nối với máy chủ của IBM SPSS bị gián đoạn. Giải pháp là khởi động lại phần mềm bằng quyền Admin hoặc liên hệ IT.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step-by-step table -->
+                        <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+                                <thead class="bg-slate-50 dark:bg-slate-900/80 font-bold text-slate-700 dark:text-slate-300">
+                                    <tr>
+                                        <th class="px-5 py-4 text-left font-semibold">Công cụ SPSS</th>
+                                        <th class="px-5 py-4 text-left font-semibold">Mục đích làm sạch</th>
+                                        <th class="px-5 py-4 text-left font-semibold hidden md:table-cell">Đường dẫn chi tiết</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition">
+                                        <td class="px-5 py-4 font-semibold text-slate-800 dark:text-white">Frequencies</td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-slate-400">Rà soát giá trị ngoài phạm vi, kiểm tra tỷ lệ khuyết thiếu (Missing).</td>
+                                        <td class="px-5 py-4 font-mono text-xs text-medical-600 dark:text-medical-400 hidden md:table-cell">Analyze > Descriptive > Frequencies...</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition">
+                                        <td class="px-5 py-4 font-semibold text-slate-800 dark:text-white">Crosstabs</td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-slate-400">Kiểm tra chéo logic giữa hai biến định danh (VD: Giới tính x Bệnh).</td>
+                                        <td class="px-5 py-4 font-mono text-xs text-medical-600 dark:text-medical-400 hidden md:table-cell">Analyze > Descriptive > Crosstabs...</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition">
+                                        <td class="px-5 py-4 font-semibold text-slate-800 dark:text-white">Select Cases</td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-slate-400">Lọc riêng các hồ sơ nghi ngờ lỗi ra để rà soát chi tiết.</td>
+                                        <td class="px-5 py-4 font-mono text-xs text-medical-600 dark:text-medical-400 hidden md:table-cell">Data > Select Cases...</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition">
+                                        <td class="px-5 py-4 font-semibold text-slate-800 dark:text-white">Recode</td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-slate-400">Sửa lỗi hàng loạt hoặc gom nhóm tuổi, nhóm liều lượng.</td>
+                                        <td class="px-5 py-4 font-mono text-xs text-medical-600 dark:text-medical-400 hidden md:table-cell">Transform > Recode...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Step detailed guide cards -->
+                        <div class="mt-8 space-y-4">
+                            <h4 class="text-base font-bold text-slate-800 dark:text-white">Chi tiết thao tác kiểm tra lỗi bằng Crosstabs:</h4>
+                            <div class="p-6 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 text-sm text-slate-600 dark:text-slate-400 space-y-4 shadow-sm">
+                                <p><strong class="text-slate-800 dark:text-white">Bài toán:</strong> Kiểm tra xem có nam giới nào bị gán chẩn đoán phụ khoa nhầm hay không.</p>
+                                <ol class="list-decimal list-inside space-y-2.5 leading-relaxed ml-2">
+                                    <li>Vào menu: <code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono">Analyze > Descriptive Statistics > Crosstabs...</code></li>
+                                    <li>Đưa biến <code class="font-bold text-slate-700 dark:text-slate-300">GioiTinh</code> vào ô <code class="font-mono text-xs">Row(s)</code>.</li>
+                                    <li>Đưa biến <code class="font-bold text-slate-700 dark:text-slate-300">BenhPhuKhoa</code> vào ô <code class="font-mono text-xs">Column(s)</code>.</li>
+                                    <li>Bấm <strong>OK</strong>.</li>
+                                    <li><strong class="text-red-500">Đọc kết quả:</strong> Trong bảng kết quả, tìm ô giao giữa dòng <code class="font-mono text-xs">Nam</code> và cột <code class="font-mono text-xs">Có bệnh</code>. Nếu giá trị > 0, nghĩa là có hồ sơ lỗi.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- Micro Quiz M4 -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 shadow-sm">
+                            <div class="flex items-center gap-2 text-medical-600 dark:text-medical-400 mb-3">
+                                <i data-lucide="zap" class="h-4 w-4"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Kiểm tra nhanh Module 4</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-800 dark:text-white leading-relaxed">Sau khi dùng bộ lọc "Select Cases" để lọc riêng bệnh nhân tuổi > 80 ra kiểm tra, ta cần làm gì tiếp theo trước khi phân tích chính thức?</h4>
+                            <div class="mt-4 space-y-2.5">
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq4" value="A" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">A. Lưu file và tắt SPSS đi khởi động lại để lưu trạng thái lọc.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq4" value="B" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">B. Quay lại hộp thoại Select Cases và chọn lại mục "All cases" để khôi phục toàn bộ mẫu.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq4" value="C" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">C. Tiến hành xóa bỏ hoàn toàn các trường dữ liệu bị gạch chéo.</span>
+                                </label>
+                            </div>
+                            <button onclick="checkMicroQuiz('mq4', 'B', 'Chính xác! Đây là lỗi rất phổ biến. Nếu không đưa Select Cases về lại All cases, các phân tích EFA, Hồi quy tiếp theo sẽ CHỈ chạy trên nhóm bệnh nhân > 80 tuổi, làm hỏng toàn bộ luận văn!')" class="mt-4 text-xs bg-medical-600 hover:bg-medical-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">Kiểm tra đáp án</button>
+                            <div id="mq4-feedback" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 5: MODULE 5 -->
+                <section id="tab-module5" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Module 5</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Xử Lý Câu Hỏi Gài & Đảo Nghịch Likert</h3>
+                        </div>
+
+                        <div class="mt-6 p-6 rounded-2xl border border-indigo-200 bg-indigo-50/50 dark:border-indigo-900/30 dark:bg-indigo-950/20 text-slate-700 dark:text-slate-300 shadow-sm">
+                            <h4 class="text-base font-bold text-indigo-900 dark:text-indigo-400 flex items-center gap-2 mb-3">
+                                <i data-lucide="shield-alert" class="h-5 w-5"></i> 1. Bản Chất Của Câu Hỏi Gài
+                            </h4>
+                            <p class="text-sm leading-relaxed">
+                                Trong các bảng khảo sát dài (như mức độ hài lòng về dịch vụ dược), người nghiên cứu thường cố tình <strong>gài vào 1-2 câu hỏi có nội dung mâu thuẫn trực tiếp</strong> với các câu trước đó để lọc bỏ các phiếu trả lời bừa, thiếu nghiêm túc (người bệnh đánh thẳng một hàng dọc toàn điểm 5).
+                            </p>
+                        </div>
+
+                        <!-- Visual inversion table -->
+                        <div class="mt-8">
+                            <h4 class="text-base font-bold text-slate-800 dark:text-white mb-4">Ví dụ thực tế về cặp câu hỏi thuận - nghịch:</h4>
+                            <div class="grid gap-5 md:grid-cols-2">
+                                <div class="p-5 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wide flex items-center gap-1.5 mb-2"><i data-lucide="plus-circle" class="h-4 w-4"></i> Câu thuận (Positive):</span>
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold leading-relaxed">"Nhân viên nhà thuốc tư vấn thuốc rất rõ ràng, niềm nở." (Biến CP1)</p>
+                                    <div class="mt-3 inline-block bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md text-xs font-mono text-slate-500">
+                                        Điểm 5 = Rất đồng ý (Tốt)
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                                    <span class="text-xs font-bold text-rose-500 uppercase tracking-wide flex items-center gap-1.5 mb-2"><i data-lucide="minus-circle" class="h-4 w-4"></i> Câu đảo nghịch (Reverse):</span>
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold leading-relaxed">"Thái độ của nhân viên nhà thuốc hời hợt, khó chịu." (Biến CP1_Dao)</p>
+                                    <div class="mt-3 inline-block bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md text-xs font-mono text-slate-500">
+                                        Điểm 5 = Rất đồng ý (Rất Tệ)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 rounded-2xl border border-amber-200 bg-amber-50/80 p-6 dark:border-amber-900/50 dark:bg-amber-950/30 shadow-sm">
+                            <h4 class="text-sm font-bold text-amber-800 dark:text-amber-400 flex items-center gap-2 uppercase tracking-wide">
+                                <i data-lucide="alert-triangle" class="h-5 w-5"></i> Cảnh báo sống còn: Đảo mã trước Cronbach's Alpha
+                            </h4>
+                            <p class="text-sm text-slate-700 dark:text-slate-300 mt-3 leading-relaxed">
+                                Nếu không thực hiện <strong>Đảo mã (Recode)</strong> biến đảo nghịch về cùng chiều với câu thuận, khi đưa vào phân tích độ tin cậy Cronbach’s Alpha, hệ số này sẽ bị giảm sút nghiêm trọng (thậm chí nhận trị số <strong>âm</strong>). Phần mềm SPSS sẽ không tự hiểu được ý nghĩa ngôn ngữ học của câu hỏi!
+                            </p>
+                        </div>
+
+                        <!-- Action guide on SPSS -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 text-sm shadow-sm">
+                            <h4 class="text-base font-bold text-slate-800 dark:text-white mb-4">Quy trình đảo mã 1-5 thành 5-1 trên SPSS:</h4>
+                            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/30 mb-5">
+                                <p class="text-indigo-800 dark:text-indigo-300 font-semibold text-xs mb-1 uppercase tracking-wider">Công thức chuyển đổi:</p>
+                                $$Y_{new} = X_{max} + X_{min} - X_{old} = 5 + 1 - X_{old} = 6 - X_{old}$$
+                            </div>
+                            <ol class="list-decimal list-inside space-y-3 text-slate-600 dark:text-slate-400 leading-relaxed ml-2">
+                                <li>Vào menu: <code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-mono">Transform > Recode into Different Variables...</code></li>
+                                <li>Đưa biến đảo nghịch <code class="font-bold text-slate-700 dark:text-slate-300">CP1_Dao</code> vào ô giữa -> Đặt tên biến mới là <code class="font-bold text-slate-700 dark:text-slate-300">CP1_Chuan</code> tại ô Name rồi bấm <code class="font-bold">Change</code>.</li>
+                                <li>Click nút <code class="font-bold">Old and New Values...</code></li>
+                                <li>Khai báo quy tắc chuyển mã (1&rarr;5, 2&rarr;4, 3&rarr;3, 4&rarr;2, 5&rarr;1).</li>
+                                <li>Bấm <code class="font-bold">Continue</code> và <code class="font-bold">OK</code>.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Micro Quiz M5 -->
+                        <div class="mt-8 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-white dark:bg-slate-950 shadow-sm">
+                            <div class="flex items-center gap-2 text-medical-600 dark:text-medical-400 mb-3">
+                                <i data-lucide="zap" class="h-4 w-4"></i>
+                                <span class="text-xs font-bold uppercase tracking-wider">Kiểm tra nhanh Module 5</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-800 dark:text-white leading-relaxed">Bệnh nhân A đánh điểm 5 (Rất hài lòng) cho câu thuận và cũng đánh điểm 5 (Rất đồng ý) cho câu đảo nghịch có nội dung chê bai chất lượng. Phiếu khảo sát này xử lý thế nào?</h4>
+                            <div class="mt-4 space-y-2.5">
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq5" value="A" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">A. Giữ nguyên phiếu vì đó là ý kiến cá nhân của bệnh nhân.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq5" value="B" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">B. Sử dụng đảo mã tự động để SPSS tự sửa điểm câu nghịch thành 1.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                                    <input type="radio" name="mq5" value="C" class="mt-0.5 text-medical-600 focus:ring-medical-500">
+                                    <span class="group-hover:text-medical-700 dark:group-hover:text-medical-300">C. Loại bỏ phiếu này khỏi bộ mẫu phân tích vì đây là phiếu mâu thuẫn trực tiếp, đánh bừa.</span>
+                                </label>
+                            </div>
+                            <button onclick="checkMicroQuiz('mq5', 'C', 'Chính xác! Đây là dấu hiệu bệnh nhân đánh dấu bừa không thèm đọc câu hỏi. Loại bỏ các phiếu thiếu nhất quán này giúp đảm bảo dữ liệu đầu vào có độ tin cậy thực chất trước khi phân tích.')" class="mt-4 text-xs bg-medical-600 hover:bg-medical-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition">Kiểm tra đáp án</button>
+                            <div id="mq5-feedback" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 6: PLAYGROUND / SANDBOX AI -->
+                <section id="tab-playground" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Lab Thực Hành</span>
+                                <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Sandbox Làm Sạch Dữ Liệu <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text text-xl">AI</span></h3>
+                            </div>
+                            <button onclick="resetSandboxData()" class="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 py-2 px-4 rounded-lg font-semibold flex items-center gap-2 transition shadow-sm border border-slate-200 dark:border-slate-700">
+                                <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i> Reset Dữ Liệu
+                            </button>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+                            Bảng mô phỏng một bộ số liệu thu gọn gồm 5 bệnh nhân. Hãy áp dụng các kỹ thuật thuật toán hoặc sử dụng <strong>Trợ lý AI Gemini</strong> để phân tích sâu các lỗi logic ẩn giấu.
+                        </p>
+
+                        <!-- Interactive Table -->
+                        <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm">
+                            <table id="sandbox-table" class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+                                <thead class="bg-slate-50 dark:bg-slate-900/80 font-bold text-slate-700 dark:text-slate-300">
+                                    <tr>
+                                        <th class="px-4 py-3 text-center">ID</th>
+                                        <th class="px-4 py-3 text-left">Họ & Tên Bệnh Nhân</th>
+                                        <th class="px-4 py-3 text-center">Giới tính</th>
+                                        <th class="px-4 py-3 text-center">Tuổi</th>
+                                        <th class="px-4 py-3 text-center">Mang Thai (1=Có)</th>
+                                        <th class="px-4 py-3 text-center">HQ1 (1-5)</th>
+                                        <th class="px-4 py-3 text-center">HQ2_Dao (1-5)</th>
+                                        <th class="px-4 py-3 text-center">Trạng Thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sandbox-body" class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                                    <!-- Dynamic rows from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Sandbox Controls -->
+                        <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+                            <div class="p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="check-square" class="h-4 w-4 text-emerald-500"></i> Quét Thuật Toán</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">Chạy thuật toán kiểm tra logic cơ bản & Outlier.</p>
+                                </div>
+                                <button onclick="runAuditAlgorithm()" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-3 rounded-xl shadow-sm transition">
+                                    Chạy Quét Lỗi
+                                </button>
+                            </div>
+
+                            <div class="p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="shuffle" class="h-4 w-4 text-indigo-500"></i> Đảo Mã (Recode)</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">Chuẩn hóa câu hỏi đảo nghịch HQ2_Dao về cùng chiều.</p>
+                                </div>
+                                <button onclick="recodeSandboxLikert()" class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-3 rounded-xl shadow-sm transition">
+                                    Thực Hiện Đảo Mã
+                                </button>
+                            </div>
+
+                            <div class="p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="trash-2" class="h-4 w-4 text-rose-500"></i> Xóa Phiếu Hỏng</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">Loại bỏ hoàn toàn dòng chứa mâu thuẫn nặng.</p>
+                                </div>
+                                <button onclick="cleanInconsistentRecords()" class="w-full text-xs bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 px-3 rounded-xl shadow-sm transition">
+                                    Loại Bỏ Lỗi Nặng
+                                </button>
+                            </div>
+
+                            <!-- NEW: AI Deep Audit Button -->
+                            <div class="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 border border-indigo-100 dark:border-indigo-800/50 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 opacity-20 group-hover:opacity-40 transition">
+                                    <i data-lucide="sparkles" class="h-16 w-16 text-indigo-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h4 class="text-sm font-bold text-indigo-900 dark:text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="brain-circuit" class="h-4 w-4"></i> Thẩm Định Sâu AI</h4>
+                                    <p class="text-xs text-indigo-700/70 dark:text-indigo-300/70 mb-4 leading-relaxed">Gửi dữ liệu cho Gemini để phát hiện các lỗi logic ẩn.</p>
+                                </div>
+                                <button id="btn-ai-audit" onclick="runAIAudit()" class="relative z-10 w-full text-xs bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition flex justify-center items-center gap-1.5">
+                                    ✨ Gọi AI Phân Tích
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Audit Console Output -->
+                        <div class="mt-6 p-5 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-400 shadow-inner">
+                            <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                                <span class="text-slate-500 flex items-center gap-2"><i data-lucide="terminal-square" class="h-4 w-4"></i> Console Phân Tích & Hệ Thống</span>
+                                <div class="flex gap-1.5">
+                                    <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+                                    <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                </div>
+                            </div>
+                            <div id="sandbox-console" class="space-y-1.5 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                                <p>&gt; Hệ thống đã sẵn sàng. Hãy chạy quét thuật toán hoặc gọi Trợ lý AI.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 7: REPORTING & LUAN VAN GUIDE AI -->
+                <section id="tab-report-guide" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Viết Luận Văn</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">Soạn Thảo Quy Trình Làm Sạch <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text text-xl">AI</span></h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed">
+                            Một lỗi nghiêm trọng khiến học viên CK1 bị trừ điểm là **không mô tả minh bạch quy trình làm sạch dữ liệu** trong chương phương pháp nghiên cứu. 
+                        </p>
+
+                        <!-- AI Thesis Generator Widget -->
+                        <div class="mt-8 bg-white dark:bg-slate-950 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md overflow-hidden">
+                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 border-b border-slate-200 dark:border-slate-800">
+                                <h4 class="text-base font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
+                                    <i data-lucide="bot" class="h-5 w-5"></i> Trợ lý AI Viết Luận Văn
+                                </h4>
+                                <p class="text-xs text-indigo-700/80 dark:text-indigo-300/80 mt-1.5">Nhập các gạch đầu dòng thô về cách bạn xử lý số liệu, Gemini sẽ tự động chuyển đổi thành đoạn văn học thuật chuẩn format phương pháp nghiên cứu.</p>
+                            </div>
+                            
+                            <div class="p-6 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide">Ý chính của bạn (Ghi chú thô):</label>
+                                    <textarea id="thesis-rough-notes" rows="4" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-sm text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" placeholder="Ví dụ: Lọc Excel bỏ 2 phiếu trống. Chạy SPSS Frequencies thấy tuổi lớn hơn 100 sửa lại. Câu CP1_Dao là câu nghịch nên phải recode..."></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button id="btn-ai-thesis" onclick="generateThesisText()" class="text-sm bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition flex items-center gap-2">
+                                        ✨ Soạn thảo chuyên nghiệp
+                                    </button>
+                                </div>
+
+                                <!-- AI Output Box -->
+                                <div id="thesis-output-container" class="hidden mt-6">
+                                    <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-2 uppercase tracking-wide flex items-center gap-1.5">
+                                        <i data-lucide="check-circle-2" class="h-4 w-4"></i> Kết quả từ AI (Có thể copy vào Luận văn):
+                                    </label>
+                                    <div id="thesis-output-text" class="bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-800/50 rounded-xl p-5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed italic ai-markdown shadow-inner min-h-[100px]">
+                                        <!-- Output goes here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- TAB 8: QUIZ -->
+                <section id="tab-quiz" class="tab-content fade-in space-y-6">
+                    <div class="prose max-w-none dark:prose-invert">
+                        <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <span class="rounded-lg bg-medical-100 px-3 py-1 text-xs font-bold text-medical-700 dark:bg-medical-950 dark:text-medical-300">Đánh Giá</span>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white m-0">20 Câu Hỏi Trắc Nghiệm Lượng Giá</h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-4">
+                            Bộ 20 câu hỏi trắc nghiệm dưới đây được thiết kế bám sát thực tế lâm sàng giúp bạn kiểm tra mức độ thấu hiểu quy trình làm sạch dữ liệu trong Luận văn CK1.
+                        </p>
+
+                        <!-- Quiz Container -->
+                        <div id="quiz-container" class="space-y-6 mt-8">
+                            <!-- Questions will be dynamically rendered here via JavaScript -->
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-10 flex flex-col items-center gap-4">
+                            <button onclick="submitQuiz()" class="bg-medical-600 hover:bg-medical-700 text-white font-bold py-3.5 px-10 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 text-base w-full md:w-auto">
+                                Nộp Bài & Xem Điểm Chi Tiết
+                            </button>
+                            <button onclick="resetQuiz()" class="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 text-sm font-semibold flex items-center gap-1.5 transition">
+                                <i data-lucide="rotate-cw" class="h-4 w-4"></i> Làm lại bài kiểm tra
+                            </button>
+                        </div>
+
+                        <!-- Result Modal/Box -->
+                        <div id="quiz-result" class="hidden mt-8 p-8 rounded-3xl border bg-white dark:bg-slate-950 shadow-xl text-center">
+                            <!-- Dynamic score and feedback here -->
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Javascript Logical Controller -->
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const headerTitle = document.getElementById('header-title');
+
+        // Toggle Sidebar on mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Toggle Dark/Light Mode
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const navButtons = document.querySelectorAll('nav button');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-slate-100', 'text-medical-600', 'dark:bg-slate-800', 'dark:text-white');
+                btn.classList.add('text-slate-700', 'dark:text-slate-300');
+            });
+
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) activeTab.classList.add('active');
+
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-100', 'text-medical-600', 'dark:bg-slate-800', 'dark:text-white');
+                activeBtn.classList.remove('text-slate-700', 'dark:text-slate-300');
+            }
+
+            const titles = {
+                'intro': 'Mở Đầu & Mục Tiêu Nghiên Cứu',
+                'module1': 'Vì sao phải làm sạch dữ liệu?',
+                'module2': 'Nhận diện 4 nhóm lỗi dữ liệu phổ biến',
+                'module3': 'Kiểm soát và làm sạch bằng Excel',
+                'module4': 'Rà soát lỗi logic chuyên sâu bằng SPSS',
+                'module5': 'Xử lý câu hỏi gài & Thang đo Likert đảo nghịch',
+                'playground': 'Lab Thực Hành Sandbox AI',
+                'report-guide': 'Mô tả quy trình trong Luận văn CK1',
+                'quiz': '20 Câu Hỏi Lượng Giá Cuối Bài Học'
+            };
+            headerTitle.textContent = titles[tabId] || 'Làm Sạch Dữ Liệu Nghiên Cứu Y Dược';
+
+            if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
+            document.querySelector('main .flex-1').scrollTop = 0;
+        }
+
+        function checkMicroQuiz(quizId, correctAnswer, rationale) {
+            const selected = document.querySelector(`input[name="${quizId}"]:checked`);
+            const feedbackEl = document.getElementById(`${quizId}-feedback`);
+            if (!selected) {
+                feedbackEl.textContent = "⚠️ Vui lòng chọn một đáp án trước khi bấm kiểm tra!";
+                feedbackEl.className = "text-sm mt-3 text-rose-500 block font-bold";
+                return;
+            }
+            if (selected.value === correctAnswer) {
+                feedbackEl.textContent = `✅ ${rationale}`;
+                feedbackEl.className = "text-sm mt-3 text-emerald-700 dark:text-emerald-400 block font-semibold bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800/50";
+            } else {
+                feedbackEl.textContent = `❌ Chưa chính xác! Hãy suy nghĩ lại dựa trên các nội dung lý thuyết vừa học ở trên.`;
+                feedbackEl.className = "text-sm mt-3 text-rose-600 dark:text-rose-400 block font-semibold bg-rose-50 dark:bg-rose-950/30 p-3 rounded-xl border border-rose-100 dark:border-rose-800/50";
+            }
+        }
+
+        // --- GEMINI API INTEGRATION ---
+        const apiKey = ""; // Provided by execution environment
+        
+        // Exponential backoff for API Calls
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            let retries = 0;
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        if (response.status === 429 || response.status >= 500) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        } else {
+                             const errData = await response.json();
+                             throw new Error(errData.error?.message || 'Bad Request');
+                        }
+                    }
+                    return await response.json();
+                } catch (error) {
+                    retries++;
+                    if (retries >= maxRetries) throw error;
+                    console.log(`Retrying API call... Attempt ${retries}`);
+                    await new Promise(resolve => setTimeout(resolve, delays[retries - 1]));
+                }
+            }
+        }
+
+        async function callGeminiText(prompt, systemInstruction = "") {
+             if (!apiKey) return "Lỗi: Không tìm thấy API Key trong môi trường thực thi.";
+             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+             
+             const payload = {
+                 contents: [{ parts: [{ text: prompt }] }]
+             };
+             if (systemInstruction) {
+                 payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+             }
+             
+             const options = {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify(payload)
+             };
+             
+             try {
+                 const result = await fetchWithRetry(url, options);
+                 return result.candidates?.[0]?.content?.parts?.[0]?.text || "Không có phản hồi từ AI.";
+             } catch (e) {
+                 return `Lỗi kết nối AI: ${e.message}`;
+             }
+        }
+
+        // --- SANDBOX SIMULATOR ---
+        let sandboxData = [
+            { id: 1, name: "Nguyễn Văn Anh", gender: "Nam", age: 34, pregnant: 1, hq1: 4, hq2_dao: 2, status: "Chưa thẩm định" },
+            { id: 2, name: "Trần Thị Bình", gender: "Nữ", age: 105, pregnant: 0, hq1: 5, hq2_dao: 5, status: "Chưa thẩm định" },
+            { id: 3, name: "Phạm Minh Châu", gender: "Nam", age: 45, pregnant: 0, hq1: 33, hq2_dao: 4, status: "Chưa thẩm định" },
+            { id: 4, name: "Lê Hoàng Duy", gender: "Nam", age: 29, pregnant: 0, hq1: 4, hq2_dao: 2, status: "Chưa thẩm định" },
+            { id: 5, name: "Vũ Thị Em", gender: "Nữ", age: 24, pregnant: 1, hq1: 5, hq2_dao: 1, status: "Chưa thẩm định" }
+        ];
+
+        function renderSandboxTable() {
+            const body = document.getElementById('sandbox-body');
+            body.innerHTML = '';
+            sandboxData.forEach(row => {
+                let statusClass = "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700";
+                if (row.status.includes("Lỗi")) statusClass = "bg-rose-50 text-rose-700 font-bold border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800/50";
+                if (row.status.includes("Đã sạch") || row.status.includes("Đã sửa") || row.status.includes("Hợp lệ")) statusClass = "bg-emerald-50 text-emerald-700 font-bold border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50";
+                
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/50 transition duration-150";
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-center font-mono font-medium">${row.id}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">${row.name}</td>
+                    <td class="px-4 py-3 text-center">${row.gender}</td>
+                    <td class="px-4 py-3 text-center font-mono">${row.age}</td>
+                    <td class="px-4 py-3 text-center">${row.pregnant}</td>
+                    <td class="px-4 py-3 text-center font-bold text-slate-800 dark:text-slate-100">${row.hq1}</td>
+                    <td class="px-4 py-3 text-center font-medium">${row.hq2_dao}</td>
+                    <td class="px-4 py-3 text-center"><span class="px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider ${statusClass} inline-block whitespace-nowrap">${row.status}</span></td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function writeToConsole(message) {
+            const consoleBox = document.getElementById('sandbox-console');
+            const p = document.createElement('p');
+            // Adding subtle animation for new console logs
+            p.className = "animate-[fadeIn_0.3s_ease-out]";
+            p.innerHTML = `> ${message}`;
+            consoleBox.appendChild(p);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        function resetSandboxData() {
+            sandboxData = [
+                { id: 1, name: "Nguyễn Văn Anh", gender: "Nam", age: 34, pregnant: 1, hq1: 4, hq2_dao: 2, status: "Chưa thẩm định" },
+                { id: 2, name: "Trần Thị Bình", gender: "Nữ", age: 105, pregnant: 0, hq1: 5, hq2_dao: 5, status: "Chưa thẩm định" },
+                { id: 3, name: "Phạm Minh Châu", gender: "Nam", age: 45, pregnant: 0, hq1: 33, hq2_dao: 4, status: "Chưa thẩm định" },
+                { id: 4, name: "Lê Hoàng Duy", gender: "Nam", age: 29, pregnant: 0, hq1: 4, hq2_dao: 2, status: "Chưa thẩm định" },
+                { id: 5, name: "Vũ Thị Em", gender: "Nữ", age: 24, pregnant: 1, hq1: 5, hq2_dao: 1, status: "Chưa thẩm định" }
+            ];
+            renderSandboxTable();
+            document.getElementById('sandbox-console').innerHTML = '<p>> Khôi phục dữ liệu gốc thành công.</p>';
+        }
+
+        function runAuditAlgorithm() {
+            writeToConsole("Bắt đầu khởi chạy thuật toán quét logic chéo cứng (Hardcoded Logic)...");
+            let errCount = 0;
+            sandboxData.forEach(row => {
+                if (row.hq1 < 1 || row.hq1 > 5) {
+                    row.status = "Lỗi: Outlier HQ1";
+                    writeToConsole(`<span class='text-rose-400'>[LỖI]</span> ID ${row.id}: Điểm số HQ1 = ${row.hq1} nằm ngoài khoảng Likert 1-5.`);
+                    errCount++;
+                    return;
+                }
+                if (row.gender === "Nam" && row.pregnant === 1) {
+                    row.status = "Lỗi: Logic Nam Mang Thai";
+                    writeToConsole(`<span class='text-rose-400'>[LỖI]</span> ID ${row.id}: Giới tính là Nam nhưng lại khai báo Có Mang Thai.`);
+                    errCount++;
+                    return;
+                }
+                if (row.age > 100) {
+                    row.status = "Lỗi: Nghi ngờ Tuổi";
+                    writeToConsole(`<span class='text-amber-400'>[CẢNH BÁO]</span> ID ${row.id}: Tuổi quá lớn (${row.age} tuổi), cần xác minh thực tế hồ sơ.`);
+                    errCount++;
+                    return;
+                }
+                if (row.hq1 === 5 && row.hq2_dao === 5) {
+                    row.status = "Lỗi: Phiếu mâu thuẫn";
+                    writeToConsole(`<span class='text-rose-400'>[LỖI]</span> ID ${row.id}: Câu thuận đánh điểm 5 nhưng câu nghịch chê bai cũng đánh điểm 5 (Thiếu nhất quán).`);
+                    errCount++;
+                    return;
+                }
+                row.status = "Hợp lệ / Đã sạch";
+            });
+
+            if (errCount > 0) {
+                writeToConsole(`<span class='text-indigo-400 font-bold'>[HOÀN TẤT QUÉT]</span> Phát hiện tổng cộng ${errCount} điểm bất thường.`);
+            } else {
+                writeToConsole("<span class='text-emerald-400 font-bold'>[HOÀN TẤT QUÉT]</span> Dữ liệu đã sạch theo luật định sẵn.");
+            }
+            renderSandboxTable();
+        }
+
+        // Feature 1: Gemini AI Data Auditor
+        async function runAIAudit() {
+            const btn = document.getElementById('btn-ai-audit');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Đang phân tích...`;
+            btn.disabled = true;
+            btn.classList.add('opacity-70');
+            
+            writeToConsole("<span class='text-purple-400'>[AI SYSTEM]</span> Đang thiết lập kết nối đến Gemini AI... Đang gửi dữ liệu bệnh nhân...");
+
+            const systemInstruction = "Bạn là một Chuyên gia phân tích dữ liệu lâm sàng y tế và thống kê. Nhiệm vụ của bạn là thẩm định tính logic của dữ liệu bệnh nhân. Tìm ra các lỗi nhập liệu (outliers), mâu thuẫn logic y học (như nam mang thai), và sự thiếu nhất quán trong phiếu khảo sát Likert (đánh 5 điểm cho cả câu tích cực và câu tiêu cực). Phản hồi ngắn gọn, súc tích bằng tiếng Việt.";
+            const prompt = `Hãy thẩm định bộ dữ liệu sau của 5 bệnh nhân:\n\n${JSON.stringify(sandboxData, null, 2)}\n\nChỉ ra rõ ID bệnh nhân nào bị lỗi và giải thích ngắn gọn nguyên nhân lỗi y sinh/thống kê đó. Cuối cùng kết luận xem bộ dữ liệu này có đáng tin cậy để chạy phân tích tiếp hay không.`;
+
+            const aiResponse = await callGeminiText(prompt, systemInstruction);
+            
+            writeToConsole("<span class='text-purple-400 font-bold'>[GEMINI RESPONSE]</span>");
+            
+            // Format basic markdown from AI to HTML for the console
+            const formattedResponse = aiResponse
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                .replace(/\n/g, '<br>')
+                .replace(/\*/g, '•');
+                
+            writeToConsole(`<span class='text-purple-200'>${formattedResponse}</span>`);
+            
+            // Update status in table just to show AI acted
+            sandboxData.forEach(row => {
+                if(row.status === "Chưa thẩm định") row.status = "AI Đã phân tích";
+            });
+            renderSandboxTable();
+
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+            btn.classList.remove('opacity-70');
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function recodeSandboxLikert() {
+            writeToConsole("Đang thực hiện lệnh Recode cho biến HQ2_Dao: Y_new = 6 - Y_old...");
+            sandboxData.forEach(row => {
+                if (row.status !== "Lỗi: Phiếu mâu thuẫn" && row.status !== "Lỗi: Outlier HQ1") {
+                    const oldVal = row.hq2_dao;
+                    row.hq2_dao = 6 - oldVal;
+                    row.status = "Đã sửa: Đảo mã";
+                }
+            });
+            writeToConsole("<span class='text-indigo-400'>[ĐẢO MÃ THÀNH CÔNG]</span> Đã đồng bộ các câu đảo nghịch về đúng chuẩn đo lường tích cực.");
+            renderSandboxTable();
+        }
+
+        function cleanInconsistentRecords() {
+            writeToConsole("Khởi chạy lọc bỏ tự động (Listwise Exclusion)...");
+            const initialCount = sandboxData.length;
+            sandboxData = sandboxData.filter(row => !row.status.includes("Lỗi"));
+            const removedCount = initialCount - sandboxData.length;
+            writeToConsole(`<span class='text-emerald-400 font-bold'>[XỬ LÝ THÀNH CÔNG]</span> Đã loại bỏ hoàn toàn ${removedCount} bản ghi lỗi nặng khỏi bộ mẫu.`);
+            renderSandboxTable();
+        }
+
+        // Feature 2: Gemini AI Thesis Writer
+        async function generateThesisText() {
+            const inputField = document.getElementById('thesis-rough-notes');
+            const notes = inputField.value.trim();
+            if (!notes) {
+                alert("Vui lòng nhập ghi chú thô của bạn trước khi gọi AI.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-ai-thesis');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Đang soạn thảo...`;
+            btn.disabled = true;
+            btn.classList.add('opacity-70');
+
+            const systemInstruction = "Bạn là một giáo sư hướng dẫn luận văn Chuyên khoa 1 ngành Dược tại Việt Nam. Học viên sẽ cung cấp cho bạn những gạch đầu dòng thô sơ về cách họ làm sạch số liệu. Nhiệm vụ của bạn là viết lại những ý đó thành một hoặc hai đoạn văn văn phong học thuật, chuyên nghiệp, chuẩn mực để học viên có thể dán trực tiếp vào phần 'Phương pháp nghiên cứu - Xử lý số liệu' trong luận văn. Tuyệt đối không xưng hô, không lời chào hỏi, chỉ xuất ra đoạn văn học thuật.";
+            const prompt = `Ghi chú thô của học viên:\n"${notes}"\n\nHãy viết lại thành đoạn văn luận văn học thuật.`;
+
+            const aiResponse = await callGeminiText(prompt, systemInstruction);
+            
+            const outputContainer = document.getElementById('thesis-output-container');
+            const outputText = document.getElementById('thesis-output-text');
+            
+            // Use marked.js to render Markdown properly
+            outputText.innerHTML = marked.parse(aiResponse);
+            outputContainer.classList.remove('hidden');
+            outputContainer.classList.add('fade-in');
+
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+            btn.classList.remove('opacity-70');
+            if(window.lucide) lucide.createIcons();
+        }
+
+
+        // --- 20 QUIZ QUESTIONS DATABASE ---
+        const quizQuestions = [
+            {
+                id: 1,
+                question: "1. Mục đích quan trọng nhất của việc làm sạch dữ liệu trước khi phân tích là gì?",
+                answers: {
+                    A: "Để loại bỏ các kết quả không theo ý muốn của nhà nghiên cứu nhằm tạo ra số liệu đẹp.",
+                    B: "Để đảm bảo dữ liệu phản ánh chính xác thực tế lâm sàng, loại bỏ các nhiễu do lỗi kỹ thuật.",
+                    C: "Để tự động tăng hệ số tin cậy Cronbach's Alpha lên mức > 0.8.",
+                    D: "Để giảm bớt cỡ mẫu cho SPSS xử lý nhanh hơn."
+                },
+                correct: "B",
+                rationale: "Làm sạch nhằm kiểm soát chất lượng, loại bỏ nhiễu kỹ thuật chứ tuyệt đối không phải là hành vi ngụy tạo số liệu."
+            },
+            {
+                id: 2,
+                question: "2. Hành vi nào dưới đây được xem là vi phạm đạo đức nghiên cứu khi xử lý dữ liệu?",
+                answers: {
+                    A: "Sử dụng lệnh Select Cases để tạm ẩn một nhóm bệnh án nghi ngờ lỗi.",
+                    B: "Loại bỏ hoàn toàn một phiếu khảo sát vì bệnh nhân đánh điểm 5 cho toàn bộ các câu thuận và nghịch.",
+                    C: "Tự ý sửa điểm Likert từ 2 thành 4 để làm tăng p-value lên mức có ý nghĩa thống kê.",
+                    D: "Đảo chiều mã số (Recode) đối với các câu hỏi có ngữ nghĩa tiêu cực."
+                },
+                correct: "C",
+                rationale: "Tự ý thay đổi bản chất dữ liệu để đạt mục đích cá nhân (chạy ra số đẹp) là hành vi ngụy tạo dữ liệu nghiêm trọng."
+            },
+            {
+                id: 3,
+                question: "3. Biến 'NhomTuoi' được khai báo trong Variable View có mã 1 (Dưới 18), 2 (18-60), 3 (Trên 60). Xuất hiện một dòng có mã '4'. Đây thuộc nhóm lỗi gì?",
+                answers: {
+                    A: "Lỗi dữ liệu khuyết thiếu (Missing Data).",
+                    B: "Giá trị ngoài phạm vi (Out of Range).",
+                    C: "Lỗi logic lâm sàng (Clinical Logic Error).",
+                    D: "Lỗi phương sai không đồng nhất."
+                },
+                correct: "B",
+                rationale: "Số 4 nằm ngoài hệ thống khai báo mã số từ 1 đến 3 nên được gọi là giá trị ngoài phạm vi biên."
+            },
+            {
+                id: 4,
+                question: "4. Khai báo Giới tính = Nam, nhưng có chẩn đoán ghi nhận 'Viêm lộ tuyến cổ tử cung'. Đây là lỗi gì?",
+                answers: {
+                    A: "Lỗi thiếu nhất quán trên thang đo.",
+                    B: "Giá trị ngoài phạm vi.",
+                    C: "Dữ liệu ngoại lai (Outlier).",
+                    D: "Lỗi logic lâm sàng/hành chính."
+                },
+                correct: "D",
+                rationale: "Nam giới không thể mắc bệnh lý chuyên khoa phụ khoa của nữ. Đây là lỗi xung đột logic sinh học cơ bản."
+            },
+            {
+                id: 5,
+                question: "5. Bệnh nhân chọn mức '5' cho tất cả 30 câu hỏi trong bảng khảo sát, kể cả câu thuận và câu hỏi gài đảo nghịch. Điều này phản ánh vấn đề gì?",
+                answers: {
+                    A: "Bệnh nhân hoàn toàn khỏe mạnh và rất hài lòng.",
+                    B: "Phiếu thiếu nhất quán do bệnh nhân đánh lụi, không đọc câu hỏi.",
+                    C: "Lỗi của phần mềm SPSS khi nạp dữ liệu từ Excel.",
+                    D: "Đây là phiếu dữ liệu hoàn toàn bình thường."
+                },
+                correct: "B",
+                rationale: "Việc đánh cùng một mức điểm cho các câu hỏi mang ý nghĩa đối lập nhau chứng tỏ người trả lời không nghiêm túc."
+            },
+            {
+                id: 6,
+                question: "6. Tính năng nào trong Microsoft Excel giúp NGĂN CHẶN ngay lập tức việc người dùng gõ nhầm điểm 4 thành 44 trong cột thang đo Likert?",
+                answers: {
+                    A: "Conditional Formatting",
+                    B: "Auto Filter",
+                    C: "Data Validation",
+                    D: "VLOOKUP"
+                },
+                correct: "C",
+                rationale: "Data Validation cho phép tạo quy tắc (ví dụ: Whole number từ 1 đến 5), nếu gõ sai, Excel sẽ hiện cảnh báo và chặn lệnh nhập."
+            },
+            {
+                id: 7,
+                question: "7. Trong Excel, tính năng nào giúp tự động nhuộm màu nền đỏ để cảnh báo các dòng có điểm Likert vượt trần (> 5)?",
+                answers: {
+                    A: "Data Validation",
+                    B: "Conditional Formatting (Highlight Cells Rules)",
+                    C: "Pivot Table",
+                    D: "Sort & Filter"
+                },
+                correct: "B",
+                rationale: "Định dạng có điều kiện (Conditional Formatting) tự động theo dõi giá trị ô, khi ô đạt điều kiện (>5) nó sẽ tự đổi màu để thu hút sự chú ý."
+            },
+            {
+                id: 8,
+                question: "8. Công thức Excel nào thường dùng để đếm số lần xuất hiện của mã bệnh nhân (ID), từ đó phát hiện các hồ sơ bị nhập trùng lặp 2 lần?",
+                answers: {
+                    A: "=SUM()",
+                    B: "=IFERROR()",
+                    C: "=COUNTIF()",
+                    D: "=AVERAGE()"
+                },
+                correct: "C",
+                rationale: "Hàm COUNTIF đếm số lần lặp lại của một mã ID. Nếu kết quả đếm được lớn hơn 1, nghĩa là ID đó đã bị nhập trùng lặp."
+            },
+            {
+                id: 9,
+                question: "9. Bộ lọc AutoFilter (Ctrl + Shift + L) trong Excel hỗ trợ làm sạch dữ liệu chủ yếu như thế nào?",
+                answers: {
+                    A: "Nó tự động tính trung bình cộng cho các ô được chọn.",
+                    B: "Hiển thị danh sách các giá trị duy nhất trong cột, giúp phát hiện nhanh các ký tự lạ hoặc khoảng trắng thừa.",
+                    C: "Nó thay thế phần mềm SPSS trong việc chạy T-Test.",
+                    D: "Nó tự động xóa bỏ các dòng bị lỗi."
+                },
+                correct: "B",
+                rationale: "Mở menu thả xuống của Filter sẽ hiển thị toàn bộ giá trị đang tồn tại. Nếu thấy xuất hiện 'Nam', 'Nữ', và 'N ' thì ta dễ dàng phát hiện lỗi gõ dư khoảng trắng."
+            },
+            {
+                id: 10,
+                question: "10. Lệnh Frequencies trong SPSS chủ yếu được sử dụng với mục đích gì trong bước làm sạch dữ liệu?",
+                answers: {
+                    A: "Để tìm mối liên hệ nhân quả giữa 2 biến liên tục.",
+                    B: "Kiểm tra biểu đồ Histogram rà soát tỷ lệ khuyết thiếu (Missing) và các giá trị định danh ngoài biên.",
+                    C: "Để đảo ngược các biến Likert tiêu cực.",
+                    D: "Để phân tích nhân tố khám phá EFA."
+                },
+                correct: "B",
+                rationale: "Frequencies thống kê tần suất xuất hiện của từng mã. Giúp bạn thấy rõ bao nhiêu phần trăm dữ liệu đang là Missing hoặc nhận các giá trị lạ."
+            },
+            {
+                id: 11,
+                question: "11. Lệnh Crosstabs trong SPSS đặc biệt hiệu quả để phát hiện loại lỗi nào?",
+                answers: {
+                    A: "Đo lường hệ số Cronbach's Alpha.",
+                    B: "Xóa bỏ các hồ sơ bị trùng lặp ID.",
+                    C: "Lỗi logic chéo giữa 2 biến định danh (VD: Giới tính và Bệnh lý tuyến tiền liệt).",
+                    D: "Chỉnh sửa cỡ chữ trên biểu đồ."
+                },
+                correct: "C",
+                rationale: "Bảng chéo (Crosstabs) kết hợp các dòng và cột. Bất kỳ giá trị lớn hơn 0 nào nằm ở ô giao thoa phi logic (VD: Nữ x Phì đại tuyến tiền liệt) đều báo hiệu có lỗi."
+            },
+            {
+                id: 12,
+                question: "12. Trong SPSS, khi muốn tạm thời tách riêng nhóm bệnh nhân có thời gian mắc bệnh > 10 năm để kiểm tra chi tiết mà KHÔNG làm xóa mất các bệnh nhân khác, ta dùng lệnh nào?",
+                answers: {
+                    A: "Delete Cases",
+                    B: "Select Cases (Option: If condition is satisfied)",
+                    C: "Split File",
+                    D: "Sort Cases"
+                },
+                correct: "B",
+                rationale: "Select Cases tạo ra một bộ lọc an toàn, các dòng không thỏa mãn chỉ bị gạch chéo ngoài Data View chứ không bị xóa vĩnh viễn."
+            },
+            {
+                id: 13,
+                question: "13. Học viên thao tác Select Cases để kiểm tra bệnh nhân Nam. Sau đó QUÊN không thao tác chọn lại 'All cases' mà mang file đi chạy EFA. Hậu quả là gì?",
+                answers: {
+                    A: "Phần mềm SPSS sẽ báo lỗi và tắt đột ngột.",
+                    B: "Các phân tích EFA tiếp theo sẽ chỉ chạy trên tập bệnh nhân Nam, làm sai lệch hoàn toàn kết quả nghiên cứu tổng thể.",
+                    C: "Dữ liệu bệnh nhân Nữ bị xóa vĩnh viễn khỏi ổ cứng.",
+                    D: "Không ảnh hưởng gì vì SPSS tự động hiểu để khôi phục All cases khi chạy EFA."
+                },
+                correct: "B",
+                rationale: "Đây là lỗi cực kỳ phổ biến. Nếu bộ lọc Select Cases vẫn đang bật, mọi phân tích thống kê tiếp theo đều chỉ áp dụng cho nhóm đang được lọc."
+            },
+            {
+                id: 14,
+                question: "14. Lệnh nào trong SPSS dùng để chuyển đổi (đảo chiều) thang đo Likert hoặc gom các độ tuổi thành các nhóm tuổi?",
+                answers: {
+                    A: "Compute Variable",
+                    B: "Crosstabs",
+                    C: "Recode (into Same/Different Variables)",
+                    D: "Explore"
+                },
+                correct: "C",
+                rationale: "Recode (Mã hóa lại) là công cụ chuyên dụng để chuyển đổi các giá trị cũ thành các giá trị mới theo luật (Ví dụ: Old 1 -> New 5)."
+            },
+            {
+                id: 15,
+                question: "15. Tại sao các nhà nghiên cứu thường cài cắm 'câu hỏi gài' (Control questions) trong bảng khảo sát dài?",
+                answers: {
+                    A: "Để làm bảng hỏi dài ra, trông có vẻ khoa học hơn.",
+                    B: "Để lọc và loại bỏ các đối tượng trả lời bừa bãi, thiếu chú tâm đọc nội dung câu hỏi.",
+                    C: "Để tăng tỷ lệ hồi đáp của bệnh nhân.",
+                    D: "Để thay thế cho việc xin ý kiến hội đồng y đức."
+                },
+                correct: "B",
+                rationale: "Câu hỏi gài giúp xác định xem người điền có tính nhất quán trong suy nghĩ hay chỉ đánh dấu tùy tiện từ trên xuống dưới."
+            },
+            {
+                id: 16,
+                question: "16. Trong xây dựng thang đo, 'câu hỏi đảo nghịch' (Reverse worded item) được hiểu là gì?",
+                answers: {
+                    A: "Câu hỏi được in ở mặt sau của tờ giấy.",
+                    B: "Câu hỏi có chủ đích mang ngữ nghĩa tiêu cực/phủ định nhằm yêu cầu người đọc phải tư duy ngược lại với xu hướng chung.",
+                    C: "Câu hỏi có thể bỏ qua không cần trả lời.",
+                    D: "Câu hỏi dạng mở (Open-ended question)."
+                },
+                correct: "B",
+                rationale: "Câu hỏi nghịch (Ví dụ: 'Thuốc này gây nhiều tác dụng phụ khó chịu') yêu cầu người cảm thấy tốt phải đánh điểm THẤP, ngược với quy luật chung."
+            },
+            {
+                id: 17,
+                question: "17. Hậu quả của việc KHÔNG thao tác đảo mã (Recode) các câu hỏi đảo nghịch trước khi tính Cronbach's Alpha là gì?",
+                answers: {
+                    A: "Không ảnh hưởng vì SPSS thông minh có khả năng tự động nhận diện câu hỏi đảo.",
+                    B: "Hệ số Cronbach's Alpha sẽ bị kéo tụt xuống thảm hại (thậm chí âm) do máy tính cho rằng có sự phân tán bất thường trong nhân tố.",
+                    C: "Chỉ làm sai lệch tên biến trong bảng kết quả.",
+                    D: "SPSS từ chối thực hiện thuật toán tính toán Alpha."
+                },
+                correct: "B",
+                rationale: "Cronbach's Alpha đo độ tin cậy đồng nhất. Nếu bạn cộng dồn cả điểm thuận và điểm nghịch, tổng phương sai bị triệt tiêu, khiến hệ số Alpha sụp đổ."
+            },
+            {
+                id: 18,
+                question: "18. Đối với thang đo Likert 5 mức độ, một bệnh nhân đánh điểm 2 cho câu hỏi nghịch. Áp dụng công thức chuẩn hóa, giá trị mới nạp vào EFA sẽ là:",
+                answers: {
+                    A: "4",
+                    B: "3",
+                    C: "5",
+                    D: "2"
+                },
+                correct: "A",
+                rationale: "Công thức đảo mã là Y_new = (Max + Min) - X_old = (5 + 1) - 2 = 4."
+            },
+            {
+                id: 19,
+                question: "19. Khi phát hiện dữ liệu lỗi (VD: Giới tính = 3), nhưng bạn KHÔNG THỂ truy xuất lại hồ sơ bệnh án gốc để xác minh, hành động chuẩn mực nhất là gì?",
+                answers: {
+                    A: "Tự ý sửa thành 1 (Nam) vì tỷ lệ Nam thường cao hơn.",
+                    B: "Xóa toàn bộ dòng bệnh án của bệnh nhân đó lập tức.",
+                    C: "Chấp nhận chuyển giá trị ô đó thành khoảng trống và khai báo là dữ liệu khuyết (System Missing).",
+                    D: "Dùng tính năng random ngẫu nhiên ra 1 hoặc 2."
+                },
+                correct: "C",
+                rationale: "Nếu không có bằng chứng đối chiếu, bạn bắt buộc phải công nhận đó là dữ liệu khuyết thiếu. Không được tự ý sáng tác ra số liệu mới."
+            },
+            {
+                id: 20,
+                question: "20. Cảnh báo lỗi \"SPSS Error 1099\" trong quá trình thao tác phần mềm thường mang ý nghĩa gì?",
+                answers: {
+                    A: "File Excel bạn nhập vào chứa quá 1099 dòng dữ liệu.",
+                    B: "Do người nhập liệu đánh sai định dạng chữ thành số.",
+                    C: "Là lỗi hệ thống liên quan đến xác thực bản quyền phần mềm (License), không phải lỗi do dữ liệu bẩn.",
+                    D: "Báo hiệu hệ số Cronbach's Alpha nhỏ hơn 0.5."
+                },
+                correct: "C",
+                rationale: "Mã lỗi 1099 trong SPSS là mã cảnh báo không tìm thấy License bản quyền hợp lệ từ máy chủ, hoàn toàn không liên quan đến lỗi sai của số liệu nghiên cứu."
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = "p-6 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 shadow-sm hover:shadow-md transition duration-300 space-y-4";
+                
+                let answersHTML = '';
+                for (const [key, value] of Object.entries(q.answers)) {
+                    answersHTML += `
+                        <label class="flex items-start gap-4 p-4 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer text-sm transition group">
+                            <input type="radio" name="question-${q.id}" value="${key}" class="mt-1 text-medical-600 focus:ring-medical-500 scale-110">
+                            <span class="leading-relaxed"><strong class="text-slate-700 dark:text-slate-300 mr-1">${key}.</strong> ${value}</span>
+                        </label>
+                    `;
+                }
+
+                qDiv.innerHTML = `
+                    <h4 class="text-base font-bold text-slate-800 dark:text-white leading-relaxed flex items-start gap-2">
+                        <span class="text-medical-600 dark:text-medical-400 shrink-0"><i data-lucide="help-circle" class="h-5 w-5"></i></span>
+                        ${q.question}
+                    </h4>
+                    <div class="grid gap-3 sm:grid-cols-2 mt-4">
+                        ${answersHTML}
+                    </div>
+                    <div id="rational-${q.id}" class="hidden p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm mt-4">
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const total = quizQuestions.length;
+            let answeredCount = 0;
+
+            quizQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="question-${q.id}"]:checked`);
+                const rationalDiv = document.getElementById(`rational-${q.id}`);
+                
+                if (selected) {
+                    answeredCount++;
+                    rationalDiv.classList.remove('hidden');
+                    
+                    if (selected.value === q.correct) {
+                        score++;
+                        rationalDiv.innerHTML = `<div class="flex items-center gap-2 mb-1.5"><i data-lucide="check-circle-2" class="h-4 w-4 text-emerald-600 dark:text-emerald-400"></i><span class="text-emerald-700 dark:text-emerald-400 font-bold">Chính xác!</span></div> <span class="text-slate-700 dark:text-slate-300 block mt-1 leading-relaxed">${q.rationale}</span>`;
+                        rationalDiv.className = "p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 text-sm mt-4 fade-in";
+                    } else {
+                        rationalDiv.innerHTML = `<div class="flex items-center gap-2 mb-1.5"><i data-lucide="x-circle" class="h-4 w-4 text-rose-600 dark:text-rose-400"></i><span class="text-rose-700 dark:text-rose-400 font-bold">Chưa đúng! Đáp án là ${q.correct}.</span></div> <span class="text-slate-700 dark:text-slate-300 block mt-1 leading-relaxed">${q.rationale}</span>`;
+                        rationalDiv.className = "p-4 rounded-xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 text-sm mt-4 fade-in";
+                    }
+                } else {
+                    rationalDiv.classList.remove('hidden');
+                    rationalDiv.innerHTML = `<div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-triangle" class="h-4 w-4 text-amber-600 dark:text-amber-400"></i><span class="text-amber-700 dark:text-amber-400 font-bold">Bạn chưa chọn đáp án! Đáp án đúng là ${q.correct}.</span></div> <span class="text-slate-700 dark:text-slate-300 block mt-1 leading-relaxed">${q.rationale}</span>`;
+                    rationalDiv.className = "p-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 text-sm mt-4 fade-in";
+                }
+            });
+
+            const resultBox = document.getElementById('quiz-result');
+            resultBox.classList.remove('hidden');
+            resultBox.classList.add('fade-in');
+            
+            let colorClass = "text-amber-500";
+            let remark = "Anh/Chị cần đọc lại lý thuyết bài học để nắm chắc quy trình làm sạch hơn.";
+            let badgeHtml = "";
+            
+            if (score >= 18) {
+                colorClass = "text-emerald-500";
+                remark = "Tuyệt vời! Anh/Chị đã làm chủ hoàn toàn tư duy và kỹ thuật làm sạch dữ liệu trong nghiên cứu y dược.";
+                badgeHtml = `<div class="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-yellow-200 to-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm"><i data-lucide="award" class="h-5 w-5"></i> Chứng nhận xuất sắc</div>`;
+            } else if (score >= 12) {
+                colorClass = "text-indigo-500";
+                remark = "Khá tốt. Hãy chú ý rà soát lại các lỗi mâu thuẫn chéo bằng SPSS và Excel kỹ càng hơn.";
+            }
+
+            resultBox.innerHTML = `
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">Kết Quả Đánh Giá Năng Lực</h3>
+                    <div class="text-5xl font-extrabold ${colorClass} tracking-tight">${score} <span class="text-3xl text-slate-400 dark:text-slate-600">/ ${total}</span></div>
+                    ${badgeHtml}
+                    <p class="text-base text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed mt-4">${remark}</p>
+                    <p class="text-xs text-slate-400 mt-2 font-mono">Đã trả lời: ${answeredCount}/${total}</p>
+                </div>
+            `;
+            
+            if (window.lucide) lucide.createIcons();
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetQuiz() {
+            const inputs = document.querySelectorAll('input[type="radio"]');
+            inputs.forEach(input => input.checked = false);
+            
+            const rationals = document.querySelectorAll('[id^="rational-"]');
+            rationals.forEach(div => div.classList.add('hidden'));
+            
+            const resultBox = document.getElementById('quiz-result');
+            resultBox.classList.add('hidden');
+            
+            document.getElementById('tab-quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            renderSandboxTable();
+            renderQuiz();
+            
+            // Safe auto-rendering for mathematical expressions using KaTeX
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
+    </script>
+</body>
+</html>
