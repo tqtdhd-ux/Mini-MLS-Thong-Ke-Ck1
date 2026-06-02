@@ -995,8 +995,7 @@ function pageTitle() {
 
 function dashboardView() {
   const rate = completionRate(state.user.username);
-  const classRows = USERS.filter((user) => user.role === "student").map((user) => completionRate(user.username));
-  const classAvg = Math.round(classRows.reduce((sum, item) => sum + item.percent, 0) / classRows.length);
+  const classAvg = "Chưa bật";
   const progress = getProgress(state.user.username);
   const next = LESSONS.find((lesson) => !evidenceStatus(progress[lesson.id], lesson.id).complete) ?? LESSONS[0];
   return `
@@ -1008,7 +1007,7 @@ function dashboardView() {
       <div class="panel pad span-3 metric"><span class="muted">Tiến độ cá nhân</span><strong>${rate.percent}%</strong><div class="progress" style="--value:${rate.percent}%"><span></span></div></div>
       <div class="panel pad span-3 metric"><span class="muted">Bài đã hoàn thành</span><strong>${rate.done}/${rate.total}</strong><span class="muted">Theo 5 tiêu chí đánh giá</span></div>
       <div class="panel pad span-3 metric"><span class="muted">Tài nguyên</span><strong>${RESOURCES.length}</strong><span class="muted">CSV, SAV, PDF, DOCX, XLSX, video</span></div>
-      <div class="panel pad span-3 metric"><span class="muted">Trung bình lớp</span><strong>${classAvg}%</strong><span class="muted">Dựa trên dữ liệu trình duyệt này</span></div>
+      <div class="panel pad span-3 metric"><span class="muted">Trung bình lớp</span><strong>${classAvg}</strong><span class="muted">Sẽ hiển thị sau khi hoàn thiện báo cáo giáo viên</span></div>
       <div class="panel pad span-12">
         <div class="section-title"><div><h2>Bài tiếp theo</h2><p>${next.outcome}</p></div></div>
         ${lessonCard(next)}
